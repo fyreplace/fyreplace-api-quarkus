@@ -7,7 +7,10 @@ pluginManagement {
 
     plugins {
         id "${quarkusPluginId}" version "${quarkusPluginVersion}"
+        id "${quarkusExtensionPluginId}" version "${quarkusPluginVersion}"
     }
 }
 
-rootProject.name="fyreplace-api"
+rootProject.name = "fyreplace-api"
+
+include(":quarkus-sentry:runtime", ":quarkus-sentry:deployment")

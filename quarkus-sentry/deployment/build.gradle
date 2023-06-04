@@ -1,0 +1,12 @@
+plugins {
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation("io.quarkus:quarkus-core-deployment")
+    implementation("io.quarkus:quarkus-arc-deployment")
+    implementation(project(":quarkus-sentry:runtime"))
+}

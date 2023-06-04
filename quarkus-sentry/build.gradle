@@ -1,0 +1,19 @@
+plugins {
+    id "com.palantir.git-version" version "${gitPluginVersion}"
+}
+
+subprojects {
+    apply plugin: "java-library"
+    group = "app.fyreplace"
+    version = gitVersion()
+    dependencies {
+        implementation(enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}"))
+        implementation("io.quarkus:quarkus-opentelemetry")
+        implementation("io.sentry:sentry-opentelemetry-core:${sentryVersion}")
+        annotationProcessor("io.quarkus:quarkus-extension-processor")
+    }
+}
+
+repositories {
+    mavenCentral()
+}
