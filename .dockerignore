@@ -1,5 +1,11 @@
 *
-!build/*-runner
-!build/*-runner.jar
-!build/lib/*
-!build/quarkus-app/*
+!.git
+!.gitignore
+!gradle
+!gradlew
+!gradlew.bat
+!gradle.properties
+!build.gradle
+!settings.gradle
+!quarkus-sentry
+!src
