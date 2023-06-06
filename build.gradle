@@ -1,9 +1,7 @@
 plugins {
     id "java"
-    id "org.jetbrains.kotlin.jvm" version "${kotlinVersion}"
-    id "org.jetbrains.kotlin.plugin.allopen" version "${kotlinVersion}"
-    id "com.palantir.git-version" version "${gitPluginVersion}"
     id "io.quarkus"
+    id "com.palantir.git-version" version "${gitPluginVersion}"
 }
 
 group = "app.fyreplace"
@@ -15,9 +13,7 @@ repositories {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation(enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}"))
-    implementation("io.quarkus:quarkus-kotlin")
     implementation("io.quarkus:quarkus-arc")
     implementation("io.quarkus:quarkus-resteasy-reactive")
     implementation("io.quarkus:quarkus-hibernate-orm-panache")
@@ -38,12 +34,6 @@ test {
     systemProperty "java.util.logging.manager", "org.jboss.logmanager.LogManager"
 }
 
-allOpen {
-    annotation("jakarta.ws.rs.Path")
-    annotation("jakarta.enterprise.context.ApplicationScoped")
-    annotation("io.quarkus.test.junit.QuarkusTest")
-}
-
 compileJava {
     options.encoding = "UTF-8"
     options.compilerArgs << "-parameters"
@@ -51,13 +41,4 @@ compileJava {
 
 compileTestJava {
     options.encoding = "UTF-8"
-}
-
-compileKotlin {
-    kotlinOptions.jvmTarget = JavaVersion.VERSION_17
-    kotlinOptions.javaParameters = true
-}
-
-compileTestKotlin {
-    kotlinOptions.jvmTarget = JavaVersion.VERSION_17
 }
