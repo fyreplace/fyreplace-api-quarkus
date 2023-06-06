@@ -7,7 +7,6 @@ import io.sentry.Sentry;
 import io.sentry.SentryOptions;
 import io.sentry.jul.SentryHandler;
 import io.sentry.opentelemetry.OpenTelemetryLinkErrorEventProcessor;
-
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Handler;

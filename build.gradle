@@ -2,6 +2,7 @@ plugins {
     id "java"
     id "io.quarkus"
     id "com.palantir.git-version" version "${gitPluginVersion}"
+    id "com.diffplug.spotless" version "${spotlessPluginVersion}"
 }
 
 group = "app.fyreplace"
@@ -42,3 +43,14 @@ compileJava {
 compileTestJava {
     options.encoding = "UTF-8"
 }
+
+spotless {
+    java {
+        importOrder()
+        removeUnusedImports()
+        palantirJavaFormat()
+        target "**/src/*/java/**/*.java"
+    }
+}
+
+compileJava.dependsOn "spotlessApply"
