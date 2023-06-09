@@ -1,4 +1,4 @@
-package app.fyreplace.sentry;
+package app.fyreplace.api.sentry;
 
 import io.sentry.opentelemetry.SentrySpanProcessor;
 import jakarta.enterprise.context.ApplicationScoped;

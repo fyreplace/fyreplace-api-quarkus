@@ -1,4 +1,4 @@
-package app.fyreplace.sentry;
+package app.fyreplace.api.sentry;
 
 import io.quarkus.runtime.annotations.ConfigItem;
 import io.quarkus.runtime.annotations.ConfigPhase;

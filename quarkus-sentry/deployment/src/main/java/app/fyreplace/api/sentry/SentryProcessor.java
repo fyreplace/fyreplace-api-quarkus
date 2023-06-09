@@ -1,4 +1,4 @@
-package app.fyreplace.sentry;
+package app.fyreplace.api.sentry;
 
 import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
 import io.quarkus.deployment.annotations.BuildStep;

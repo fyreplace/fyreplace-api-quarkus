@@ -1,4 +1,4 @@
-package app.fyreplace.sentry;
+package app.fyreplace.api.sentry;
 
 import io.opentelemetry.context.propagation.TextMapPropagator;
 import io.opentelemetry.sdk.autoconfigure.spi.ConfigProperties;
