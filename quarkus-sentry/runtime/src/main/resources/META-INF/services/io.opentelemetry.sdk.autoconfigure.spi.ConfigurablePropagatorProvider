@@ -1,1 +1,1 @@
-app.fyreplace.sentry.SentryConfigurablePropagator
+app.fyreplace.api.sentry.SentryConfigurablePropagator
