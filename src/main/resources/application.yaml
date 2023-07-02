@@ -1,0 +1,93 @@
+# Main profile
+
+quarkus:
+  datasource:
+   db-kind: postgresql
+
+  hibernate-orm:
+    physical-naming-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+
+  qute:
+    content-types:
+      mjml: text/plain
+
+  http:
+    auth:
+      permission:
+        dev:
+          paths: /dev/*
+          policy: deny
+
+    cors:
+      ~: true
+
+    limits:
+      max-body-size: 1M
+
+  s3:
+    devservices:
+      enabled: false
+
+mp:
+  jwt:
+    verify:
+      issuer: ${app.url}
+
+app:
+  url: ""
+  name: Fyreplace
+  use-example-data: false
+  paging:
+    size: 12
+
+  storage:
+    type: local
+
+    local:
+      path: ""
+
+    s3:
+      bucket: ""
+      custom-domain: ""
+
+# Dev profile
+
+"%dev":
+  quarkus:
+    hibernate-orm:
+      database:
+        generation:
+          ~: drop-and-create
+
+    http:
+      auth:
+        permission:
+          dev:
+            paths: /dev/*
+            policy: permit
+
+  app:
+    use-example-data: true
+
+# Test profile
+
+"%test":
+  quarkus:
+    datasource:
+      db-kind: h2
+      jdbc:
+        user: h2
+        password: h2
+        url: jdbc:h2:mem:fyreplace
+
+    hibernate-orm:
+      database:
+        generation:
+          ~: drop-and-create
+
+    http:
+      cors:
+        origins: /.*/
+
+    scheduler:
+      enabled: false

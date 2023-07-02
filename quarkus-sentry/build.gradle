@@ -7,7 +7,7 @@ subprojects {
     group = "app.fyreplace"
     version = gitVersion()
     dependencies {
-        implementation(enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}"))
+        implementation(enforcedPlatform("io.quarkus:quarkus-bom:${quarkusVersion}"))
         implementation("io.quarkus:quarkus-opentelemetry")
         implementation("io.sentry:sentry-opentelemetry-core:${sentryVersion}")
         annotationProcessor("io.quarkus:quarkus-extension-processor")

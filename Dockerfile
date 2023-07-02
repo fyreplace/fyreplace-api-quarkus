@@ -6,6 +6,7 @@ WORKDIR /app
 
 COPY . ./
 RUN git fetch --unshallow || echo "Nothing to do"
+RUN ./gradlew compileMjml
 RUN ./gradlew build -Dquarkus.package.type=native
 
 FROM oraclelinux:9-slim AS run

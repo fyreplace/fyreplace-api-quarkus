@@ -6,8 +6,8 @@ pluginManagement {
     }
 
     plugins {
-        id "${quarkusPluginId}" version "${quarkusPluginVersion}"
-        id "${quarkusExtensionPluginId}" version "${quarkusPluginVersion}"
+        id "io.quarkus" version "${quarkusVersion}"
+        id "io.quarkus.extension" version "${quarkusVersion}"
     }
 }
 

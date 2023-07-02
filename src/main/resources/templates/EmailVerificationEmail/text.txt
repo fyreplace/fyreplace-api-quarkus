@@ -1,0 +1,7 @@
+You can verify your email by using this code:
+{code}
+
+Or by clicking on this link:
+{link}
+
+The code and link will expire in 24 hours.

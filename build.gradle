@@ -3,6 +3,7 @@ plugins {
     id "io.quarkus"
     id "com.palantir.git-version" version "${gitPluginVersion}"
     id "com.diffplug.spotless" version "${spotlessPluginVersion}"
+    id "io.freefair.lombok" version "${lombokPluginVersion}"
 }
 
 group = "app.fyreplace"
@@ -14,16 +15,37 @@ repositories {
 }
 
 dependencies {
-    implementation(enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}"))
+    implementation(enforcedPlatform("io.quarkus:quarkus-bom:${quarkusVersion}"))
+    implementation(enforcedPlatform("io.quarkiverse.amazonservices:quarkus-amazon-services-bom:${quarkusAmazonVersion}"))
+    implementation(enforcedPlatform("org.apache.tika:tika-bom:${tikaVersion}"))
     implementation("io.quarkus:quarkus-arc")
-    implementation("io.quarkus:quarkus-resteasy-reactive")
+    implementation("io.quarkus:quarkus-config-yaml")
     implementation("io.quarkus:quarkus-hibernate-orm-panache")
+    implementation("io.quarkus:quarkus-hibernate-validator")
     implementation("io.quarkus:quarkus-jdbc-postgresql")
+    implementation("io.quarkus:quarkus-jdbc-h2")
+    implementation("io.quarkus:quarkus-mailer")
+    implementation("io.quarkus:quarkus-resteasy-reactive")
+    implementation("io.quarkus:quarkus-resteasy-reactive-jackson")
+    implementation("io.quarkus:quarkus-resteasy-reactive-qute")
+    implementation("io.quarkus:quarkus-scheduler")
+    implementation("io.quarkus:quarkus-security")
     implementation("io.quarkus:quarkus-smallrye-health")
+    implementation("io.quarkus:quarkus-smallrye-openapi")
+    implementation("io.quarkus:quarkus-smallrye-jwt")
+    implementation("io.quarkus:quarkus-smallrye-jwt-build")
+    implementation("io.quarkiverse.amazonservices:quarkus-amazon-s3")
+    implementation("org.jboss.logmanager:log4j2-jboss-logmanager")
+    implementation("org.apache.tika:tika-core")
+    implementation("org.apache.tika:tika-parsers-standard-package")
+    implementation("software.amazon.awssdk:url-connection-client")
     implementation(project(":quarkus-sentry:deployment"))
     implementation(project(":quarkus-sentry:runtime"))
     testImplementation("io.quarkus:quarkus-junit5")
+    testImplementation("io.quarkus:quarkus-test-h2")
+    testImplementation("io.quarkus:quarkus-test-security")
     testImplementation("io.rest-assured:rest-assured")
+    testImplementation("org.apiguardian:apiguardian-api:+")
 }
 
 java {
@@ -42,6 +64,17 @@ compileJava {
 
 compileTestJava {
     options.encoding = "UTF-8"
+}
+
+tasks.register("compileMjml") {
+    doLast {
+        fileTree("src/main/resources/templates").include("**/*.html.mjml").each { file ->
+            exec {
+                workingDir "$projectDir"
+                commandLine "npx", "mjml", "-r", file.getPath(), "-o", "${file.getPath().replace(".mjml", "")}"
+            }
+        }
+    }
 }
 
 spotless {
