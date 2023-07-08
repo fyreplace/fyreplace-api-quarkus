@@ -1,5 +1,6 @@
-package app.fyreplace.api.sentry;
+package app.fyreplace.api.sentry.recorders;
 
+import app.fyreplace.api.sentry.config.SentryConfig;
 import io.quarkus.runtime.RuntimeValue;
 import io.quarkus.runtime.annotations.Recorder;
 import io.sentry.Instrumenter;

@@ -1,5 +1,8 @@
-package app.fyreplace.api.sentry;
+package app.fyreplace.api.sentry.processors;
 
+import app.fyreplace.api.sentry.SentrySpanProcessorProducer;
+import app.fyreplace.api.sentry.config.SentryConfig;
+import app.fyreplace.api.sentry.recorders.SentryRecorder;
 import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.annotations.ExecutionTime;
