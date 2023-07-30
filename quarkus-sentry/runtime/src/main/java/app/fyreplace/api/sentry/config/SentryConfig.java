@@ -21,12 +21,6 @@ public final class SentryConfig {
     public Optional<String> environment = Optional.empty();
 
     /**
-     * Which code release the events will belong to.
-     */
-    @ConfigItem
-    public Optional<String> release = Optional.empty();
-
-    /**
      * Percentage of performance events sent to Sentry.
      */
     @ConfigItem(defaultValue = "0.0")

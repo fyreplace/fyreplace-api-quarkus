@@ -12,21 +12,26 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Handler;
 import java.util.logging.Level;
+import org.eclipse.microprofile.config.ConfigProvider;
 
 @Recorder
 public class SentryRecorder {
-    public RuntimeValue<Optional<Handler>> create(final SentryConfig config) {
-        if (config.dsn.isEmpty()) {
+    public RuntimeValue<Optional<Handler>> create(final SentryConfig sentryConfig) {
+        if (sentryConfig.dsn.isEmpty()) {
             return new RuntimeValue<>(Optional.empty());
         }
 
+        final var config = ConfigProvider.getConfig();
+        final var appName = config.getValue("quarkus.application.name", String.class);
+        final var appVersion = config.getValue("quarkus.application.version", String.class);
         final var options = new AtomicReference<SentryOptions>();
+
         Sentry.init(it -> {
-            it.setDsn(config.dsn.get());
-            config.environment.ifPresent(it::setEnvironment);
-            config.release.ifPresent(it::setRelease);
-            config.tracesSampleRate.ifPresent(it::setTracesSampleRate);
-            it.addInAppInclude("app.fyreplace");
+            sentryConfig.dsn.ifPresent(it::setDsn);
+            sentryConfig.environment.ifPresent(it::setEnvironment);
+            sentryConfig.tracesSampleRate.ifPresent(it::setTracesSampleRate);
+            it.setRelease(appName + '@' + appVersion);
+            it.addInAppInclude("app.fyreplace.api");
             it.setInstrumenter(Instrumenter.OTEL);
             it.addEventProcessor(new OpenTelemetryLinkErrorEventProcessor());
             options.set(it);
