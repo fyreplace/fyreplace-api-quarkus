@@ -45,4 +45,5 @@ jobs:
         env:
           MP_JWT_VERIFY_PUBLICKEY: ${{ vars.MP_JWT_VERIFY_PUBLICKEY }}
           SMALLRYE_JWT_SIGN_KEY: ${{ secrets.SMALLRYE_JWT_SIGN_KEY }}
-          APP_URL: ${{ vars.APP_URL }}
+          APP_URL: https://fyreplace.example.org
+          APP_STORAGE_LOCAL_PATH: /tmp/fyreplace/storage
