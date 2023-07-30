@@ -8,8 +8,9 @@ subprojects {
     version = gitVersion()
     dependencies {
         implementation(enforcedPlatform("io.quarkus:quarkus-bom:${quarkusVersion}"))
+        implementation(enforcedPlatform("io.sentry:sentry-bom:${sentryVersion}"))
         implementation("io.quarkus:quarkus-opentelemetry")
-        implementation("io.sentry:sentry-opentelemetry-core:${sentryVersion}")
+        implementation("io.sentry:sentry-opentelemetry-core")
         annotationProcessor("io.quarkus:quarkus-extension-processor")
     }
 }
