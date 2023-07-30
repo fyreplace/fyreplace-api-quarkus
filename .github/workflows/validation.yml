@@ -26,6 +26,7 @@ jobs:
   tests:
     name: Run tests
     runs-on: ubuntu-latest
+    environment: test
 
     steps:
       - name: Checkout repository
@@ -41,3 +42,7 @@ jobs:
         run: |
           ./gradlew compileMjml
           ./gradlew test
+        env:
+          MP_JWT_VERIFY_PUBLICKEY: ${{ vars.MP_JWT_VERIFY_PUBLICKEY }}
+          SMALLRYE_JWT_SIGN_KEY: ${{ secrets.SMALLRYE_JWT_SIGN_KEY }}
+          APP_URL: ${{ vars.APP_URL }}
