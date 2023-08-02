@@ -18,7 +18,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 @ApplicationScoped
 public class DataSeeder {
     @ConfigProperty(name = "app.use-example-data")
-    private boolean useExampleData;
+    boolean useExampleData;
 
     public void onStartup(@Observes final StartupEvent event) {
         if (shouldUseExampleData()) {

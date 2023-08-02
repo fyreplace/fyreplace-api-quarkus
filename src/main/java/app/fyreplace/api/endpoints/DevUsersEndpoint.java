@@ -12,7 +12,7 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 
 @Path("dev/users")
-public final class UsersDevEndpoint {
+public final class DevUsersEndpoint {
     @Inject
     JwtService jwtService;
 

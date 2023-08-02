@@ -37,6 +37,7 @@ app:
   url: ""
   name: Fyreplace
   use-example-data: false
+
   paging:
     size: 12
 
