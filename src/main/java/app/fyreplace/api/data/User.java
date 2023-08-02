@@ -14,14 +14,12 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
-import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-import org.hibernate.annotations.SourceType;
 
 @Entity
 @Table(name = "users")
-public class User extends EntityBase {
+public class User extends TimestampedEntityBase {
     public static final Set<String> forbiddenUsernames = new HashSet<String>(Arrays.asList(
             "admin",
             "admins",
@@ -97,10 +95,6 @@ public class User extends EntityBase {
 
     @JsonIgnore
     public Instant dateBanEnd;
-
-    @Column(nullable = false)
-    @CreationTimestamp(source = SourceType.DB)
-    public Instant dateCreated;
 
     public Set<String> getGroups() {
         return Arrays.stream(Rank.values())
