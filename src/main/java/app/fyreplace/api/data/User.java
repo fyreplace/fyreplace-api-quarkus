@@ -96,6 +96,7 @@ public class User extends TimestampedEntityBase {
     @JsonIgnore
     public Instant dateBanEnd;
 
+    @JsonIgnore
     public Set<String> getGroups() {
         return Arrays.stream(Rank.values())
                 .filter(group -> group.ordinal() <= rank.ordinal())
