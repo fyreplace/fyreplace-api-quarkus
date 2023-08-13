@@ -33,6 +33,9 @@ public final class TokensEndpoint {
     @Inject
     UserConnectionEmail userConnectionEmail;
 
+    @Context
+    SecurityContext context;
+
     @POST
     @Transactional
     @APIResponse(
@@ -62,7 +65,7 @@ public final class TokensEndpoint {
             responseCode = "200",
             content = @Content(mediaType = MediaType.TEXT_PLAIN, schema = @Schema(implementation = String.class)))
     @APIResponse(responseCode = "401")
-    public String retrieveNew(@Context final SecurityContext context) {
+    public String retrieveNew() {
         return jwtService.makeJwt(User.getFromSecurityContext(context));
     }
 

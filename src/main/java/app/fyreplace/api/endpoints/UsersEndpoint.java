@@ -55,6 +55,9 @@ public final class UsersEndpoint {
     @Inject
     UserActivationEmail userActivationEmail;
 
+    @Context
+    SecurityContext context;
+
     @POST
     @Transactional
     @APIResponse(
@@ -111,7 +114,7 @@ public final class UsersEndpoint {
     @APIResponse(responseCode = "401")
     @APIResponse(responseCode = "403")
     @APIResponse(responseCode = "404")
-    public Response createBlock(@Context final SecurityContext context, @PathParam("id") final UUID id) {
+    public Response createBlock(@PathParam("id") final UUID id) {
         final var source = User.getFromSecurityContext(context);
         final var target = User.<User>findById(id);
 
@@ -136,7 +139,7 @@ public final class UsersEndpoint {
     @APIResponse(responseCode = "204")
     @APIResponse(responseCode = "401")
     @APIResponse(responseCode = "404")
-    public void deleteBlock(@Context final SecurityContext context, @PathParam("id") final UUID id) {
+    public void deleteBlock(@PathParam("id") final UUID id) {
         final var source = User.getFromSecurityContext(context);
         final var target = User.<User>findById(id);
 
@@ -155,7 +158,7 @@ public final class UsersEndpoint {
     @APIResponse(responseCode = "401")
     @APIResponse(responseCode = "403")
     @APIResponse(responseCode = "404")
-    public Response ban(@Context final SecurityContext context, @PathParam("id") final UUID id) {
+    public Response ban(@PathParam("id") final UUID id) {
         final var user = User.<User>findById(id, LockModeType.PESSIMISTIC_WRITE);
 
         if (user == null) {
@@ -182,7 +185,7 @@ public final class UsersEndpoint {
             responseCode = "200",
             content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = User.class)))
     @APIResponse(responseCode = "401")
-    public User retrieveMe(@Context final SecurityContext context) {
+    public User retrieveMe() {
         return retrieve(User.getFromSecurityContext(context).id);
     }
 
@@ -196,7 +199,7 @@ public final class UsersEndpoint {
             content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = User.class)))
     @APIResponse(responseCode = "400")
     @APIResponse(responseCode = "401")
-    public String updateMeBio(@Context final SecurityContext context, @NotNull @Length(max = 3000) final String input) {
+    public String updateMeBio(@NotNull @Length(max = 3000) final String input) {
         final var user = User.getFromSecurityContext(context, LockModeType.PESSIMISTIC_READ);
         user.bio = input;
         user.persist();
@@ -214,7 +217,7 @@ public final class UsersEndpoint {
     @APIResponse(responseCode = "401")
     @APIResponse(responseCode = "413")
     @APIResponse(responseCode = "415")
-    public String updateMeAvatar(@Context final SecurityContext context, final byte[] input) throws IOException {
+    public String updateMeAvatar(final byte[] input) throws IOException {
         mimeTypeService.validate(input, KnownMimeTypes.IMAGE);
         final var user = User.getFromSecurityContext(context, LockModeType.PESSIMISTIC_WRITE);
 
@@ -234,7 +237,7 @@ public final class UsersEndpoint {
     @Transactional
     @APIResponse(responseCode = "204")
     @APIResponse(responseCode = "401")
-    public void deleteMeAvatar(@Context final SecurityContext context) {
+    public void deleteMeAvatar() {
         final var user = User.getFromSecurityContext(context, LockModeType.PESSIMISTIC_WRITE);
 
         if (user.avatar != null) {
@@ -250,7 +253,7 @@ public final class UsersEndpoint {
     @Transactional
     @APIResponse(responseCode = "204")
     @APIResponse(responseCode = "401")
-    public void deleteMe(@Context final SecurityContext context) {
+    public void deleteMe() {
         User.delete("username", context.getUserPrincipal().getName());
     }
 
@@ -259,7 +262,7 @@ public final class UsersEndpoint {
     @Authenticated
     @APIResponse(responseCode = "200")
     @APIResponse(responseCode = "401")
-    public List<User.Profile> listBlocked(@Context final SecurityContext context, @QueryParam("page") final int page) {
+    public List<User.Profile> listBlocked(@QueryParam("page") final int page) {
         return Block.<Block>find("source", Sort.by("id"), User.getFromSecurityContext(context))
                 .page(page, pagingSize)
                 .stream()

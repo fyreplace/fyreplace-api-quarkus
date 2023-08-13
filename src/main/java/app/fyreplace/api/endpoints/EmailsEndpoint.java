@@ -42,11 +42,14 @@ public final class EmailsEndpoint {
     @Inject
     EmailVerificationEmail emailVerificationEmail;
 
+    @Context
+    SecurityContext context;
+
     @GET
     @Authenticated
     @APIResponse(responseCode = "200")
     @APIResponse(responseCode = "401")
-    public List<Email> list(@Context final SecurityContext context, @QueryParam("page") final int page) {
+    public List<Email> list(@QueryParam("page") final int page) {
         final var user = User.getFromSecurityContext(context);
         return Email.find("user", Sort.by("email"), user).page(page, pagingSize).list();
     }
@@ -61,7 +64,7 @@ public final class EmailsEndpoint {
     @APIResponse(responseCode = "400")
     @APIResponse(responseCode = "401")
     @APIResponse(responseCode = "409")
-    public Response create(@Context final SecurityContext context, @Valid @NotNull final EmailCreation input) {
+    public Response create(@Valid @NotNull final EmailCreation input) {
         if (Email.count("email", input.email()) > 0) {
             throw new ConflictException("email_taken");
         }
@@ -82,7 +85,7 @@ public final class EmailsEndpoint {
     @APIResponse(responseCode = "401")
     @APIResponse(responseCode = "403")
     @APIResponse(responseCode = "404")
-    public void delete(@Context final SecurityContext context, @PathParam("id") final UUID id) {
+    public void delete(@PathParam("id") final UUID id) {
         final var user = User.getFromSecurityContext(context);
         final var email = Email.<Email>find("user = ?1 and id = ?2", user, id).firstResult();
 
@@ -102,7 +105,7 @@ public final class EmailsEndpoint {
     @APIResponse(responseCode = "200")
     @APIResponse(responseCode = "403")
     @APIResponse(responseCode = "404")
-    public Response setMain(@Context final SecurityContext context, @PathParam("id") final UUID id) {
+    public Response setMain(@PathParam("id") final UUID id) {
         final var user = User.getFromSecurityContext(context);
         final var email = Email.<Email>find("user = ?1 and id = ?2", user, id).firstResult();
 
@@ -125,7 +128,7 @@ public final class EmailsEndpoint {
     @APIResponse(responseCode = "400")
     @APIResponse(responseCode = "401")
     @APIResponse(responseCode = "404")
-    public Response activate(@Context final SecurityContext context, @NotNull @Valid final EmailActivation input) {
+    public Response activate(@NotNull @Valid final EmailActivation input) {
         var email = Email.<Email>find("email", input.email()).firstResult();
         final var randomCode = RandomCode.<RandomCode>find("email = ?1 and code = ?2", email, input.code())
                 .firstResult();
