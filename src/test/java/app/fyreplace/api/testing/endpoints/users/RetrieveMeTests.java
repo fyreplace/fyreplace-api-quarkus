@@ -26,12 +26,12 @@ public final class RetrieveMeTests extends TransactionalTests {
                 .contentType(MediaType.APPLICATION_JSON)
                 .statusCode(200)
                 .body("id", equalTo(user.id.toString()))
+                .body("dateCreated", notNullValue())
                 .body("username", equalTo(user.username))
                 .body("rank", equalTo(User.Rank.CITIZEN.name()))
                 .body("avatar", nullValue())
                 .body("bio", equalTo(""))
-                .body("isBanned", equalTo(false))
-                .body("dateCreated", notNullValue());
+                .body("isBanned", equalTo(false));
     }
 
     @Test

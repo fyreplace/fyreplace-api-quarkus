@@ -90,10 +90,10 @@ public final class TokensEndpoint {
 
         final var user = User.findByUsername(identifier);
 
-        if (user != null) {
+        if (user == null) {
+            throw new NotFoundException();
+        } else {
             return user.mainEmail;
         }
-
-        throw new NotFoundException();
     }
 }

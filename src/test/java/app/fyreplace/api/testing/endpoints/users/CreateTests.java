@@ -34,13 +34,13 @@ public final class CreateTests extends TransactionalTests {
                 .then()
                 .contentType(MediaType.APPLICATION_JSON)
                 .statusCode(201)
+                .body("dateCreated", notNullValue())
                 .body("username", equalTo("new_user"))
                 .body("rank", equalTo(User.Rank.CITIZEN.name()))
                 .body("isBanned", equalTo(false))
                 .body("avatar", nullValue())
                 .body("bio", equalTo(""))
-                .body("isBanned", equalTo(false))
-                .body("dateCreated", notNullValue());
+                .body("isBanned", equalTo(false));
         assertEquals(userCount + 1, User.count());
         assertEquals(emailCount + 1, Email.count());
         final var user = User.findByUsername("new_user");

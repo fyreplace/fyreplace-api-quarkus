@@ -85,11 +85,7 @@ public final class UpdateMeAvatarTests extends TransactionalTests {
     public void updateMeAvatarWithEmptyBody() {
         final var remoteFileCount = StoredFile.count();
 
-        given().contentType(ContentType.BINARY)
-                .body(new byte[0])
-                .put("me/avatar")
-                .then()
-                .statusCode(415);
+        given().contentType(ContentType.BINARY).put("me/avatar").then().statusCode(415);
 
         assertEquals(remoteFileCount, StoredFile.count());
         final var user = User.findByUsername("user_0");
