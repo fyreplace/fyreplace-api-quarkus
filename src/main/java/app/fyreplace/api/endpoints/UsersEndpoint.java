@@ -196,7 +196,7 @@ public final class UsersEndpoint {
     @Consumes(MediaType.TEXT_PLAIN)
     @APIResponse(
             responseCode = "200",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = User.class)))
+            content = @Content(mediaType = MediaType.TEXT_PLAIN, schema = @Schema(implementation = String.class)))
     @APIResponse(responseCode = "400")
     @APIResponse(responseCode = "401")
     public String updateMeBio(@NotNull @Length(max = 3000) final String input) {
@@ -213,7 +213,7 @@ public final class UsersEndpoint {
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
     @APIResponse(
             responseCode = "200",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = User.class)))
+            content = @Content(mediaType = MediaType.TEXT_PLAIN, schema = @Schema(implementation = String.class)))
     @APIResponse(responseCode = "401")
     @APIResponse(responseCode = "413")
     @APIResponse(responseCode = "415")
