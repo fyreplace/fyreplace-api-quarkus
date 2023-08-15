@@ -17,15 +17,15 @@ import org.junit.jupiter.api.Test;
 
 @QuarkusTest
 @TestHTTPEndpoint(UsersEndpoint.class)
-public final class BanTests extends TransactionalTests {
+public final class BannedTests extends TransactionalTests {
     @Test
     @TestSecurity(user = "user_0", roles = "ADMINISTRATOR")
     @Transactional
     public void banWithAdministrator() {
         final var user = User.findByUsername("user_1");
-        given().put(user.id + "/isBanned").then().statusCode(200);
+        given().put(user.id + "/banned").then().statusCode(200);
         user.refresh();
-        assertTrue(user.isBanned);
+        assertTrue(user.banned);
         assertEquals(User.BanCount.ONCE, user.banCount);
     }
 
@@ -34,9 +34,9 @@ public final class BanTests extends TransactionalTests {
     @Transactional
     public void banWithModerator() {
         final var user = User.findByUsername("user_1");
-        given().put(user.id + "/isBanned").then().statusCode(200);
+        given().put(user.id + "/banned").then().statusCode(200);
         user.refresh();
-        assertTrue(user.isBanned);
+        assertTrue(user.banned);
         assertEquals(User.BanCount.ONCE, user.banCount);
     }
 
@@ -45,9 +45,9 @@ public final class BanTests extends TransactionalTests {
     @Transactional
     public void banWithUser() {
         final var user = User.findByUsername("user_1");
-        given().put(user.id + "/isBanned").then().statusCode(403);
+        given().put(user.id + "/banned").then().statusCode(403);
         user.refresh();
-        assertFalse(user.isBanned);
+        assertFalse(user.banned);
         assertEquals(User.BanCount.NEVER, user.banCount);
     }
 
@@ -55,9 +55,9 @@ public final class BanTests extends TransactionalTests {
     @Transactional
     public void banUnauthenticated() {
         final var user = User.findByUsername("user_1");
-        given().put(user.id + "/isBanned").then().statusCode(401);
+        given().put(user.id + "/banned").then().statusCode(401);
         user.refresh();
-        assertFalse(user.isBanned);
+        assertFalse(user.banned);
         assertEquals(User.BanCount.NEVER, user.banCount);
     }
 
@@ -66,9 +66,9 @@ public final class BanTests extends TransactionalTests {
     @Transactional
     public void banTwiceWithAdministrator() {
         final var user = User.findByUsername("user_2");
-        given().put(user.id + "/isBanned").then().statusCode(200);
+        given().put(user.id + "/banned").then().statusCode(200);
         user.refresh();
-        assertTrue(user.isBanned);
+        assertTrue(user.banned);
         assertEquals(User.BanCount.ONE_TOO_MANY, user.banCount);
     }
 
@@ -77,9 +77,9 @@ public final class BanTests extends TransactionalTests {
     @Transactional
     public void banTwiceWithModerator() {
         final var user = User.findByUsername("user_2");
-        given().put(user.id + "/isBanned").then().statusCode(200);
+        given().put(user.id + "/banned").then().statusCode(200);
         user.refresh();
-        assertTrue(user.isBanned);
+        assertTrue(user.banned);
         assertEquals(User.BanCount.ONE_TOO_MANY, user.banCount);
     }
 
@@ -88,9 +88,9 @@ public final class BanTests extends TransactionalTests {
     @Transactional
     public void banTwiceWithUser() {
         final var user = User.findByUsername("user_2");
-        given().put(user.id + "/isBanned").then().statusCode(403);
+        given().put(user.id + "/banned").then().statusCode(403);
         user.refresh();
-        assertFalse(user.isBanned);
+        assertFalse(user.banned);
         assertEquals(User.BanCount.ONCE, user.banCount);
     }
 
@@ -98,9 +98,9 @@ public final class BanTests extends TransactionalTests {
     @Transactional
     public void banTwiceUnauthenticated() {
         final var user = User.findByUsername("user_2");
-        given().put(user.id + "/isBanned").then().statusCode(401);
+        given().put(user.id + "/banned").then().statusCode(401);
         user.refresh();
-        assertFalse(user.isBanned);
+        assertFalse(user.banned);
         assertEquals(User.BanCount.ONCE, user.banCount);
     }
 
@@ -109,9 +109,9 @@ public final class BanTests extends TransactionalTests {
     @Transactional
     public void banAlreadyBanned() {
         final var user = User.findByUsername("user_3");
-        given().put(user.id + "/isBanned").then().statusCode(200);
+        given().put(user.id + "/banned").then().statusCode(200);
         user.refresh();
-        assertTrue(user.isBanned);
+        assertTrue(user.banned);
         assertEquals(User.BanCount.ONCE, user.banCount);
     }
 
@@ -121,12 +121,12 @@ public final class BanTests extends TransactionalTests {
     public void beforeEach() {
         super.beforeEach();
         var user = User.findByUsername("user_2");
-        user.isBanned = false;
+        user.banned = false;
         user.banCount = User.BanCount.ONCE;
         user.persist();
 
         user = User.findByUsername("user_3");
-        user.isBanned = true;
+        user.banned = true;
         user.banCount = User.BanCount.ONCE;
         user.persist();
     }

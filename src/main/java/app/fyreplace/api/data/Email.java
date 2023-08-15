@@ -21,7 +21,7 @@ public class Email extends EntityBase {
     public String email;
 
     @Column(nullable = false)
-    public boolean isVerified = false;
+    public boolean verified = false;
 
     @JsonProperty("isMain")
     public boolean isMain() {

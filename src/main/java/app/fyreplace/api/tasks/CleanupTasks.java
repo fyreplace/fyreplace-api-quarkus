@@ -13,7 +13,7 @@ public final class CleanupTasks {
     @Scheduled(cron = "0 0 * * * ?")
     @Transactional
     public void removeOldInactiveUsers() {
-        User.delete("isActive = false and dateCreated < ?1", oneDayAgo());
+        User.delete("active = false and dateCreated < ?1", oneDayAgo());
     }
 
     @Scheduled(cron = "0 5 * * * ?")

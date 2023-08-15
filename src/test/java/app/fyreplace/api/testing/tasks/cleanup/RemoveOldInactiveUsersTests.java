@@ -21,8 +21,8 @@ public final class RemoveOldInactiveUsersTests extends TransactionalTests {
     @Transactional
     public void removeOldInactiveUsers() {
         final var totalUserCount = User.count();
-        final var inactiveUserCount = User.count("isActive = false");
-        User.update("dateCreated = ?1 where isActive = false", Instant.now().minus(Duration.ofDays(2)));
+        final var inactiveUserCount = User.count("active = false");
+        User.update("dateCreated = ?1 where active = false", Instant.now().minus(Duration.ofDays(2)));
         cleanupTasks.removeOldInactiveUsers();
         assertEquals(totalUserCount - inactiveUserCount, User.count());
     }

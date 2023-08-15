@@ -18,4 +18,9 @@ public final class ExceptionMappers {
     public Response handleUnsupportedMediaTypeException(final UnsupportedMediaTypeException exception) {
         return Responses.makeFrom(exception);
     }
+
+    @ServerExceptionMapper
+    public Response handleNumberFormatException(final NumberFormatException exception) {
+        return Response.status(Response.Status.BAD_REQUEST).build();
+    }
 }

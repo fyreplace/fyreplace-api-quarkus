@@ -48,7 +48,7 @@ public final class DeleteTests extends TransactionalTests {
     @TestSecurity(user = "user_0")
     public void deleteNonExistentEmail() {
         final var emailCount = Email.count();
-        given().delete("nope").then().statusCode(404);
+        given().delete(fakeId).then().statusCode(404);
         assertEquals(emailCount, Email.count());
     }
 
@@ -60,7 +60,7 @@ public final class DeleteTests extends TransactionalTests {
         newEmail = new Email();
         newEmail.user = User.findByUsername("user_0");
         newEmail.email = "new_email@example.org";
-        newEmail.isVerified = true;
+        newEmail.verified = true;
         newEmail.persist();
     }
 }

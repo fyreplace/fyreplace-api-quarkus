@@ -112,7 +112,7 @@ public final class EmailsEndpoint {
 
         if (email == null) {
             throw new NotFoundException();
-        } else if (!email.isVerified) {
+        } else if (!email.verified) {
             throw new ForbiddenException("email_not_verified");
         }
 
@@ -146,7 +146,7 @@ public final class EmailsEndpoint {
             throw new NotFoundException();
         }
 
-        randomCode.email.isVerified = true;
+        randomCode.email.verified = true;
         randomCode.email.persist();
         randomCode.delete();
         return Response.ok().build();

@@ -31,7 +31,7 @@ public final class RetrieveMeTests extends TransactionalTests {
                 .body("rank", equalTo(User.Rank.CITIZEN.name()))
                 .body("avatar", nullValue())
                 .body("bio", equalTo(""))
-                .body("isBanned", equalTo(false));
+                .body("banned", equalTo(false));
     }
 
     @Test

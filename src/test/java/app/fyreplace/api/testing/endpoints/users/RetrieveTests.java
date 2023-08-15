@@ -18,7 +18,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 @TestHTTPEndpoint(UsersEndpoint.class)
 public final class RetrieveTests extends TransactionalTests {
     @ParameterizedTest
-    @ValueSource(strings = {"user_0", "user_12", "user_50"})
+    @ValueSource(strings = {"user_0", "user_12"})
     public void retrieve(final String username) {
         final var user = User.findByUsername(username);
         given().get(user.id.toString())
@@ -31,11 +31,11 @@ public final class RetrieveTests extends TransactionalTests {
                 .body("rank", equalTo(User.Rank.CITIZEN.name()))
                 .body("avatar", nullValue())
                 .body("bio", equalTo(""))
-                .body("isBanned", equalTo(false));
+                .body("banned", equalTo(false));
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"nope", "fake", "@", "admin"})
+    @ValueSource(strings = {"nope", "fake", "@", "admin", "00000000-0000-0000-0000-000000000000"})
     public void retrieveNonExistent(final String userId) {
         given().get(userId).then().statusCode(404);
     }

@@ -18,6 +18,8 @@ public abstract class TransactionalTests {
     @Inject
     MockMailbox mailbox;
 
+    protected static final String fakeId = "00000000-0000-0000-0000-000000000000";
+
     @BeforeEach
     public void beforeEach() {
         seeder.insertData();

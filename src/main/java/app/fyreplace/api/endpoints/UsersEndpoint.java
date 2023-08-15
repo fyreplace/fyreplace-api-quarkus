@@ -154,19 +154,19 @@ public final class UsersEndpoint {
     }
 
     @PUT
-    @Path("{id}/isBanned")
+    @Path("{id}/banned")
     @RolesAllowed({"ADMINISTRATOR", "MODERATOR"})
     @Transactional
     @APIResponse(responseCode = "200")
     @APIResponse(responseCode = "401")
     @APIResponse(responseCode = "403")
     @APIResponse(responseCode = "404")
-    public Response ban(@PathParam("id") final UUID id) {
+    public Response updateBanned(@PathParam("id") final UUID id) {
         final var user = User.<User>findById(id, LockModeType.PESSIMISTIC_WRITE);
 
         if (user == null) {
             throw new NotFoundException();
-        } else if (!user.isBanned) {
+        } else if (!user.banned) {
             if (user.banCount == User.BanCount.NEVER) {
                 user.dateBanEnd = Instant.now().plus(Duration.ofDays(7));
                 user.banCount = User.BanCount.ONCE;
@@ -174,7 +174,7 @@ public final class UsersEndpoint {
                 user.banCount = User.BanCount.ONE_TOO_MANY;
             }
 
-            user.isBanned = true;
+            user.banned = true;
             user.persist();
         }
 

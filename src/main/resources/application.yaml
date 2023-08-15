@@ -55,6 +55,10 @@ app:
       bucket: ""
       custom-domain: ""
 
+  posts:
+    max-chapter-count: 10
+    starting-life: 4
+
 # Dev profile
 
 "%dev":

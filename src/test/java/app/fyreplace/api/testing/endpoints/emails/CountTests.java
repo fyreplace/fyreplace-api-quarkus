@@ -38,7 +38,7 @@ public class CountTests extends TransactionalTests {
             final var email = new Email();
             email.user = user;
             email.email = user.username + "_" + i + "@example.com";
-            email.isVerified = i % 5 == 0;
+            email.verified = i % 5 == 0;
             email.persist();
         });
     }

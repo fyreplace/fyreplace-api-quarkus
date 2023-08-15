@@ -47,7 +47,7 @@ public final class CreateTests extends TransactionalTests {
     @Transactional
     public void createWithNewUsername() {
         final var randomCodeCount = RandomCode.count();
-        assertFalse(newUserRandomCode.email.isVerified);
+        assertFalse(newUserRandomCode.email.verified);
         given().contentType(ContentType.JSON)
                 .body(new TokenCreation(newUserRandomCode.email.user.username, newUserRandomCode.code))
                 .post()
@@ -57,7 +57,7 @@ public final class CreateTests extends TransactionalTests {
                 .body(isA(String.class));
         assertEquals(randomCodeCount - 1, RandomCode.count());
         final var email = Email.<Email>find("id", newUserRandomCode.email.id).firstResult();
-        assertTrue(email.isVerified);
+        assertTrue(email.verified);
     }
 
     @Test
@@ -76,7 +76,7 @@ public final class CreateTests extends TransactionalTests {
     @Test
     public void createWithNewEmail() {
         final var randomCodeCount = RandomCode.count();
-        assertFalse(newUserRandomCode.email.isVerified);
+        assertFalse(newUserRandomCode.email.verified);
         given().contentType(ContentType.JSON)
                 .body(new TokenCreation(newUserRandomCode.email.email, newUserRandomCode.code))
                 .post()
@@ -86,7 +86,7 @@ public final class CreateTests extends TransactionalTests {
                 .body(isA(String.class));
         assertEquals(randomCodeCount - 1, RandomCode.count());
         final var email = Email.<Email>find("id", newUserRandomCode.email.id).firstResult();
-        assertTrue(email.isVerified);
+        assertTrue(email.verified);
     }
 
     @Test

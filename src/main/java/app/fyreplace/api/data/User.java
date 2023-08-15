@@ -2,6 +2,7 @@ package app.fyreplace.api.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import io.quarkus.panache.common.Sort;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -73,7 +74,7 @@ public class User extends TimestampedEntityBase {
 
     @Column(nullable = false)
     @JsonIgnore
-    public boolean isActive = false;
+    public boolean active = false;
 
     @Column(nullable = false)
     public Rank rank = Rank.CITIZEN;
@@ -88,7 +89,7 @@ public class User extends TimestampedEntityBase {
     public String bio = "";
 
     @Column(nullable = false)
-    public boolean isBanned = false;
+    public boolean banned = false;
 
     @Column(nullable = false)
     @JsonIgnore
@@ -117,22 +118,51 @@ public class User extends TimestampedEntityBase {
         }
     }
 
-    public static User findByUsername(final String username) {
+    public Subscription subscribeTo(final Post post) {
+        final var existing = Subscription.<Subscription>find("user = ?1 and post = ?2", this, post)
+                .firstResult();
+
+        if (existing != null) {
+            return existing;
+        }
+
+        final var subscription = new Subscription();
+        subscription.user = this;
+        subscription.post = post;
+        subscription.lastCommentSeen =
+                Comment.find("post", Sort.descending("dateCreated"), post).firstResult();
+        subscription.persist();
+        return subscription;
+    }
+
+    public void unsubscribeFrom(final Post post) {
+        Subscription.delete("user = ?1 and post = ?2", this, post);
+    }
+
+    public static @Nullable User findByUsername(final String username) {
         return findByUsername(username, null);
     }
 
-    public static User findByUsername(final String username, @Nullable final LockModeType lock) {
+    @SuppressWarnings("DataFlowIssue")
+    public static @Nullable User findByUsername(final String username, @Nullable final LockModeType lock) {
         return User.<User>find("username", username).withLock(lock).firstResult();
     }
 
-    public static User getFromSecurityContext(final SecurityContext context) {
-        return getFromSecurityContext(context, null);
+    public static @Nullable User getFromSecurityContext(final SecurityContext context) {
+        return getFromSecurityContext(context, null, true);
     }
 
-    public static User getFromSecurityContext(final SecurityContext context, final LockModeType lock) {
-        final var user = findByUsername(context.getUserPrincipal().getName(), lock);
+    public static @Nullable User getFromSecurityContext(
+            final SecurityContext context, @Nullable final LockModeType lock) {
+        return getFromSecurityContext(context, lock, true);
+    }
 
-        if (user == null) {
+    public static @Nullable User getFromSecurityContext(
+            final SecurityContext context, @Nullable final LockModeType lock, final boolean required) {
+        final var principal = context.getUserPrincipal();
+        final var user = findByUsername(principal != null ? principal.getName() : "", lock);
+
+        if (user == null && required) {
             throw new NotAuthorizedException("Bearer");
         }
 

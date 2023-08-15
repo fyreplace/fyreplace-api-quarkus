@@ -30,7 +30,7 @@ public final class CreateTests extends TransactionalTests {
                 .contentType(ContentType.JSON)
                 .statusCode(201)
                 .body("email", equalTo(email))
-                .body("isVerified", equalTo(false))
+                .body("verified", equalTo(false))
                 .body("isMain", equalTo(false));
         assertEquals(emailCount + 1, Email.count());
     }

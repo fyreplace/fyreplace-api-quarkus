@@ -6,6 +6,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import java.io.File;
 import java.io.IOException;
 import org.apache.tika.Tika;
+import org.apache.tika.metadata.Metadata;
 
 @ApplicationScoped
 public final class MimeTypeService {
@@ -16,5 +17,12 @@ public final class MimeTypeService {
         if (mimeType == null || !types.types.contains(mimeType)) {
             throw new UnsupportedMediaTypeException("invalid_media_type");
         }
+    }
+
+    public Metadata getMetadata(final File file) throws IOException {
+        final var tika = new Tika();
+        final var metadata = new Metadata();
+        tika.parse(file, metadata);
+        return metadata;
     }
 }

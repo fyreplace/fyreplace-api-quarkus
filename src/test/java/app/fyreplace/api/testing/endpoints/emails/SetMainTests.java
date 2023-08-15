@@ -8,6 +8,7 @@ import app.fyreplace.api.data.Email;
 import app.fyreplace.api.data.User;
 import app.fyreplace.api.endpoints.EmailsEndpoint;
 import app.fyreplace.api.testing.TransactionalTests;
+import io.quarkus.narayana.jta.QuarkusTransaction;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
@@ -19,7 +20,6 @@ import org.junit.jupiter.api.Test;
 @TestHTTPEndpoint(EmailsEndpoint.class)
 public final class SetMainTests extends TransactionalTests {
     private Email secondaryEmail;
-    private Email unverifiedEmail;
 
     @Test
     @TestSecurity(user = "user_0")
@@ -43,7 +43,8 @@ public final class SetMainTests extends TransactionalTests {
     @Test
     @TestSecurity(user = "user_0")
     public void setMainWithUnverifiedEmail() {
-        given().post(unverifiedEmail.id + "/main").then().statusCode(403);
+        QuarkusTransaction.requiringNew().run(() -> Email.update("verified = false where id = ?1", secondaryEmail.id));
+        given().post(secondaryEmail.id + "/main").then().statusCode(403);
         secondaryEmail = Email.findById(secondaryEmail.id);
         assertFalse(secondaryEmail.isMain());
     }
@@ -60,7 +61,7 @@ public final class SetMainTests extends TransactionalTests {
     @Test
     @TestSecurity(user = "user_0")
     public void setMainWithNonExistentEmail() {
-        given().post("invalid" + "/main").then().statusCode(404);
+        given().post(fakeId + "/main").then().statusCode(404);
         secondaryEmail = Email.findById(secondaryEmail.id);
         assertFalse(secondaryEmail.isMain());
     }
@@ -73,12 +74,7 @@ public final class SetMainTests extends TransactionalTests {
         secondaryEmail = new Email();
         secondaryEmail.user = User.findByUsername("user_0");
         secondaryEmail.email = "new_email@example.org";
-        secondaryEmail.isVerified = true;
+        secondaryEmail.verified = true;
         secondaryEmail.persist();
-        unverifiedEmail = new Email();
-        unverifiedEmail.user = secondaryEmail.user;
-        unverifiedEmail.email = "unverified@example.org";
-        unverifiedEmail.isVerified = false;
-        unverifiedEmail.persist();
     }
 }
