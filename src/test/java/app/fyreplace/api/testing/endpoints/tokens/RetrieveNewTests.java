@@ -8,7 +8,7 @@ import app.fyreplace.api.testing.TransactionalTests;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
-import jakarta.ws.rs.core.MediaType;
+import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
 
 @QuarkusTest
@@ -17,11 +17,7 @@ public final class RetrieveNewTests extends TransactionalTests {
     @Test
     @TestSecurity(user = "user_0")
     public void retrieveNew() {
-        given().get("new")
-                .then()
-                .statusCode(200)
-                .contentType(MediaType.TEXT_PLAIN)
-                .body(isA(String.class));
+        given().get("new").then().statusCode(200).contentType(ContentType.TEXT).body(isA(String.class));
     }
 
     @Test

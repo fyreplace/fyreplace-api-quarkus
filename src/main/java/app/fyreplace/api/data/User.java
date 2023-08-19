@@ -110,7 +110,7 @@ public class User extends TimestampedEntityBase {
     }
 
     @PostRemove
-    final void preDestroy() {
+    final void postRemove() {
         if (avatar != null) {
             avatar.delete();
         }

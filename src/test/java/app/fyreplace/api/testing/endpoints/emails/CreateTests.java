@@ -12,7 +12,7 @@ import app.fyreplace.api.testing.TransactionalTests;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
-import jakarta.ws.rs.core.MediaType;
+import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
 
 @QuarkusTest
@@ -23,11 +23,11 @@ public final class CreateTests extends TransactionalTests {
     public void create() {
         final var email = "some_new_email@example.org";
         final var emailCount = Email.count();
-        given().contentType(MediaType.APPLICATION_JSON)
+        given().contentType(ContentType.JSON)
                 .body(new EmailCreation(email))
                 .post()
                 .then()
-                .contentType(MediaType.APPLICATION_JSON)
+                .contentType(ContentType.JSON)
                 .statusCode(201)
                 .body("email", equalTo(email))
                 .body("isVerified", equalTo(false))
@@ -39,11 +39,11 @@ public final class CreateTests extends TransactionalTests {
     @TestSecurity(user = "user_0")
     public void createWithInvalidEmail() {
         final var emailCount = Email.count();
-        given().contentType(MediaType.APPLICATION_JSON)
+        given().contentType(ContentType.JSON)
                 .body(new EmailCreation("invalid"))
                 .post()
                 .then()
-                .contentType(MediaType.APPLICATION_JSON)
+                .contentType(ContentType.JSON)
                 .statusCode(400);
         assertEquals(emailCount, Email.count());
     }
@@ -52,11 +52,11 @@ public final class CreateTests extends TransactionalTests {
     @TestSecurity(user = "user_0")
     public void createWithEmptyEmail() {
         final var emailCount = Email.count();
-        given().contentType(MediaType.APPLICATION_JSON)
+        given().contentType(ContentType.JSON)
                 .body(new EmailCreation(""))
                 .post()
                 .then()
-                .contentType(MediaType.APPLICATION_JSON)
+                .contentType(ContentType.JSON)
                 .statusCode(400);
         assertEquals(emailCount, Email.count());
     }
@@ -66,11 +66,11 @@ public final class CreateTests extends TransactionalTests {
     public void createWithExistingEmail() {
         final var existingUser = User.findByUsername("user_1");
         final var emailCount = Email.count();
-        given().contentType(MediaType.APPLICATION_JSON)
+        given().contentType(ContentType.JSON)
                 .body(new EmailCreation(existingUser.mainEmail.email))
                 .post()
                 .then()
-                .contentType(MediaType.APPLICATION_JSON)
+                .contentType(ContentType.JSON)
                 .statusCode(409);
         assertEquals(emailCount, Email.count());
     }
@@ -79,10 +79,10 @@ public final class CreateTests extends TransactionalTests {
     @TestSecurity(user = "user_0")
     public void createWithEmptyInput() {
         final var emailCount = Email.count();
-        given().contentType(MediaType.APPLICATION_JSON)
+        given().contentType(ContentType.JSON)
                 .post()
                 .then()
-                .contentType(MediaType.APPLICATION_JSON)
+                .contentType(ContentType.JSON)
                 .statusCode(400);
         assertEquals(emailCount, Email.count());
     }

@@ -11,7 +11,7 @@ import app.fyreplace.api.testing.TransactionalTests;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
-import jakarta.ws.rs.core.MediaType;
+import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
 
 @QuarkusTest
@@ -23,7 +23,7 @@ public final class RetrieveMeTests extends TransactionalTests {
         final var user = User.findByUsername("user_10");
         given().get("/me")
                 .then()
-                .contentType(MediaType.APPLICATION_JSON)
+                .contentType(ContentType.JSON)
                 .statusCode(200)
                 .body("id", equalTo(user.id.toString()))
                 .body("dateCreated", notNullValue())

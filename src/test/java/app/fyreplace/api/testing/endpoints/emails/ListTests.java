@@ -12,8 +12,8 @@ import app.fyreplace.api.testing.TransactionalTests;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
+import io.restassured.http.ContentType;
 import jakarta.transaction.Transactional;
-import jakarta.ws.rs.core.MediaType;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,7 +32,7 @@ public final class ListTests extends TransactionalTests {
                 .get()
                 .then()
                 .statusCode(200)
-                .contentType(MediaType.APPLICATION_JSON)
+                .contentType(ContentType.JSON)
                 .body("size()", equalTo(pagingSize));
 
         range(0, pagingSize)
@@ -50,7 +50,7 @@ public final class ListTests extends TransactionalTests {
                 .get()
                 .then()
                 .statusCode(200)
-                .contentType(MediaType.APPLICATION_JSON)
+                .contentType(ContentType.JSON)
                 .body(equalTo("[]"));
     }
 

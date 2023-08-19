@@ -13,9 +13,9 @@ import app.fyreplace.api.testing.TransactionalTests;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
+import io.restassured.http.ContentType;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-import jakarta.ws.rs.core.MediaType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -32,7 +32,7 @@ public final class ActivateTests extends TransactionalTests {
     @Test
     @TestSecurity(user = "user_0")
     public void activate() {
-        given().contentType(MediaType.APPLICATION_JSON)
+        given().contentType(ContentType.JSON)
                 .body(new EmailActivation(newEmail.email, randomCode.code))
                 .post("activation")
                 .then()
@@ -43,7 +43,7 @@ public final class ActivateTests extends TransactionalTests {
     @Test
     @TestSecurity(user = "user_0")
     public void activateWithInvalidEmail() {
-        given().contentType(MediaType.APPLICATION_JSON)
+        given().contentType(ContentType.JSON)
                 .body(new EmailActivation("invalid", randomCode.code))
                 .post("activation")
                 .then()
@@ -55,7 +55,7 @@ public final class ActivateTests extends TransactionalTests {
     @TestSecurity(user = "user_0")
     public void activateWithOtherEmail() {
         final var otherUser = User.findByUsername("user_1");
-        given().contentType(MediaType.APPLICATION_JSON)
+        given().contentType(ContentType.JSON)
                 .body(new EmailActivation(otherUser.mainEmail.email, randomCode.code))
                 .post("activation")
                 .then()
@@ -66,7 +66,7 @@ public final class ActivateTests extends TransactionalTests {
     @Test
     @TestSecurity(user = "user_0")
     public void activateWithInvalidCode() {
-        given().contentType(MediaType.APPLICATION_JSON)
+        given().contentType(ContentType.JSON)
                 .body(new EmailActivation(newEmail.email, "invalid"))
                 .post("activation")
                 .then()
@@ -77,10 +77,7 @@ public final class ActivateTests extends TransactionalTests {
     @Test
     @TestSecurity(user = "user_0")
     public void activateWithEmptyInput() {
-        given().contentType(MediaType.APPLICATION_JSON)
-                .post("activation")
-                .then()
-                .statusCode(400);
+        given().contentType(ContentType.JSON).post("activation").then().statusCode(400);
         assertEquals(1, RandomCode.count("id", randomCode.id));
     }
 

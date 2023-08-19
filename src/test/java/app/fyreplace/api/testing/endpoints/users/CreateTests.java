@@ -18,7 +18,6 @@ import app.fyreplace.api.testing.TransactionalTests;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
-import jakarta.ws.rs.core.MediaType;
 import org.junit.jupiter.api.Test;
 
 @QuarkusTest
@@ -32,7 +31,7 @@ public final class CreateTests extends TransactionalTests {
                 .body(new UserCreation("new@example.org", "new_user"))
                 .post()
                 .then()
-                .contentType(MediaType.APPLICATION_JSON)
+                .contentType(ContentType.JSON)
                 .statusCode(201)
                 .body("dateCreated", notNullValue())
                 .body("username", equalTo("new_user"))
@@ -58,7 +57,7 @@ public final class CreateTests extends TransactionalTests {
                 .body(new UserCreation("new@example.org", "no spaces allowed"))
                 .post()
                 .then()
-                .contentType(MediaType.APPLICATION_JSON)
+                .contentType(ContentType.JSON)
                 .statusCode(400);
         assertEquals(userCount, User.count());
     }

@@ -11,7 +11,7 @@ import app.fyreplace.api.endpoints.TokensEndpoint;
 import app.fyreplace.api.testing.TransactionalTests;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
-import jakarta.ws.rs.core.MediaType;
+import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
 
 @QuarkusTest
@@ -20,7 +20,7 @@ public final class CreateNewTests extends TransactionalTests {
     @Test
     public void createNewWithUsername() {
         final var user = User.findByUsername("user_0");
-        given().contentType(MediaType.APPLICATION_JSON)
+        given().contentType(ContentType.JSON)
                 .body(new NewTokenCreation(user.username))
                 .post("new")
                 .then()
@@ -31,7 +31,7 @@ public final class CreateNewTests extends TransactionalTests {
     @Test
     public void createNewWithEmail() {
         final var user = User.findByUsername("user_0");
-        given().contentType(MediaType.APPLICATION_JSON)
+        given().contentType(ContentType.JSON)
                 .body(new NewTokenCreation(user.mainEmail.email))
                 .post("new")
                 .then()
@@ -42,7 +42,7 @@ public final class CreateNewTests extends TransactionalTests {
     @Test
     public void createNewWithInvalidIdentifier() {
         final var user = User.findByUsername("user_0");
-        given().contentType(MediaType.APPLICATION_JSON)
+        given().contentType(ContentType.JSON)
                 .body(new NewTokenCreation("invalid"))
                 .post("new")
                 .then()
@@ -53,7 +53,7 @@ public final class CreateNewTests extends TransactionalTests {
     @Test
     public void createNewWithEmptyInput() {
         final var user = User.findByUsername("user_0");
-        given().contentType(MediaType.APPLICATION_JSON).post("new").then().statusCode(400);
+        given().contentType(ContentType.JSON).post("new").then().statusCode(400);
         assertEquals(0, getMailsSentTo(user.mainEmail).size());
     }
 }

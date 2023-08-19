@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import io.quarkus.arc.Arc;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.PostPersist;
@@ -24,6 +25,7 @@ public class StoredFile extends EntityBase {
     public String path;
 
     @Transient
+    @Nullable
     private byte[] data;
 
     public StoredFile() {

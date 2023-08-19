@@ -18,7 +18,6 @@ import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-import jakarta.ws.rs.core.MediaType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -54,7 +53,7 @@ public final class CreateTests extends TransactionalTests {
                 .post()
                 .then()
                 .statusCode(201)
-                .contentType(MediaType.TEXT_PLAIN)
+                .contentType(ContentType.TEXT)
                 .body(isA(String.class));
         assertEquals(randomCodeCount - 1, RandomCode.count());
         final var email = Email.<Email>find("id", newUserRandomCode.email.id).firstResult();
@@ -69,7 +68,7 @@ public final class CreateTests extends TransactionalTests {
                 .post()
                 .then()
                 .statusCode(201)
-                .contentType(MediaType.TEXT_PLAIN)
+                .contentType(ContentType.TEXT)
                 .body(isA(String.class));
         assertEquals(randomCodeCount - 1, RandomCode.count());
     }
@@ -83,7 +82,7 @@ public final class CreateTests extends TransactionalTests {
                 .post()
                 .then()
                 .statusCode(201)
-                .contentType(MediaType.TEXT_PLAIN)
+                .contentType(ContentType.TEXT)
                 .body(isA(String.class));
         assertEquals(randomCodeCount - 1, RandomCode.count());
         final var email = Email.<Email>find("id", newUserRandomCode.email.id).firstResult();

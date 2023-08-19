@@ -10,7 +10,7 @@ import app.fyreplace.api.endpoints.UsersEndpoint;
 import app.fyreplace.api.testing.TransactionalTests;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
-import jakarta.ws.rs.core.MediaType;
+import io.restassured.http.ContentType;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -23,7 +23,7 @@ public final class RetrieveTests extends TransactionalTests {
         final var user = User.findByUsername(username);
         given().get(user.id.toString())
                 .then()
-                .contentType(MediaType.APPLICATION_JSON)
+                .contentType(ContentType.JSON)
                 .statusCode(200)
                 .body("id", equalTo(user.id.toString()))
                 .body("dateCreated", notNullValue())

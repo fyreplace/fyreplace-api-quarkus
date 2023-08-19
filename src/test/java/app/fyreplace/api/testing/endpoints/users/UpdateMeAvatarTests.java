@@ -15,7 +15,6 @@ import io.quarkus.test.common.http.TestHTTPResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
 import io.restassured.http.ContentType;
-import jakarta.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.net.URL;
 import org.junit.jupiter.api.Test;
@@ -51,7 +50,7 @@ public final class UpdateMeAvatarTests extends TransactionalTests {
                     .body(stream.readAllBytes())
                     .put("me/avatar")
                     .then()
-                    .contentType(MediaType.TEXT_PLAIN)
+                    .contentType(ContentType.TEXT)
                     .statusCode(200)
                     .body(isA(String.class));
         }
@@ -82,11 +81,9 @@ public final class UpdateMeAvatarTests extends TransactionalTests {
 
     @Test
     @TestSecurity(user = "user_0")
-    public void updateMeAvatarWithEmptyBody() {
+    public void updateMeAvatarWithoutInput() {
         final var remoteFileCount = StoredFile.count();
-
         given().contentType(ContentType.BINARY).put("me/avatar").then().statusCode(415);
-
         assertEquals(remoteFileCount, StoredFile.count());
         final var user = User.findByUsername("user_0");
         assertNull(user.avatar);
