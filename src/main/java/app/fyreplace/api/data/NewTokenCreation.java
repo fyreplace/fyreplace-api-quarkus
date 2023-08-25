@@ -1,5 +1,5 @@
 package app.fyreplace.api.data;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 
-public final record NewTokenCreation(@NotNull String identifier) {}
+public final record NewTokenCreation(@NotBlank String identifier) {}

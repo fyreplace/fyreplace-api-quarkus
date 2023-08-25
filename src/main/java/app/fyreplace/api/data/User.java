@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.NotAuthorizedException;
 import jakarta.ws.rs.core.SecurityContext;
@@ -150,5 +151,5 @@ public class User extends TimestampedEntityBase {
         ONE_TOO_MANY;
     }
 
-    public static final record Profile(@NotNull UUID id, @NotNull String username, String avatar) {}
+    public static final record Profile(@NotNull UUID id, @NotBlank String username, String avatar) {}
 }

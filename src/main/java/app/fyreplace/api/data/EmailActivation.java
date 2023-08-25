@@ -1,5 +1,5 @@
 package app.fyreplace.api.data;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 
-public final record EmailActivation(@NotNull String email, @NotNull String code) {}
+public final record EmailActivation(@NotBlank String email, @NotBlank String code) {}
