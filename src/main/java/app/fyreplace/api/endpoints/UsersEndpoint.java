@@ -95,9 +95,7 @@ public final class UsersEndpoint {
 
     @GET
     @Path("{id}")
-    @APIResponse(
-            responseCode = "200",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = User.class)))
+    @APIResponse(responseCode = "200")
     @APIResponse(responseCode = "404")
     public User retrieve(@PathParam("id") final UUID id) {
         final var user = User.<User>findById(id);
@@ -184,9 +182,7 @@ public final class UsersEndpoint {
     @GET
     @Path("me")
     @Authenticated
-    @APIResponse(
-            responseCode = "200",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = User.class)))
+    @APIResponse(responseCode = "200")
     @APIResponse(responseCode = "401")
     public User retrieveMe() {
         return retrieve(User.getFromSecurityContext(context).id);

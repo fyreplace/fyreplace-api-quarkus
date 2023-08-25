@@ -100,9 +100,7 @@ public final class PostsEndpoint {
 
     @GET
     @Path("{id}")
-    @APIResponse(
-            responseCode = "200",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = Post.class)))
+    @APIResponse(responseCode = "200")
     @APIResponse(responseCode = "404")
     public Post retrieve(@PathParam("id") final UUID id) {
         final var user = User.getFromSecurityContext(context, null, false);
