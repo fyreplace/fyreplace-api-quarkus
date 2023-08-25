@@ -1,7 +1,7 @@
-You can verify your email by using this code:
+{res.getString("codeDescription")}
 {code}
 
-Or by clicking on this link:
+{res.getString("linkDescription")}
 {link}
 
-The code and link will expire in 24 hours.
+{res.getString("linkEndNotice")}

@@ -24,6 +24,10 @@ quarkus:
     limits:
       max-body-size: 1M
 
+  mailer:
+    port: 587
+    start-tls: REQUIRED
+
   s3:
     devservices:
       enabled: false

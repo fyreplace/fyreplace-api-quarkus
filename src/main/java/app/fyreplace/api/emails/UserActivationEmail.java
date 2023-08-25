@@ -3,6 +3,7 @@ package app.fyreplace.api.emails;
 import io.quarkus.qute.CheckedTemplate;
 import io.quarkus.qute.TemplateInstance;
 import jakarta.enterprise.context.Dependent;
+import java.util.ResourceBundle;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 @Dependent
@@ -11,24 +12,24 @@ public final class UserActivationEmail extends EmailBase {
     String appName;
 
     @Override
-    protected String getAction() {
+    protected String action() {
         return "connect";
     }
 
     @Override
     protected TemplateInstance textTemplate() {
-        return Templates.text(appName, getRandomCode(), getLink());
+        return Templates.text(getResourceBundle(), appName, getRandomCode(), getLink());
     }
 
     @Override
     protected TemplateInstance htmlTemplate() {
-        return Templates.html(appName, getRandomCode(), getLink());
+        return Templates.html(getResourceBundle(), appName, getRandomCode(), getLink());
     }
 
     @CheckedTemplate
     public static class Templates {
-        public static native TemplateInstance text(String appName, String code, String link);
+        public static native TemplateInstance text(ResourceBundle res, String appName, String code, String link);
 
-        public static native TemplateInstance html(String appName, String code, String link);
+        public static native TemplateInstance html(ResourceBundle res, String appName, String code, String link);
     }
 }

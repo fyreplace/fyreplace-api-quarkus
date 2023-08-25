@@ -2,6 +2,7 @@ package app.fyreplace.api.emails;
 
 import app.fyreplace.api.data.Email;
 import app.fyreplace.api.data.RandomCode;
+import app.fyreplace.api.services.LocaleService;
 import app.fyreplace.api.services.RandomService;
 import io.quarkus.mailer.Mail;
 import io.quarkus.mailer.Mailer;
@@ -11,6 +12,7 @@ import jakarta.inject.Inject;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
+import java.util.ResourceBundle;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.logging.Logger;
 
@@ -24,13 +26,16 @@ public abstract class EmailBase extends Mail {
     @Inject
     RandomService randomService;
 
+    @Inject
+    LocaleService localeService;
+
     private String code;
 
     private Email email;
 
     private final Logger logger = Logger.getLogger(this.getClass());
 
-    protected abstract String getAction();
+    protected abstract String action();
 
     protected abstract TemplateInstance textTemplate();
 
@@ -39,7 +44,8 @@ public abstract class EmailBase extends Mail {
     @Blocking
     public void sendTo(final Email email) {
         this.email = email;
-        mailer.send(this.setText(textTemplate().render())
+        mailer.send(this.setSubject(getResourceBundle().getString("subject"))
+                .setText(textTemplate().render())
                 .setHtml(htmlTemplate().render())
                 .setTo(List.of(email.email)));
     }
@@ -59,11 +65,15 @@ public abstract class EmailBase extends Mail {
 
     protected String getLink() {
         try {
-            final var url = new URL(new URL(appUrl), "?action=" + getAction());
+            final var url = new URL(new URL(appUrl), "?action=" + action());
             return String.format("%s#%s:%s", url, email.user.username, getRandomCode());
         } catch (final MalformedURLException e) {
             logger.error("Could not generate link", e);
             return null;
         }
+    }
+
+    protected ResourceBundle getResourceBundle() {
+        return localeService.getResourceBundle(this.getClass().getSimpleName());
     }
 }
