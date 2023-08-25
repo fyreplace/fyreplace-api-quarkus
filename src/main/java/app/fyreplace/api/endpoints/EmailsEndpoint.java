@@ -15,7 +15,6 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
-import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.NotFoundException;
@@ -48,8 +47,6 @@ public final class EmailsEndpoint {
 
     @GET
     @Authenticated
-    @APIResponse(responseCode = "200")
-    @APIResponse(responseCode = "401")
     public List<Email> list(@QueryParam("page") @PositiveOrZero final int page) {
         final var user = User.getFromSecurityContext(context);
         return Email.find("user", Sort.by("email"), user).page(page, pagingSize).list();
@@ -58,12 +55,9 @@ public final class EmailsEndpoint {
     @POST
     @Authenticated
     @Transactional
-    @Consumes(MediaType.APPLICATION_JSON)
     @APIResponse(
             responseCode = "201",
             content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = Email.class)))
-    @APIResponse(responseCode = "400")
-    @APIResponse(responseCode = "401")
     @APIResponse(responseCode = "409")
     public Response create(@Valid @NotNull final EmailCreation input) {
         if (Email.count("email", input.email()) > 0) {
@@ -83,8 +77,6 @@ public final class EmailsEndpoint {
     @Authenticated
     @Transactional
     @APIResponse(responseCode = "204")
-    @APIResponse(responseCode = "401")
-    @APIResponse(responseCode = "403")
     @APIResponse(responseCode = "404")
     public void delete(@PathParam("id") final UUID id) {
         final var user = User.getFromSecurityContext(context);
@@ -104,7 +96,6 @@ public final class EmailsEndpoint {
     @Authenticated
     @Transactional
     @APIResponse(responseCode = "200")
-    @APIResponse(responseCode = "403")
     @APIResponse(responseCode = "404")
     public Response setMain(@PathParam("id") final UUID id) {
         final var user = User.getFromSecurityContext(context);
@@ -135,7 +126,6 @@ public final class EmailsEndpoint {
     @Transactional
     @APIResponse(responseCode = "200")
     @APIResponse(responseCode = "400")
-    @APIResponse(responseCode = "401")
     @APIResponse(responseCode = "404")
     public Response activate(@NotNull @Valid final EmailActivation input) {
         var email = Email.<Email>find("email", input.email()).firstResult();

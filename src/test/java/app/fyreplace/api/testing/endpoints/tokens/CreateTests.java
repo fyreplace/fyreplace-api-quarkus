@@ -1,6 +1,7 @@
 package app.fyreplace.api.testing.endpoints.tokens;
 
 import static io.restassured.RestAssured.given;
+import static java.util.Objects.requireNonNull;
 import static org.hamcrest.Matchers.isA;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -140,7 +141,7 @@ public final class CreateTests extends TransactionalTests {
 
     private RandomCode makeRandomCode(final String username) {
         final var code = new RandomCode();
-        code.email = User.findByUsername(username).mainEmail;
+        code.email = requireNonNull(User.findByUsername(username)).mainEmail;
         code.code = randomService.generateCode();
         code.persist();
         return code;

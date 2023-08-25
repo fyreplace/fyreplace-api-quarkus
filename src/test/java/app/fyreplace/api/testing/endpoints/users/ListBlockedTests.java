@@ -66,12 +66,12 @@ public final class ListBlockedTests extends TransactionalTests {
     public void beforeEach() {
         super.beforeEach();
         final var user = User.findByUsername("user_0");
-        range(10, 50).forEach(i -> {
-            final var otherUser = User.findByUsername("user_" + i);
+
+        for (final var otherUser : User.<User>list("username > 'user_10'")) {
             final var block = new Block();
             block.source = user;
             block.target = otherUser;
             block.persist();
-        });
+        }
     }
 }

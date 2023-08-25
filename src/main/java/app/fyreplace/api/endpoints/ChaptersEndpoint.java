@@ -56,8 +56,6 @@ public final class ChaptersEndpoint {
             responseCode = "201",
             content =
                     @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = Chapter.class)))
-    @APIResponse(responseCode = "401")
-    @APIResponse(responseCode = "403")
     @APIResponse(responseCode = "404")
     public Response createChapter(@PathParam("id") final UUID id) {
         final var user = User.getFromSecurityContext(context);
@@ -82,8 +80,6 @@ public final class ChaptersEndpoint {
     @Authenticated
     @Transactional
     @APIResponse(responseCode = "204")
-    @APIResponse(responseCode = "401")
-    @APIResponse(responseCode = "403")
     @APIResponse(responseCode = "404")
     public void deleteChapter(@PathParam("id") final UUID id, @PathParam("position") final int position) {
         final var user = User.getFromSecurityContext(context);
@@ -101,8 +97,6 @@ public final class ChaptersEndpoint {
             responseCode = "200",
             content = @Content(mediaType = MediaType.TEXT_PLAIN, schema = @Schema(implementation = Integer.class)))
     @APIResponse(responseCode = "400")
-    @APIResponse(responseCode = "401")
-    @APIResponse(responseCode = "403")
     @APIResponse(responseCode = "404")
     public int updateChapterPosition(
             @PathParam("id") final UUID id, @PathParam("position") final int position, @NotNull final Integer input) {
@@ -138,8 +132,6 @@ public final class ChaptersEndpoint {
             responseCode = "200",
             content = @Content(mediaType = MediaType.TEXT_PLAIN, schema = @Schema(implementation = String.class)))
     @APIResponse(responseCode = "400")
-    @APIResponse(responseCode = "401")
-    @APIResponse(responseCode = "403")
     @APIResponse(responseCode = "404")
     public String updateChapterText(
             @PathParam("id") final UUID id,
@@ -168,8 +160,6 @@ public final class ChaptersEndpoint {
             responseCode = "200",
             content = @Content(mediaType = MediaType.TEXT_PLAIN, schema = @Schema(implementation = String.class)))
     @APIResponse(responseCode = "400")
-    @APIResponse(responseCode = "401")
-    @APIResponse(responseCode = "403")
     @APIResponse(responseCode = "404")
     public String updateChapterImage(
             @PathParam("id") final UUID id, @PathParam("position") final int position, final File input)

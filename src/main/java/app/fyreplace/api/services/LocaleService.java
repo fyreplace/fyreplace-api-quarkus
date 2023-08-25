@@ -6,6 +6,7 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.HttpHeaders;
 import java.util.Locale;
 import java.util.MissingResourceException;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 @Dependent
@@ -17,13 +18,12 @@ public final class LocaleService {
         final var path = "i18n." + name;
         return headers.getAcceptableLanguages().stream()
                 .map(locale -> getResourceBundleOrNull(path, locale))
-                .filter(bundle -> bundle != null)
+                .filter(Objects::nonNull)
                 .findFirst()
                 .orElse(ResourceBundle.getBundle(path));
     }
 
-    @Nullable
-    private ResourceBundle getResourceBundleOrNull(final String name, final Locale locale) {
+    private @Nullable ResourceBundle getResourceBundleOrNull(final String name, final Locale locale) {
         try {
             return ResourceBundle.getBundle(name, locale);
         } catch (final MissingResourceException e) {

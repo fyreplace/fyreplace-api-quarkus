@@ -4,6 +4,7 @@ import app.fyreplace.api.data.User;
 import app.fyreplace.api.services.JwtService;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.core.MediaType;
@@ -21,7 +22,14 @@ public final class DevUsersEndpoint {
     @APIResponse(
             responseCode = "200",
             content = @Content(mediaType = MediaType.TEXT_PLAIN, schema = @Schema(implementation = String.class)))
+    @APIResponse(responseCode = "404")
     public String retrieveToken(@PathParam("username") final String username) {
-        return jwtService.makeJwt(User.findByUsername(username));
+        final var user = User.findByUsername(username);
+
+        if (user == null) {
+            throw new NotFoundException();
+        }
+
+        return jwtService.makeJwt(user);
     }
 }

@@ -38,9 +38,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
@@ -112,8 +110,6 @@ public final class UsersEndpoint {
     @Authenticated
     @Transactional
     @APIResponse(responseCode = "200")
-    @APIResponse(responseCode = "401")
-    @APIResponse(responseCode = "403")
     @APIResponse(responseCode = "404")
     public Response createBlock(@PathParam("id") final UUID id) {
         final var source = User.getFromSecurityContext(context);
@@ -138,7 +134,6 @@ public final class UsersEndpoint {
     @Authenticated
     @Transactional
     @APIResponse(responseCode = "204")
-    @APIResponse(responseCode = "401")
     @APIResponse(responseCode = "404")
     public void deleteBlock(@PathParam("id") final UUID id) {
         final var source = User.getFromSecurityContext(context);
@@ -156,8 +151,6 @@ public final class UsersEndpoint {
     @RolesAllowed({"ADMINISTRATOR", "MODERATOR"})
     @Transactional
     @APIResponse(responseCode = "200")
-    @APIResponse(responseCode = "401")
-    @APIResponse(responseCode = "403")
     @APIResponse(responseCode = "404")
     public Response updateBanned(@PathParam("id") final UUID id) {
         final var user = User.<User>findById(id, LockModeType.PESSIMISTIC_WRITE);
@@ -183,7 +176,6 @@ public final class UsersEndpoint {
     @Path("me")
     @Authenticated
     @APIResponse(responseCode = "200")
-    @APIResponse(responseCode = "401")
     public User retrieveMe() {
         return retrieve(User.getFromSecurityContext(context).id);
     }
@@ -197,7 +189,6 @@ public final class UsersEndpoint {
             responseCode = "200",
             content = @Content(mediaType = MediaType.TEXT_PLAIN, schema = @Schema(implementation = String.class)))
     @APIResponse(responseCode = "400")
-    @APIResponse(responseCode = "401")
     public String updateMeBio(@NotNull @Length(max = 3000) final String input) {
         final var user = User.getFromSecurityContext(context, LockModeType.PESSIMISTIC_READ);
         user.bio = input;
@@ -213,7 +204,6 @@ public final class UsersEndpoint {
     @APIResponse(
             responseCode = "200",
             content = @Content(mediaType = MediaType.TEXT_PLAIN, schema = @Schema(implementation = String.class)))
-    @APIResponse(responseCode = "401")
     @APIResponse(responseCode = "413")
     @APIResponse(responseCode = "415")
     public String updateMeAvatar(final File input) throws IOException {
@@ -236,7 +226,6 @@ public final class UsersEndpoint {
     @Authenticated
     @Transactional
     @APIResponse(responseCode = "204")
-    @APIResponse(responseCode = "401")
     public void deleteMeAvatar() {
         final var user = User.getFromSecurityContext(context, LockModeType.PESSIMISTIC_WRITE);
 
@@ -252,22 +241,20 @@ public final class UsersEndpoint {
     @Authenticated
     @Transactional
     @APIResponse(responseCode = "204")
-    @APIResponse(responseCode = "401")
     public void deleteMe() {
-        User.delete("username", context.getUserPrincipal().getName());
+        User.getFromSecurityContext(context).delete();
     }
 
     @GET
     @Path("blocked")
     @Authenticated
     @APIResponse(responseCode = "200")
-    @APIResponse(responseCode = "401")
-    public List<User.Profile> listBlocked(@QueryParam("page") @PositiveOrZero final int page) {
+    public Iterable<User.Profile> listBlocked(@QueryParam("page") @PositiveOrZero final int page) {
         return Block.<Block>find("source", Sort.by("id"), User.getFromSecurityContext(context))
                 .page(page, pagingSize)
                 .stream()
                 .map(block -> block.target.getProfile())
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @GET

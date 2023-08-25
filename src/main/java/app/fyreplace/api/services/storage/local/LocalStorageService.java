@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Paths;
 
+@SuppressWarnings("unused")
 @ApplicationScoped
 @Unremovable
 @IfBuildProperty(name = "app.storage.type", stringValue = "local")
@@ -18,6 +19,7 @@ public final class LocalStorageService implements StorageService {
     @Inject
     LocalStorageConfig config;
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override
     public void store(final String path, final byte[] data) throws IOException {
         final var file = getFile(path);
@@ -28,8 +30,9 @@ public final class LocalStorageService implements StorageService {
         }
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override
-    public void remove(final String path) throws IOException {
+    public void remove(final String path) {
         getFile(path).delete();
     }
 

@@ -1,6 +1,7 @@
 package app.fyreplace.api.testing.endpoints.emails;
 
 import static io.restassured.RestAssured.given;
+import static java.util.Objects.requireNonNull;
 import static java.util.stream.IntStream.range;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.in;
@@ -35,12 +36,9 @@ public final class ListTests extends TransactionalTests {
                 .contentType(ContentType.JSON)
                 .body("size()", equalTo(pagingSize));
 
-        range(0, pagingSize)
-                .forEach(i -> response.body(
-                        "[" + i + "].email",
-                        in(Email.<Email>stream("user", user)
-                                .map(email -> email.email)
-                                .toList())));
+        final var emails =
+                Email.<Email>stream("user", user).map(email -> email.email).toList();
+        range(0, pagingSize).forEach(i -> response.body("[" + i + "].email", in(emails)));
     }
 
     @Test
@@ -65,8 +63,8 @@ public final class ListTests extends TransactionalTests {
     @Override
     public void beforeEach() {
         super.beforeEach();
-        final var user = User.findByUsername("user_0");
-        range(0, 100).forEach(i -> {
+        final var user = requireNonNull(User.findByUsername("user_0"));
+        range(0, 30).forEach(i -> {
             final var email = new Email();
             email.user = user;
             email.email = user.username + "_" + i + "@example.com";

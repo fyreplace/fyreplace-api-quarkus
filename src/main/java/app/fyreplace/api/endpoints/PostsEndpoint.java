@@ -88,7 +88,6 @@ public final class PostsEndpoint {
             responseCode = "201",
             content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = Post.class)))
     @APIResponse(responseCode = "400")
-    @APIResponse(responseCode = "401")
     public Response create() {
         final var user = User.getFromSecurityContext(context);
         final var post = new Post();
@@ -114,8 +113,6 @@ public final class PostsEndpoint {
     @Authenticated
     @Transactional
     @APIResponse(responseCode = "204")
-    @APIResponse(responseCode = "401")
-    @APIResponse(responseCode = "403")
     @APIResponse(responseCode = "404")
     public void delete(@PathParam("id") final UUID id) {
         final var user = User.getFromSecurityContext(context);
@@ -129,8 +126,6 @@ public final class PostsEndpoint {
     @Authenticated
     @Transactional
     @APIResponse(responseCode = "200")
-    @APIResponse(responseCode = "401")
-    @APIResponse(responseCode = "403")
     @APIResponse(responseCode = "404")
     public Response publish(@PathParam("id") final UUID id, @Valid @NotNull final PostPublication input) {
         final var user = User.getFromSecurityContext(context);
@@ -150,7 +145,6 @@ public final class PostsEndpoint {
     @Authenticated
     @Transactional
     @APIResponse(responseCode = "200")
-    @APIResponse(responseCode = "401")
     @APIResponse(responseCode = "404")
     public Response createSubscription(@PathParam("id") final UUID id) {
         final var user = User.getFromSecurityContext(context);
@@ -165,7 +159,6 @@ public final class PostsEndpoint {
     @Authenticated
     @Transactional
     @APIResponse(responseCode = "204")
-    @APIResponse(responseCode = "401")
     @APIResponse(responseCode = "404")
     public void deleteSubscription(@PathParam("id") final UUID id) {
         final var user = User.getFromSecurityContext(context);

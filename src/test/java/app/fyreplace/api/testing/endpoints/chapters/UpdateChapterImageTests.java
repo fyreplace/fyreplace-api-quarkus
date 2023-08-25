@@ -92,7 +92,7 @@ public final class UpdateChapterImageTests extends PostTestsBase {
 
     @Test
     @TestSecurity(user = "user_0")
-    public void updateChapterImageInOwnDraftWithoutInput() throws IOException {
+    public void updateChapterImageInOwnDraftWithoutInput() {
         final var position = 0;
         given().pathParam("id", draft.id).put(position + "/image").then().statusCode(415);
         final var chapter = draft.getChapters().get(position);

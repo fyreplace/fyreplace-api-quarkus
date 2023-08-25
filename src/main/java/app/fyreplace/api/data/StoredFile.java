@@ -18,8 +18,7 @@ import java.io.IOException;
 @Table(name = "remote_files")
 public class StoredFile extends EntityBase {
     @Transient
-    final StorageService storageService =
-            Arc.container().instance(StorageService.class).get();
+    private StorageService storageService;
 
     @Column(unique = true, nullable = false)
     public String path;
@@ -28,13 +27,16 @@ public class StoredFile extends EntityBase {
     @Nullable
     private byte[] data;
 
+    @SuppressWarnings("unused")
     public StoredFile() {
         data = null;
+        initStorageService();
     }
 
-    public StoredFile(final String path, final byte[] data) {
+    public StoredFile(final String path, @Nullable final byte[] data) {
         this.path = path;
         this.data = data;
+        initStorageService();
     }
 
     @Override
@@ -48,6 +50,7 @@ public class StoredFile extends EntityBase {
         }
     }
 
+    @SuppressWarnings("unused")
     @PostPersist
     final void postPersist() throws IOException {
         if (data != null) {
@@ -56,9 +59,16 @@ public class StoredFile extends EntityBase {
         }
     }
 
+    @SuppressWarnings("unused")
     @PreRemove
     final void preDestroy() throws IOException {
         storageService.remove(path);
+    }
+
+    private void initStorageService() {
+        try (final var service = Arc.container().instance(StorageService.class)) {
+            storageService = service.get();
+        }
     }
 
     public static final class Serializer extends JsonSerializer<StoredFile> {

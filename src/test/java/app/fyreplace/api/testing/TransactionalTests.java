@@ -13,7 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 @QuarkusTestResource(DatabaseTestResource.class)
 public abstract class TransactionalTests {
     @Inject
-    DataSeeder seeder;
+    DataSeeder dataSeeder;
 
     @Inject
     MockMailbox mailbox;
@@ -22,12 +22,12 @@ public abstract class TransactionalTests {
 
     @BeforeEach
     public void beforeEach() {
-        seeder.insertData();
+        dataSeeder.insertData();
     }
 
     @AfterEach
     public void afterEach() {
-        seeder.deleteData();
+        dataSeeder.deleteData();
         mailbox.clear();
     }
 

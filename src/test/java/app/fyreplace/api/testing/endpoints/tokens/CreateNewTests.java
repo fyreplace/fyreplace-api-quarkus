@@ -2,6 +2,7 @@ package app.fyreplace.api.testing.endpoints.tokens;
 
 import static app.fyreplace.api.testing.Assertions.assertSingleEmail;
 import static io.restassured.RestAssured.given;
+import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import app.fyreplace.api.data.NewTokenCreation;
@@ -19,7 +20,7 @@ import org.junit.jupiter.api.Test;
 public final class CreateNewTests extends TransactionalTests {
     @Test
     public void createNewWithUsername() {
-        final var user = User.findByUsername("user_0");
+        final var user = requireNonNull(User.findByUsername("user_0"));
         given().contentType(ContentType.JSON)
                 .body(new NewTokenCreation(user.username))
                 .post("new")
@@ -30,7 +31,7 @@ public final class CreateNewTests extends TransactionalTests {
 
     @Test
     public void createNewWithEmail() {
-        final var user = User.findByUsername("user_0");
+        final var user = requireNonNull(User.findByUsername("user_0"));
         given().contentType(ContentType.JSON)
                 .body(new NewTokenCreation(user.mainEmail.email))
                 .post("new")
@@ -41,7 +42,7 @@ public final class CreateNewTests extends TransactionalTests {
 
     @Test
     public void createNewWithInvalidIdentifier() {
-        final var user = User.findByUsername("user_0");
+        final var user = requireNonNull(User.findByUsername("user_0"));
         given().contentType(ContentType.JSON)
                 .body(new NewTokenCreation("invalid"))
                 .post("new")
@@ -52,7 +53,7 @@ public final class CreateNewTests extends TransactionalTests {
 
     @Test
     public void createNewWithEmptyInput() {
-        final var user = User.findByUsername("user_0");
+        final var user = requireNonNull(User.findByUsername("user_0"));
         given().contentType(ContentType.JSON).post("new").then().statusCode(400);
         assertEquals(0, getMailsSentTo(user.mainEmail).size());
     }

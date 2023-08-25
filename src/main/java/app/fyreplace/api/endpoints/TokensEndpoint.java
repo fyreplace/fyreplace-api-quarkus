@@ -64,7 +64,7 @@ public final class TokensEndpoint {
     @APIResponse(
             responseCode = "200",
             content = @Content(mediaType = MediaType.TEXT_PLAIN, schema = @Schema(implementation = String.class)))
-    @APIResponse(responseCode = "401")
+    @APIResponse(responseCode = "404")
     public String retrieveNew() {
         return jwtService.makeJwt(User.getFromSecurityContext(context));
     }

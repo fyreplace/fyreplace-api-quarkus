@@ -1,6 +1,7 @@
 package app.fyreplace.api.testing.endpoints.users;
 
 import static io.restassured.RestAssured.given;
+import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import app.fyreplace.api.data.User;
@@ -23,7 +24,7 @@ public final class UpdateMeBioTests extends TransactionalTests {
     @TestSecurity(user = "user_0")
     public void updateMeBio(final String bio) {
         given().contentType(ContentType.TEXT).body(bio).put("me/bio").then().statusCode(200);
-        final var user = User.findByUsername("user_0");
+        final var user = requireNonNull(User.findByUsername("user_0"));
         assertEquals(bio, user.bio);
     }
 
@@ -31,7 +32,7 @@ public final class UpdateMeBioTests extends TransactionalTests {
     @TestSecurity(user = "user_0")
     @Transactional
     public void updateMeBioWithBioTooLong() {
-        final var user = User.findByUsername("user_0");
+        final var user = requireNonNull(User.findByUsername("user_0"));
         final var bio = user.bio;
         given().contentType(ContentType.TEXT)
                 .body("a".repeat(3001))

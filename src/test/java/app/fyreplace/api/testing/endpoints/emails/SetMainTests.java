@@ -1,6 +1,7 @@
 package app.fyreplace.api.testing.endpoints.emails;
 
 import static io.restassured.RestAssured.given;
+import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -52,7 +53,7 @@ public final class SetMainTests extends TransactionalTests {
     @Test
     @TestSecurity(user = "user_0")
     public void setMainWithOtherEmail() {
-        final var otherUser = User.findByUsername("user_1");
+        final var otherUser = requireNonNull(User.findByUsername("user_1"));
         given().post(otherUser.mainEmail.id + "/main").then().statusCode(404);
         secondaryEmail = Email.findById(secondaryEmail.id);
         assertFalse(secondaryEmail.isMain());

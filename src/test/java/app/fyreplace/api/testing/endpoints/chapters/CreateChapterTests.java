@@ -62,7 +62,6 @@ public final class CreateChapterTests extends PostTestsBase {
                 final var chapter = new Chapter();
                 chapter.post = draft;
                 chapter.position = Chapter.positionBetween(before, null);
-                ;
                 chapter.persist();
                 before = chapter.position;
             }

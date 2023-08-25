@@ -1,6 +1,7 @@
 package app.fyreplace.api.testing.endpoints.users;
 
 import static io.restassured.RestAssured.given;
+import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import app.fyreplace.api.data.Block;
@@ -48,7 +49,7 @@ public final class CreateBlockTests extends TransactionalTests {
     @Test
     @TestSecurity(user = "user_0")
     public void createBlockWithSelf() {
-        final var user = User.findByUsername("user_0");
+        final var user = requireNonNull(User.findByUsername("user_0"));
         given().put(user.id + "/blocked").then().statusCode(403);
         assertEquals(0, Block.count("source = ?1 and target = ?2", user, user));
     }

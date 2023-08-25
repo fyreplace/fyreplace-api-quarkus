@@ -1,6 +1,7 @@
 package app.fyreplace.api.testing.endpoints.users;
 
 import static io.restassured.RestAssured.given;
+import static java.util.Objects.requireNonNull;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
@@ -20,7 +21,7 @@ public final class RetrieveTests extends TransactionalTests {
     @ParameterizedTest
     @ValueSource(strings = {"user_0", "user_12"})
     public void retrieve(final String username) {
-        final var user = User.findByUsername(username);
+        final var user = requireNonNull(User.findByUsername(username));
         given().get(user.id.toString())
                 .then()
                 .contentType(ContentType.JSON)

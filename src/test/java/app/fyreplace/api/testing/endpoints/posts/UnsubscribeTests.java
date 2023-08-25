@@ -1,6 +1,7 @@
 package app.fyreplace.api.testing.endpoints.posts;
 
 import static io.restassured.RestAssured.given;
+import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import app.fyreplace.api.data.Subscription;
@@ -92,6 +93,6 @@ public final class UnsubscribeTests extends PostTestsBase {
     @Override
     public void beforeEach() {
         super.beforeEach();
-        User.findByUsername("user_1").subscribeTo(post);
+        requireNonNull(User.findByUsername("user_1")).subscribeTo(post);
     }
 }

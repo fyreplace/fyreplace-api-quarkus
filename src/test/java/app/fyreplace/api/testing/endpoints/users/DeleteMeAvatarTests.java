@@ -39,7 +39,7 @@ public final class DeleteMeAvatarTests extends TransactionalTests {
 
     @Test
     @TestSecurity(user = "user_0")
-    public void deleteMeAvatarWithoutAvatar() throws IOException {
+    public void deleteMeAvatarWithoutAvatar() {
         final var remoteFileCount = StoredFile.count();
         given().delete("me/avatar").then().statusCode(204);
         assertEquals(remoteFileCount, StoredFile.count());

@@ -5,8 +5,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.quarkus.panache.common.Sort;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.NotAuthorizedException;
 import jakarta.ws.rs.core.SecurityContext;
 import java.time.Instant;
@@ -22,7 +20,7 @@ import org.hibernate.annotations.OnDeleteAction;
 @Entity
 @Table(name = "users")
 public class User extends TimestampedEntityBase {
-    public static final Set<String> forbiddenUsernames = new HashSet<String>(Arrays.asList(
+    public static final Set<String> forbiddenUsernames = new HashSet<>(Arrays.asList(
             "admin",
             "admins",
             "administrator",
@@ -111,6 +109,7 @@ public class User extends TimestampedEntityBase {
         return new Profile(id, username, avatar != null ? avatar.toString() : null);
     }
 
+    @SuppressWarnings("unused")
     @PostRemove
     final void postRemove() {
         if (avatar != null) {
@@ -118,12 +117,11 @@ public class User extends TimestampedEntityBase {
         }
     }
 
-    public Subscription subscribeTo(final Post post) {
-        final var existing = Subscription.<Subscription>find("user = ?1 and post = ?2", this, post)
-                .firstResult();
+    public void subscribeTo(final Post post) {
+        final var existing = Subscription.count("user = ?1 and post = ?2", this, post);
 
-        if (existing != null) {
-            return existing;
+        if (existing > 0) {
+            return;
         }
 
         final var subscription = new Subscription();
@@ -132,7 +130,6 @@ public class User extends TimestampedEntityBase {
         subscription.lastCommentSeen =
                 Comment.find("post", Sort.descending("dateCreated"), post).firstResult();
         subscription.persist();
-        return subscription;
     }
 
     public void unsubscribeFrom(final Post post) {
@@ -148,12 +145,11 @@ public class User extends TimestampedEntityBase {
         return User.<User>find("username", username).withLock(lock).firstResult();
     }
 
-    public static @Nullable User getFromSecurityContext(final SecurityContext context) {
-        return getFromSecurityContext(context, null, true);
+    public static User getFromSecurityContext(final SecurityContext context) {
+        return getFromSecurityContext(context, null);
     }
 
-    public static @Nullable User getFromSecurityContext(
-            final SecurityContext context, @Nullable final LockModeType lock) {
+    public static User getFromSecurityContext(final SecurityContext context, @Nullable final LockModeType lock) {
         return getFromSecurityContext(context, lock, true);
     }
 
@@ -172,14 +168,14 @@ public class User extends TimestampedEntityBase {
     public enum Rank {
         CITIZEN,
         MODERATOR,
-        ADMINISTRATOR;
+        ADMINISTRATOR
     }
 
     public enum BanCount {
         NEVER,
         ONCE,
-        ONE_TOO_MANY;
+        ONE_TOO_MANY
     }
 
-    public static final record Profile(@NotNull UUID id, @NotBlank String username, String avatar) {}
+    public record Profile(UUID id, String username, String avatar) {}
 }

@@ -1,6 +1,7 @@
 package app.fyreplace.api.testing.endpoints.emails;
 
 import static io.restassured.RestAssured.given;
+import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import app.fyreplace.api.data.Email;
@@ -54,7 +55,7 @@ public final class ActivateTests extends TransactionalTests {
     @Test
     @TestSecurity(user = "user_0")
     public void activateWithOtherEmail() {
-        final var otherUser = User.findByUsername("user_1");
+        final var otherUser = requireNonNull(User.findByUsername("user_1"));
         given().contentType(ContentType.JSON)
                 .body(new EmailActivation(otherUser.mainEmail.email, randomCode.code))
                 .post("activate")

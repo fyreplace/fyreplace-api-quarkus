@@ -1,6 +1,7 @@
 package app.fyreplace.api.testing.endpoints.users;
 
 import static io.restassured.RestAssured.given;
+import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import app.fyreplace.api.data.Block;
@@ -20,8 +21,8 @@ public final class DeleteBlockTests extends TransactionalTests {
     @Test
     @TestSecurity(user = "user_0")
     public void deleteBlock() {
-        final var user = User.findByUsername("user_0");
-        final var otherUser = User.findByUsername("user_1");
+        final var user = requireNonNull(User.findByUsername("user_0"));
+        final var otherUser = requireNonNull(User.findByUsername("user_1"));
         given().delete(otherUser.id + "/blocked").then().statusCode(204);
         assertEquals(0, Block.count("source = ?1 and target = ?2", user, otherUser));
     }
@@ -29,8 +30,8 @@ public final class DeleteBlockTests extends TransactionalTests {
     @Test
     @TestSecurity(user = "user_0")
     public void deleteBlockTwice() {
-        final var user = User.findByUsername("user_0");
-        final var otherUser = User.findByUsername("user_1");
+        final var user = requireNonNull(User.findByUsername("user_0"));
+        final var otherUser = requireNonNull(User.findByUsername("user_1"));
         given().delete(otherUser.id + "/blocked").then().statusCode(204);
         given().delete(otherUser.id + "/blocked").then().statusCode(204);
         assertEquals(0, Block.count("source = ?1 and target = ?2", user, otherUser));

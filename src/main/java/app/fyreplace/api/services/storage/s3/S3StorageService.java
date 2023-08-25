@@ -11,6 +11,7 @@ import org.jboss.logging.Logger;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 
+@SuppressWarnings("unused")
 @ApplicationScoped
 @Unremovable
 @IfBuildProperty(name = "app.storage.type", stringValue = "s3")

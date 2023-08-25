@@ -1,5 +1,6 @@
 package app.fyreplace.api.testing.tasks.cleanup;
 
+import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import app.fyreplace.api.data.RandomCode;
@@ -26,7 +27,7 @@ public final class RemoveOldRandomCodesTests extends TransactionalTests {
     @Transactional
     public void removeOldRandomCodes() {
         final var randomCode = new RandomCode();
-        randomCode.email = User.findByUsername("user_0").mainEmail;
+        randomCode.email = requireNonNull(User.findByUsername("user_0")).mainEmail;
         randomCode.code = randomService.generateCode();
         randomCode.persist();
         final var randomCodeCount = RandomCode.count();
