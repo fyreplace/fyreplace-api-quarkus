@@ -3,7 +3,6 @@ plugins {
     id "io.quarkus"
     id "com.palantir.git-version" version "${gitPluginVersion}"
     id "com.diffplug.spotless" version "${spotlessPluginVersion}"
-    id "io.freefair.lombok" version "${lombokPluginVersion}"
 }
 
 group = "app.fyreplace"
@@ -45,7 +44,6 @@ dependencies {
     testImplementation("io.quarkus:quarkus-test-h2")
     testImplementation("io.quarkus:quarkus-test-security")
     testImplementation("io.rest-assured:rest-assured")
-    testImplementation("org.apiguardian:apiguardian-api:+")
 }
 
 java {
