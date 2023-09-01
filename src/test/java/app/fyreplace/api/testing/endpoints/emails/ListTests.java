@@ -36,9 +36,10 @@ public final class ListTests extends TransactionalTests {
                 .contentType(ContentType.JSON)
                 .body("size()", equalTo(pagingSize));
 
-        final var emails =
-                Email.<Email>stream("user", user).map(email -> email.email).toList();
-        range(0, pagingSize).forEach(i -> response.body("[" + i + "].email", in(emails)));
+        try (final var stream = Email.<Email>stream("user", user)) {
+            final var emails = stream.map(email -> email.email).toList();
+            range(0, pagingSize).forEach(i -> response.body("[" + i + "].email", in(emails)));
+        }
     }
 
     @Test

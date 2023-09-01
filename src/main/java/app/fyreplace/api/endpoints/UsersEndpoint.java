@@ -250,11 +250,12 @@ public final class UsersEndpoint {
     @Authenticated
     @APIResponse(responseCode = "200")
     public Iterable<User.Profile> listBlocked(@QueryParam("page") @PositiveOrZero final int page) {
-        return Block.<Block>find("source", Sort.by("id"), User.getFromSecurityContext(context))
-                .page(page, pagingSize)
-                .stream()
-                .map(block -> block.target.getProfile())
-                .toList();
+        final var user = User.getFromSecurityContext(context);
+        final var blocks = Block.<Block>find("source", Sort.by("id"), user);
+
+        try (final var stream = blocks.page(page, pagingSize).stream()) {
+            return stream.map(block -> block.target.getProfile()).toList();
+        }
     }
 
     @GET

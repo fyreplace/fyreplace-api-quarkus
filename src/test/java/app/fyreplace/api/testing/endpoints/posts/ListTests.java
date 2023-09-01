@@ -53,38 +53,41 @@ public final class ListTests extends TransactionalTests {
     @Test
     @TestSecurity(user = "user_0")
     public void listPublished() {
-        final var publishedPostIds = Post.<Post>stream(
-                        "author = ?1 and datePublished is not null", User.findByUsername("user_0"))
-                .map(post -> post.id.toString())
-                .toList();
-        final var response = given().queryParam("page", 0)
-                .queryParam("ascending", false)
-                .queryParam("type", PostListingType.PUBLISHED)
-                .get()
-                .then()
-                .statusCode(200)
-                .contentType(ContentType.JSON)
-                .body("size()", equalTo(pagingSize));
+        final var user = User.findByUsername("user_0");
 
-        range(0, pagingSize).forEach(i -> response.body("[" + i + "].id", in(publishedPostIds)));
+        try (final var stream = Post.<Post>stream("author = ?1 and datePublished is not null", user)) {
+            final var publishedPostIds = stream.map(post -> post.id.toString()).toList();
+            final var response = given().queryParam("page", 0)
+                    .queryParam("ascending", false)
+                    .queryParam("type", PostListingType.PUBLISHED)
+                    .get()
+                    .then()
+                    .statusCode(200)
+                    .contentType(ContentType.JSON)
+                    .body("size()", equalTo(pagingSize));
+
+            range(0, pagingSize).forEach(i -> response.body("[" + i + "].id", in(publishedPostIds)));
+        }
     }
 
     @Test
     @TestSecurity(user = "user_0")
     public void listDrafts() {
-        final var draftIds = Post.<Post>stream("author = ?1 and datePublished is null", User.findByUsername("user_0"))
-                .map(post -> post.id.toString())
-                .toList();
-        final var response = given().queryParam("page", 0)
-                .queryParam("ascending", false)
-                .queryParam("type", PostListingType.DRAFTS)
-                .get()
-                .then()
-                .statusCode(200)
-                .contentType(ContentType.JSON)
-                .body("size()", equalTo(pagingSize));
+        final var user = User.findByUsername("user_0");
 
-        range(0, pagingSize).forEach(i -> response.body("[" + i + "].id", in(draftIds)));
+        try (final var stream = Post.<Post>stream("author = ?1 and datePublished is null", user)) {
+            final var draftIds = stream.map(post -> post.id.toString()).toList();
+            final var response = given().queryParam("page", 0)
+                    .queryParam("ascending", false)
+                    .queryParam("type", PostListingType.DRAFTS)
+                    .get()
+                    .then()
+                    .statusCode(200)
+                    .contentType(ContentType.JSON)
+                    .body("size()", equalTo(pagingSize));
+
+            range(0, pagingSize).forEach(i -> response.body("[" + i + "].id", in(draftIds)));
+        }
     }
 
     @Transactional
@@ -98,10 +101,15 @@ public final class ListTests extends TransactionalTests {
 
         subscribedToPostIds.clear();
 
-        Post.<Post>stream("author", user1).forEach(post -> {
-            user0.subscribeTo(post);
-            subscribedToPostIds.add(post.id.toString());
-        });
-        Post.<Post>stream("author", user0).forEach(post -> subscribedToPostIds.add(post.id.toString()));
+        try (final var stream = Post.<Post>stream("author", user1)) {
+            stream.forEach(post -> {
+                user0.subscribeTo(post);
+                subscribedToPostIds.add(post.id.toString());
+            });
+        }
+
+        try (final var stream = Post.<Post>stream("author", user0)) {
+            stream.forEach(post -> subscribedToPostIds.add(post.id.toString()));
+        }
     }
 }

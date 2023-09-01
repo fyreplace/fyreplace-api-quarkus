@@ -35,12 +35,10 @@ public final class ListBlockedTests extends TransactionalTests {
                 .contentType(ContentType.JSON)
                 .body("size()", equalTo(pagingSize));
 
-        range(0, pagingSize)
-                .forEach(i -> response.body(
-                        "[" + i + "].username",
-                        in(Block.<Block>stream("source", user)
-                                .map(block -> block.target.username)
-                                .toList())));
+        try (final var stream = Block.<Block>stream("source", user)) {
+            final var blocks = stream.map(block -> block.target.username).toList();
+            range(0, pagingSize).forEach(i -> response.body("[" + i + "].username", in(blocks)));
+        }
     }
 
     @Test
