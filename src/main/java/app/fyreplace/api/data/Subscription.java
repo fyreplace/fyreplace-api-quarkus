@@ -2,6 +2,7 @@ package app.fyreplace.api.data;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
@@ -14,11 +15,11 @@ import org.hibernate.annotations.UpdateTimestamp;
 @Entity
 @Table(name = "subscriptions", uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "post_id"}))
 public class Subscription extends EntityBase {
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @OnDelete(action = OnDeleteAction.CASCADE)
     public User user;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @OnDelete(action = OnDeleteAction.CASCADE)
     public Post post;
 

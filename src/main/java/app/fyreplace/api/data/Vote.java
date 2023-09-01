@@ -2,6 +2,7 @@ package app.fyreplace.api.data;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Index;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -15,11 +16,11 @@ import org.hibernate.annotations.OnDeleteAction;
         uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "post_id"}),
         indexes = {@Index(columnList = "post_id")})
 public class Vote extends EntityBase {
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @OnDelete(action = OnDeleteAction.CASCADE)
     public User user;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @OnDelete(action = OnDeleteAction.CASCADE)
     public Post post;
 
