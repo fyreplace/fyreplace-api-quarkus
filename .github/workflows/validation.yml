@@ -21,7 +21,7 @@ jobs:
           cache: gradle
 
       - name: Run Spotless
-        run: ./gradlew spotlessCheck
+        run: ./gradlew --no-daemon spotlessCheck
 
   tests:
     name: Run tests
@@ -39,9 +39,7 @@ jobs:
           cache: gradle
 
       - name: Run tests
-        run: |
-          ./gradlew compileMjml
-          ./gradlew test
+        run: ./gradlew --no-daemon compileMjml test
         env:
           MP_JWT_VERIFY_PUBLICKEY: ${{ vars.MP_JWT_VERIFY_PUBLICKEY }}
           SMALLRYE_JWT_SIGN_KEY: ${{ secrets.SMALLRYE_JWT_SIGN_KEY }}
