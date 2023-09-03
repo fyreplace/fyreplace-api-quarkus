@@ -17,7 +17,7 @@ public class Email extends EntityBase {
     @JsonIgnore
     public User user;
 
-    @Column(length = 255, unique = true, nullable = false)
+    @Column(length = 254, unique = true, nullable = false)
     public String email;
 
     @Column(nullable = false)
