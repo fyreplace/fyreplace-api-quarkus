@@ -34,7 +34,7 @@ public final class ActivateTests extends TransactionalTests {
     public void activate() {
         given().contentType(ContentType.JSON)
                 .body(new EmailActivation(newEmail.email, randomCode.code))
-                .post("activation")
+                .post("activate")
                 .then()
                 .statusCode(200);
         assertEquals(0, RandomCode.count("id", randomCode.id));
@@ -45,7 +45,7 @@ public final class ActivateTests extends TransactionalTests {
     public void activateWithInvalidEmail() {
         given().contentType(ContentType.JSON)
                 .body(new EmailActivation("invalid", randomCode.code))
-                .post("activation")
+                .post("activate")
                 .then()
                 .statusCode(404);
         assertEquals(1, RandomCode.count("id", randomCode.id));
@@ -57,7 +57,7 @@ public final class ActivateTests extends TransactionalTests {
         final var otherUser = User.findByUsername("user_1");
         given().contentType(ContentType.JSON)
                 .body(new EmailActivation(otherUser.mainEmail.email, randomCode.code))
-                .post("activation")
+                .post("activate")
                 .then()
                 .statusCode(404);
         assertEquals(1, RandomCode.count("id", randomCode.id));
@@ -68,7 +68,7 @@ public final class ActivateTests extends TransactionalTests {
     public void activateWithInvalidCode() {
         given().contentType(ContentType.JSON)
                 .body(new EmailActivation(newEmail.email, "invalid"))
-                .post("activation")
+                .post("activate")
                 .then()
                 .statusCode(404);
         assertEquals(1, RandomCode.count("id", randomCode.id));
@@ -77,7 +77,7 @@ public final class ActivateTests extends TransactionalTests {
     @Test
     @TestSecurity(user = "user_0")
     public void activateWithEmptyInput() {
-        given().contentType(ContentType.JSON).post("activation").then().statusCode(400);
+        given().contentType(ContentType.JSON).post("activate").then().statusCode(400);
         assertEquals(1, RandomCode.count("id", randomCode.id));
     }
 

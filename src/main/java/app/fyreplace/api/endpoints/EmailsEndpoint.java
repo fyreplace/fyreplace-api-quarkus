@@ -121,7 +121,7 @@ public final class EmailsEndpoint {
     }
 
     @POST
-    @Path("activation")
+    @Path("activate")
     @Authenticated
     @Transactional
     @APIResponse(responseCode = "200")
