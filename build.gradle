@@ -44,6 +44,7 @@ dependencies {
     testImplementation("io.quarkus:quarkus-test-h2")
     testImplementation("io.quarkus:quarkus-test-security")
     testImplementation("io.rest-assured:rest-assured")
+    testImplementation("org.apiguardian:apiguardian-api:+")
 }
 
 java {
