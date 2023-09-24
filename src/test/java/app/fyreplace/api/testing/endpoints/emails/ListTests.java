@@ -46,7 +46,13 @@ public final class ListTests extends TransactionalTests {
     @Test
     @TestSecurity(user = "user_0")
     public void listOutOfBounds() {
-        given().queryParam("page", 500)
+        given().queryParam("page", -1).get().then().statusCode(400);
+    }
+
+    @Test
+    @TestSecurity(user = "user_0")
+    public void listTooFar() {
+        given().queryParam("page", 50)
                 .get()
                 .then()
                 .statusCode(200)

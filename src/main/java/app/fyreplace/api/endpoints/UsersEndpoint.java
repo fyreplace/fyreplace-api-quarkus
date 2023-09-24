@@ -18,6 +18,7 @@ import jakarta.persistence.LockModeType;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -265,7 +266,7 @@ public final class UsersEndpoint {
     @Authenticated
     @APIResponse(responseCode = "200")
     @APIResponse(responseCode = "401")
-    public List<User.Profile> listBlocked(@QueryParam("page") final int page) {
+    public List<User.Profile> listBlocked(@QueryParam("page") @PositiveOrZero final int page) {
         return Block.<Block>find("source", Sort.by("id"), User.getFromSecurityContext(context))
                 .page(page, pagingSize)
                 .stream()

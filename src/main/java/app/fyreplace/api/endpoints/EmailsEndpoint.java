@@ -14,6 +14,7 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -49,7 +50,7 @@ public final class EmailsEndpoint {
     @Authenticated
     @APIResponse(responseCode = "200")
     @APIResponse(responseCode = "401")
-    public List<Email> list(@QueryParam("page") final int page) {
+    public List<Email> list(@QueryParam("page") @PositiveOrZero final int page) {
         final var user = User.getFromSecurityContext(context);
         return Email.find("user", Sort.by("email"), user).page(page, pagingSize).list();
     }
