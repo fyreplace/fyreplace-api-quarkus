@@ -67,7 +67,9 @@ public final class SetMainTests extends TransactionalTests {
 
     @BeforeEach
     @Transactional
-    public void beforeEach_createEmail() {
+    @Override
+    public void beforeEach() {
+        super.beforeEach();
         secondaryEmail = new Email();
         secondaryEmail.user = User.findByUsername("user_0");
         secondaryEmail.email = "new_email@example.org";

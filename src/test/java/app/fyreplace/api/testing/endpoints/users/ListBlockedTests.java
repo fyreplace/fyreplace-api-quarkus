@@ -56,7 +56,9 @@ public final class ListBlockedTests extends TransactionalTests {
 
     @BeforeEach
     @Transactional
-    public void beforeEach_createBlocks() {
+    @Override
+    public void beforeEach() {
+        super.beforeEach();
         final var user = User.findByUsername("user_0");
         range(10, 50).forEach(i -> {
             final var otherUser = User.findByUsername("user_" + i);

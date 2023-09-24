@@ -83,7 +83,9 @@ public final class ActivateTests extends TransactionalTests {
 
     @BeforeEach
     @Transactional
-    public void beforeEach_createEmail() {
+    @Override
+    public void beforeEach() {
+        super.beforeEach();
         newEmail = new Email();
         newEmail.user = User.findByUsername("user_0");
         newEmail.email = "new_email@example.org";

@@ -130,7 +130,9 @@ public final class CreateTests extends TransactionalTests {
 
     @BeforeEach
     @Transactional
-    public void beforeEach_createRandomCode() {
+    @Override
+    public void beforeEach() {
+        super.beforeEach();
         normalUserRandomCode = makeRandomCode("user_0");
         otherNormalUserRandomCode = makeRandomCode("user_1");
         newUserRandomCode = makeRandomCode("user_inactive_0");

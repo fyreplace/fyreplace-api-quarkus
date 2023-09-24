@@ -19,12 +19,12 @@ public abstract class TransactionalTests {
     MockMailbox mailbox;
 
     @BeforeEach
-    public final void beforeEach_insertData() {
+    public void beforeEach() {
         seeder.insertData();
     }
 
     @AfterEach
-    public final void afterEach_deleteData() {
+    public void afterEach() {
         seeder.deleteData();
         mailbox.clear();
     }

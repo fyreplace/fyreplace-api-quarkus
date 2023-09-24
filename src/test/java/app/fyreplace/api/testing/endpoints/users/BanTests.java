@@ -117,7 +117,9 @@ public final class BanTests extends TransactionalTests {
 
     @BeforeEach
     @Transactional
-    public void beforeEach_banUser() {
+    @Override
+    public void beforeEach() {
+        super.beforeEach();
         var user = User.findByUsername("user_2");
         user.isBanned = false;
         user.banCount = User.BanCount.ONCE;

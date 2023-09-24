@@ -56,7 +56,9 @@ public final class ListTests extends TransactionalTests {
 
     @BeforeEach
     @Transactional
-    public void beforeEach_makeEmails() {
+    @Override
+    public void beforeEach() {
+        super.beforeEach();
         final var user = User.findByUsername("user_0");
         range(0, 100).forEach(i -> {
             final var email = new Email();

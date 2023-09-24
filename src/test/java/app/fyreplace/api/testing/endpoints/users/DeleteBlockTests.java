@@ -47,7 +47,9 @@ public final class DeleteBlockTests extends TransactionalTests {
 
     @BeforeEach
     @Transactional
-    public void beforeEach_createBlock() {
+    @Override
+    public void beforeEach() {
+        super.beforeEach();
         final var user = User.findByUsername("user_0");
         final var otherUser = User.findByUsername("user_1");
         final var block = new Block();
