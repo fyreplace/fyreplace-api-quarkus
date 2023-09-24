@@ -273,4 +273,12 @@ public final class UsersEndpoint {
                 .map(block -> block.target.getProfile())
                 .collect(Collectors.toList());
     }
+
+    @GET
+    @Path("blocked/count")
+    @Authenticated
+    @APIResponse(responseCode = "200")
+    public long countBlocked() {
+        return Block.count("source", User.getFromSecurityContext(context));
+    }
 }

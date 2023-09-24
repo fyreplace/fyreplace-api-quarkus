@@ -121,6 +121,14 @@ public final class EmailsEndpoint {
         return Response.ok().build();
     }
 
+    @GET
+    @Path("count")
+    @Authenticated
+    @APIResponse(responseCode = "200")
+    public long count() {
+        return Email.count("user", User.getFromSecurityContext(context));
+    }
+
     @POST
     @Path("activate")
     @Authenticated
