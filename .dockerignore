@@ -9,3 +9,4 @@
 !settings.gradle
 !quarkus-sentry
 !src
+!Makefile
