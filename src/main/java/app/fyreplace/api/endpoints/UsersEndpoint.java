@@ -119,11 +119,8 @@ public final class UsersEndpoint {
             throw new NotFoundException();
         } else if (source.id.equals(target.id)) {
             throw new ForbiddenException("user_is_self");
-        } else if (Block.count("source = ?1 and target = ?2", source, target) == 0) {
-            final var block = new Block();
-            block.source = source;
-            block.target = target;
-            block.persist();
+        } else {
+            source.block(target);
         }
 
         return Response.ok().build();
@@ -143,7 +140,7 @@ public final class UsersEndpoint {
             throw new NotFoundException();
         }
 
-        Block.delete("source = ?1 and target = ?2", source, target);
+        source.unblock(target);
     }
 
     @PUT

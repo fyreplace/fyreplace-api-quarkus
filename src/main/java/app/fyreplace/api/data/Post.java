@@ -86,6 +86,8 @@ public class Post extends AuthoredEntityBase {
             throw new ForbiddenException(postIsDraft ? "post_not_published" : "post_is_published");
         } else if (mustBeAuthor && !post.author.id.equals(userId)) {
             throw new ForbiddenException("invalid_author");
+        } else if (!post.anonymous && user != null && post.author.isBlocking(user)) {
+            throw new ForbiddenException("user_is_blocked");
         }
 
         post.setCurrentUser(user);

@@ -7,8 +7,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import app.fyreplace.api.data.Comment;
 import app.fyreplace.api.data.CommentCreation;
 import app.fyreplace.api.data.Post;
+import app.fyreplace.api.data.User;
 import app.fyreplace.api.endpoints.CommentsEndpoint;
 import app.fyreplace.api.testing.endpoints.PostTestsBase;
+import io.quarkus.narayana.jta.QuarkusTransaction;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
@@ -102,6 +104,36 @@ public class CreateTests extends PostTestsBase {
                 .then()
                 .statusCode(403);
         assertEquals(commentCount, Comment.count("post", post));
+    }
+
+    @Test
+    @TestSecurity(user = "user_1")
+    public void createOnOtherPostWhenBlocked() {
+        QuarkusTransaction.requiringNew().run(() -> post.author.block(User.findByUsername("user_1")));
+        final var commentCount = Comment.count("post", post);
+        final var input = new CommentCreation("Text", false);
+        given().contentType(ContentType.JSON)
+                .body(input)
+                .pathParam("id", post.id)
+                .post()
+                .then()
+                .statusCode(403);
+        assertEquals(commentCount, Comment.count("post", post));
+    }
+
+    @Test
+    @TestSecurity(user = "user_1")
+    public void createOnOtherAnonymousPostWhenBlocked() {
+        QuarkusTransaction.requiringNew().run(() -> anonymousPost.author.block(User.findByUsername("user_1")));
+        final var commentCount = Comment.count("post", anonymousPost);
+        final var input = new CommentCreation("Text", false);
+        given().contentType(ContentType.JSON)
+                .body(input)
+                .pathParam("id", anonymousPost.id)
+                .post()
+                .then()
+                .statusCode(201);
+        assertEquals(commentCount + 1, Comment.count("post", anonymousPost));
     }
 
     @Test

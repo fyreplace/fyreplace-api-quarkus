@@ -5,6 +5,7 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.IntStream.range;
 import static org.hamcrest.CoreMatchers.equalTo;
 
+import app.fyreplace.api.data.Block;
 import app.fyreplace.api.data.Post;
 import app.fyreplace.api.data.User;
 import app.fyreplace.api.data.Vote;
@@ -75,11 +76,36 @@ public final class ListFeedTests extends PostTestsBase {
         given().get("feed").then().statusCode(200).body("size()", equalTo(0));
     }
 
+    @Test
+    @TestSecurity(user = "user_0")
+    public void listFeedWithPostsFromBlockedUser() {
+        final var user = requireNonNull(User.findByUsername("user_0"));
+        final var otherUser = requireNonNull(User.findByUsername("user_1"));
+        QuarkusTransaction.requiringNew().run(() -> user.block(otherUser));
+        QuarkusTransaction.requiringNew()
+                .run(() -> range(0, 5).forEach(i -> dataSeeder.createPost(otherUser, "Post " + i, true, false)));
+
+        given().get("feed").then().statusCode(200).body("size()", equalTo(0));
+    }
+
+    @Test
+    @TestSecurity(user = "user_0")
+    public void listFeedWithPostsFromBlockingUser() {
+        final var user = requireNonNull(User.findByUsername("user_0"));
+        final var otherUser = requireNonNull(User.findByUsername("user_1"));
+        QuarkusTransaction.requiringNew().run(() -> user.block(otherUser));
+        QuarkusTransaction.requiringNew()
+                .run(() -> range(0, 5).forEach(i -> dataSeeder.createPost(otherUser, "Post " + i, true, false)));
+
+        given().get("feed").then().statusCode(200).body("size()", equalTo(0));
+    }
+
     @BeforeEach
     @Transactional
     @Override
     public void beforeEach() {
         super.beforeEach();
         Post.deleteAll();
+        Block.deleteAll();
     }
 }

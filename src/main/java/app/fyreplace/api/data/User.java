@@ -117,10 +117,28 @@ public class User extends TimestampedEntityBase {
         }
     }
 
-    public void subscribeTo(final Post post) {
-        final var existing = Subscription.count("user = ?1 and post = ?2", this, post);
+    public void block(final User user) {
+        if (isBlocking(user)) {
+            return;
+        }
 
-        if (existing > 0) {
+        final var block = new Block();
+        block.source = this;
+        block.target = user;
+        block.persist();
+        Subscription.delete("user = ?1 and post.author = ?2", user, this);
+    }
+
+    public void unblock(final User user) {
+        Block.delete("source = ?1 and target = ?2", this, user);
+    }
+
+    public boolean isBlocking(final User user) {
+        return Block.count("source = ?1 and target = ?2", this, user) > 0;
+    }
+
+    public void subscribeTo(final Post post) {
+        if (isSubscribedTo(post)) {
             return;
         }
 
@@ -134,6 +152,10 @@ public class User extends TimestampedEntityBase {
 
     public void unsubscribeFrom(final Post post) {
         Subscription.delete("user = ?1 and post = ?2", this, post);
+    }
+
+    public boolean isSubscribedTo(final Post post) {
+        return Subscription.count("user = ?1 and post = ?2", this, post) > 0;
     }
 
     public static @Nullable User findByUsername(final String username) {

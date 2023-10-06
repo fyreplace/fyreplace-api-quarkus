@@ -1,6 +1,7 @@
 package app.fyreplace.api.testing.endpoints.comments;
 
 import static io.restassured.RestAssured.given;
+import static java.util.Objects.requireNonNull;
 import static java.util.stream.IntStream.range;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.in;
@@ -11,6 +12,7 @@ import app.fyreplace.api.data.User;
 import app.fyreplace.api.data.dev.DataSeeder;
 import app.fyreplace.api.endpoints.CommentsEndpoint;
 import app.fyreplace.api.testing.endpoints.PostTestsBase;
+import io.quarkus.narayana.jta.QuarkusTransaction;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
@@ -68,6 +70,27 @@ public class ListTests extends PostTestsBase {
 
         range(1, pagingSize).forEach(i -> response.body("[" + i + "].id", in(commentIds))
                 .body("[" + i + "].author.username", equalTo("user_1")));
+    }
+
+    @Test
+    @TestSecurity(user = "user_1")
+    public void listInOtherPostWhenBlocked() {
+        final var user = requireNonNull(User.findByUsername("user_1"));
+        QuarkusTransaction.requiringNew().run(() -> post.author.block(user));
+        given().pathParam("id", post.id).queryParam("page", 0).get().then().statusCode(403);
+    }
+
+    @Test
+    @TestSecurity(user = "user_1")
+    public void listInOtherAnonymousPostWhenBlocked() {
+        final var user = requireNonNull(User.findByUsername("user_1"));
+        QuarkusTransaction.requiringNew().run(() -> anonymousPost.author.block(user));
+        given().pathParam("id", anonymousPost.id)
+                .queryParam("page", 0)
+                .get()
+                .then()
+                .statusCode(200)
+                .contentType(ContentType.JSON);
     }
 
     @Test

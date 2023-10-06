@@ -1,6 +1,7 @@
 package app.fyreplace.api.testing.endpoints.comments;
 
 import static io.restassured.RestAssured.given;
+import static java.util.Objects.requireNonNull;
 import static java.util.stream.IntStream.range;
 import static org.hamcrest.Matchers.equalTo;
 
@@ -11,6 +12,7 @@ import app.fyreplace.api.data.User;
 import app.fyreplace.api.data.dev.DataSeeder;
 import app.fyreplace.api.endpoints.CommentsEndpoint;
 import app.fyreplace.api.testing.endpoints.PostTestsBase;
+import io.quarkus.narayana.jta.QuarkusTransaction;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
@@ -30,7 +32,7 @@ public class CountTests extends PostTestsBase {
     private static final int notReadCommentCount = 6;
 
     @Test
-    @TestSecurity(user = "user_0")
+    @TestSecurity(user = "user_1")
     public void count() {
         given().pathParam("id", post.id)
                 .get("count")
@@ -40,7 +42,7 @@ public class CountTests extends PostTestsBase {
     }
 
     @Test
-    @TestSecurity(user = "user_0")
+    @TestSecurity(user = "user_1")
     public void countRead() {
         given().pathParam("id", post.id)
                 .queryParam("read", true)
@@ -51,7 +53,7 @@ public class CountTests extends PostTestsBase {
     }
 
     @Test
-    @TestSecurity(user = "user_0")
+    @TestSecurity(user = "user_1")
     public void countNotRead() {
         given().pathParam("id", post.id)
                 .queryParam("read", false)
@@ -61,23 +63,37 @@ public class CountTests extends PostTestsBase {
                 .body(equalTo(String.valueOf(notReadCommentCount)));
     }
 
+    @Test
+    @TestSecurity(user = "user_1")
+    public void countWhenBlocked() {
+        QuarkusTransaction.requiringNew().run(() -> {
+            final var user = requireNonNull(User.findByUsername("user_0"));
+            final var otherUser = requireNonNull(User.findByUsername("user_1"));
+            user.block(otherUser);
+        });
+
+        given().pathParam("id", post.id).get("count").then().statusCode(403);
+    }
+
     @BeforeEach
     @Transactional
     @Override
     public void beforeEach() {
         super.beforeEach();
         Comment.deleteAll();
-        final var user = User.findByUsername("user_1");
-        range(0, readCommentCount).forEach(i -> dataSeeder.createComment(user, post, "Comment " + i, false));
-        final var subscription = Subscription.<Subscription>find("user.username = 'user_0' and post = ?1", post)
+        final var user1 = User.findByUsername("user_1");
+        final var user2 = User.findByUsername("user_2");
+        range(0, readCommentCount).forEach(i -> dataSeeder.createComment(user2, post, "Comment " + i, false));
+        user1.subscribeTo(post);
+        final var subscription = Subscription.<Subscription>find("user = ?1 and post = ?2", user1, post)
                 .firstResult();
         subscription.lastCommentSeen = Comment.<Comment>find(
                         "post", Comment.sorting().descending(), post)
                 .firstResult();
         subscription.persist();
-        range(0, notReadCommentCount).forEach(i -> dataSeeder.createComment(user, post, "Comment " + i, false));
+        range(0, notReadCommentCount).forEach(i -> dataSeeder.createComment(user2, post, "Comment " + i, false));
         range(0, 10)
                 .forEach(i -> dataSeeder.createComment(
-                        user, Post.find("id != ?1", post.id).firstResult(), "Comment " + i, false));
+                        user2, Post.find("id != ?1", post.id).firstResult(), "Comment " + i, false));
     }
 }

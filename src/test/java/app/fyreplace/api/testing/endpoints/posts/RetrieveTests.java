@@ -5,16 +5,14 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.nullValue;
 
 import app.fyreplace.api.data.Comment;
-import app.fyreplace.api.data.Post;
+import app.fyreplace.api.data.User;
 import app.fyreplace.api.data.Vote;
-import app.fyreplace.api.data.dev.DataSeeder;
 import app.fyreplace.api.endpoints.PostsEndpoint;
 import app.fyreplace.api.testing.endpoints.PostTestsBase;
+import io.quarkus.narayana.jta.QuarkusTransaction;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
-import jakarta.inject.Inject;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -22,11 +20,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 @QuarkusTest
 @TestHTTPEndpoint(PostsEndpoint.class)
 public final class RetrieveTests extends PostTestsBase {
-    @Inject
-    DataSeeder dataSeeder;
-
-    private Post anonymousPost;
-
     @Test
     @TestSecurity(user = "user_0")
     public void retrieveOwnPost() {
@@ -101,6 +94,27 @@ public final class RetrieveTests extends PostTestsBase {
     }
 
     @Test
+    @TestSecurity(user = "user_1")
+    public void retrieveOtherPostWhenBlocked() {
+        QuarkusTransaction.requiringNew().run(() -> post.author.block(User.findByUsername("user_1")));
+        given().get(post.id.toString()).then().statusCode(403);
+    }
+
+    @Test
+    @TestSecurity(user = "user_1")
+    public void retrieveOtherAnonymousPostWhenBlocked() {
+        QuarkusTransaction.requiringNew().run(() -> post.author.block(User.findByUsername("user_1")));
+        given().get(anonymousPost.id.toString())
+                .then()
+                .statusCode(200)
+                .body("id", equalTo(anonymousPost.id.toString()))
+                .body("dateCreated", equalTo(anonymousPost.datePublished.toString()))
+                .body("author", nullValue())
+                .body("anonymous", equalTo(true))
+                .body("chapters.size()", equalTo(anonymousPost.getChapters().size()));
+    }
+
+    @Test
     public void retrievePostUnauthenticated() {
         given().get(post.id.toString())
                 .then()
@@ -133,12 +147,5 @@ public final class RetrieveTests extends PostTestsBase {
     @ValueSource(strings = {"fake", "00000000-0000-0000-0000-000000000000"})
     public void retrieveNonExistent(final String id) {
         given().get(id).then().statusCode(404);
-    }
-
-    @BeforeEach
-    @Override
-    public void beforeEach() {
-        super.beforeEach();
-        anonymousPost = dataSeeder.createPost(post.author, "Anonymous Post", true, true);
     }
 }

@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import app.fyreplace.api.data.Post;
+import app.fyreplace.api.data.User;
 import app.fyreplace.api.data.Vote;
 import app.fyreplace.api.data.VoteCreation;
 import app.fyreplace.api.endpoints.PostsEndpoint;
@@ -123,6 +124,36 @@ public final class VoteTests extends PostTestsBase {
                 .statusCode(403);
         assertEquals(voteCount, Vote.count());
         assertEquals(1, Post.count("id = ?1 and life = ?2", draft.id, postLife));
+    }
+
+    @Test
+    @TestSecurity(user = "user_1")
+    public void voteOnOtherPostWhenBlocked() {
+        final var user = User.findByUsername("user_1");
+        QuarkusTransaction.requiringNew().run(() -> post.author.block(user));
+        final var voteCount = Vote.count();
+        final var postLife = post.life;
+        given().contentType(ContentType.JSON)
+                .body(new VoteCreation(false))
+                .post(post.id + "/vote")
+                .then()
+                .statusCode(403);
+        assertEquals(voteCount, Vote.count());
+        assertEquals(1, Post.count("id = ?1 and life = ?2", post.id, postLife));
+    }
+
+    @Test
+    @TestSecurity(user = "user_1")
+    public void voteOnOtherAnonymousPostWhenBlocked() {
+        final var user = User.findByUsername("user_1");
+        QuarkusTransaction.requiringNew().run(() -> anonymousPost.author.block(user));
+        final var voteCount = Vote.count();
+        given().contentType(ContentType.JSON)
+                .body(new VoteCreation(true))
+                .post(anonymousPost.id + "/vote")
+                .then()
+                .statusCode(200);
+        assertEquals(voteCount + 1, Vote.count());
     }
 
     @Test

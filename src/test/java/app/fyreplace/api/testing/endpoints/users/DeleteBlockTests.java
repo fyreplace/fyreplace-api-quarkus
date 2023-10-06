@@ -3,6 +3,8 @@ package app.fyreplace.api.testing.endpoints.users;
 import static io.restassured.RestAssured.given;
 import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import app.fyreplace.api.data.Block;
 import app.fyreplace.api.data.User;
@@ -23,8 +25,9 @@ public final class DeleteBlockTests extends TransactionalTests {
     public void deleteBlock() {
         final var user = requireNonNull(User.findByUsername("user_0"));
         final var otherUser = requireNonNull(User.findByUsername("user_1"));
+        assertTrue(user.isBlocking(otherUser));
         given().delete(otherUser.id + "/blocked").then().statusCode(204);
-        assertEquals(0, Block.count("source = ?1 and target = ?2", user, otherUser));
+        assertFalse(user.isBlocking(otherUser));
     }
 
     @Test
@@ -32,9 +35,10 @@ public final class DeleteBlockTests extends TransactionalTests {
     public void deleteBlockTwice() {
         final var user = requireNonNull(User.findByUsername("user_0"));
         final var otherUser = requireNonNull(User.findByUsername("user_1"));
+        assertTrue(user.isBlocking(otherUser));
         given().delete(otherUser.id + "/blocked").then().statusCode(204);
         given().delete(otherUser.id + "/blocked").then().statusCode(204);
-        assertEquals(0, Block.count("source = ?1 and target = ?2", user, otherUser));
+        assertFalse(user.isBlocking(otherUser));
     }
 
     @Test
@@ -51,11 +55,8 @@ public final class DeleteBlockTests extends TransactionalTests {
     @Override
     public void beforeEach() {
         super.beforeEach();
-        final var user = User.findByUsername("user_0");
-        final var otherUser = User.findByUsername("user_1");
-        final var block = new Block();
-        block.source = user;
-        block.target = otherUser;
-        block.persist();
+        final var user = requireNonNull(User.findByUsername("user_0"));
+        final var otherUser = requireNonNull(User.findByUsername("user_1"));
+        user.block(otherUser);
     }
 }

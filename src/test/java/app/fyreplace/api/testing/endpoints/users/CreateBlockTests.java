@@ -3,11 +3,15 @@ package app.fyreplace.api.testing.endpoints.users;
 import static io.restassured.RestAssured.given;
 import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import app.fyreplace.api.data.Block;
+import app.fyreplace.api.data.Post;
 import app.fyreplace.api.data.User;
 import app.fyreplace.api.endpoints.UsersEndpoint;
 import app.fyreplace.api.testing.TransactionalTests;
+import io.quarkus.narayana.jta.QuarkusTransaction;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
@@ -19,22 +23,25 @@ public final class CreateBlockTests extends TransactionalTests {
     @Test
     @TestSecurity(user = "user_0")
     public void createBlock() {
-        final var user = User.findByUsername("user_0");
-        final var otherUser = User.findByUsername("user_2");
-        assertEquals(0, Block.count("source = ?1 and target = ?2", user, otherUser));
+        final var user = requireNonNull(User.findByUsername("user_0"));
+        final var otherUser = requireNonNull(User.findByUsername("user_1"));
+        final var post = Post.<Post>find("author", user).firstResult();
+        QuarkusTransaction.requiringNew().run(() -> otherUser.subscribeTo(post));
+        assertFalse(user.isBlocking(otherUser));
         given().put(otherUser.id + "/blocked").then().statusCode(200);
-        assertEquals(1, Block.count("source = ?1 and target = ?2", user, otherUser));
+        assertTrue(user.isBlocking(otherUser));
+        assertFalse(otherUser.isSubscribedTo(post));
     }
 
     @Test
     @TestSecurity(user = "user_0")
     public void createBlockTwice() {
-        final var user = User.findByUsername("user_0");
-        final var otherUser = User.findByUsername("user_1");
-        assertEquals(0, Block.count("source = ?1 and target = ?2", user, otherUser));
+        final var user = requireNonNull(User.findByUsername("user_0"));
+        final var otherUser = requireNonNull(User.findByUsername("user_1"));
+        assertFalse(user.isBlocking(otherUser));
         given().put(otherUser.id + "/blocked").then().statusCode(200);
         given().put(otherUser.id + "/blocked").then().statusCode(200);
-        assertEquals(1, Block.count("source = ?1 and target = ?2", user, otherUser));
+        assertTrue(user.isBlocking(otherUser));
     }
 
     @Test
@@ -51,6 +58,6 @@ public final class CreateBlockTests extends TransactionalTests {
     public void createBlockWithSelf() {
         final var user = requireNonNull(User.findByUsername("user_0"));
         given().put(user.id + "/blocked").then().statusCode(403);
-        assertEquals(0, Block.count("source = ?1 and target = ?2", user, user));
+        assertFalse(user.isBlocking(user));
     }
 }

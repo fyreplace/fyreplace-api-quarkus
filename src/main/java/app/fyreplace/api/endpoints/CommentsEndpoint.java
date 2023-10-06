@@ -53,33 +53,6 @@ public final class CommentsEndpoint {
         }
     }
 
-    @GET
-    @Path("count")
-    @Authenticated
-    @APIResponse(responseCode = "200")
-    public long count(@PathParam("id") final UUID id, @QueryParam("read") @Nullable final Boolean read) {
-        final var user = User.getFromSecurityContext(context);
-        final var post = Post.<Post>findById(id);
-        Post.validateAccess(post, user, true, false);
-
-        if (read == null) {
-            return Comment.count("post.id", post.id);
-        }
-
-        final var subscription = Subscription.<Subscription>find("user = ?1 and post = ?2", user, post)
-                .firstResult();
-        final var dateComparison = read ? '<' : '>';
-        final var idComparison = read ? '=' : '>';
-        return subscription != null && subscription.lastCommentSeen != null
-                ? Comment.count(
-                        "post.id = ?1 and (dateCreated " + dateComparison + " ?2 or (dateCreated = ?2 and id "
-                                + idComparison + " ?3))",
-                        post.id,
-                        subscription.lastCommentSeen.dateCreated,
-                        subscription.lastCommentSeen.id)
-                : 0;
-    }
-
     @POST
     @Authenticated
     @Transactional
@@ -151,6 +124,33 @@ public final class CommentsEndpoint {
         }
 
         return Response.ok().build();
+    }
+
+    @GET
+    @Path("count")
+    @Authenticated
+    @APIResponse(responseCode = "200")
+    public long count(@PathParam("id") final UUID id, @QueryParam("read") @Nullable final Boolean read) {
+        final var user = User.getFromSecurityContext(context);
+        final var post = Post.<Post>findById(id);
+        Post.validateAccess(post, user, true, false);
+
+        if (read == null) {
+            return Comment.count("post.id", post.id);
+        }
+
+        final var subscription = Subscription.<Subscription>find("user = ?1 and post = ?2", user, post)
+                .firstResult();
+        final var dateComparison = read ? '<' : '>';
+        final var idComparison = read ? '=' : '>';
+        return subscription != null && subscription.lastCommentSeen != null
+                ? Comment.count(
+                        "post.id = ?1 and (dateCreated " + dateComparison + " ?2 or (dateCreated = ?2 and id "
+                                + idComparison + " ?3))",
+                        post.id,
+                        subscription.lastCommentSeen.dateCreated,
+                        subscription.lastCommentSeen.id)
+                : 0;
     }
 
     private Comment getComment(final Post post, final int position) {

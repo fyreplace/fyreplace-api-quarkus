@@ -141,7 +141,7 @@ public final class PostsEndpoint {
     }
 
     @PUT
-    @Path("{id}/isSubscribed")
+    @Path("{id}/subscribed")
     @Authenticated
     @Transactional
     @APIResponse(responseCode = "200")
@@ -155,7 +155,7 @@ public final class PostsEndpoint {
     }
 
     @DELETE
-    @Path("{id}/isSubscribed")
+    @Path("{id}/subscribed")
     @Authenticated
     @Transactional
     @APIResponse(responseCode = "204")
@@ -215,7 +215,10 @@ public final class PostsEndpoint {
         final var user = User.getFromSecurityContext(context);
 
         try (final var postStream = Post.<Post>find(
-                "author != ?1 and datePublished > ?2 and life > 0 and id not in (select post.id from Vote where user = ?1)",
+                "author != ?1 and datePublished > ?2 and life > 0"
+                        + "and id not in (select post.id from Vote where user = ?1)"
+                        + "and author.id not in (select target.id from Block where source = ?1)"
+                        + "and author.id not in (select source.id from Block where target = ?1)",
                 Sort.by("life", "datePublished", "id"),
                 user,
                 Instant.now().minus(Post.shelfLife))

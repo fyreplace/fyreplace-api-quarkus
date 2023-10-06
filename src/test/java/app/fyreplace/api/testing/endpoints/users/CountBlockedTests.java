@@ -34,10 +34,7 @@ public class CountBlockedTests extends TransactionalTests {
         final var user = User.findByUsername("user_0");
 
         for (final var otherUser : User.<User>list("username > 'user_10'")) {
-            final var block = new Block();
-            block.source = user;
-            block.target = otherUser;
-            block.persist();
+            user.block(otherUser);
         }
     }
 }
