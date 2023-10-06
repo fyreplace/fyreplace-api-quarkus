@@ -5,11 +5,13 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import java.util.UUID;
+import org.hibernate.annotations.UuidGenerator;
 
 @MappedSuperclass
 public abstract class EntityBase extends PanacheEntityBase {
     @Id
     @GeneratedValue
+    @UuidGenerator(style = UuidGenerator.Style.RANDOM)
     public UUID id;
 
     public void refresh() {
