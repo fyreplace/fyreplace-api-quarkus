@@ -21,7 +21,7 @@ public final class CreateBlockTests extends TransactionalTests {
         final var user = User.findByUsername("user_0");
         final var otherUser = User.findByUsername("user_2");
         assertEquals(0, Block.count("source = ?1 and target = ?2", user, otherUser));
-        given().put(otherUser.id + "/isBlocked").then().statusCode(200);
+        given().put(otherUser.id + "/blocked").then().statusCode(200);
         assertEquals(1, Block.count("source = ?1 and target = ?2", user, otherUser));
     }
 
@@ -31,8 +31,8 @@ public final class CreateBlockTests extends TransactionalTests {
         final var user = User.findByUsername("user_0");
         final var otherUser = User.findByUsername("user_1");
         assertEquals(0, Block.count("source = ?1 and target = ?2", user, otherUser));
-        given().put(otherUser.id + "/isBlocked").then().statusCode(200);
-        given().put(otherUser.id + "/isBlocked").then().statusCode(200);
+        given().put(otherUser.id + "/blocked").then().statusCode(200);
+        given().put(otherUser.id + "/blocked").then().statusCode(200);
         assertEquals(1, Block.count("source = ?1 and target = ?2", user, otherUser));
     }
 
@@ -41,7 +41,7 @@ public final class CreateBlockTests extends TransactionalTests {
     public void createBlockWithInvalidUser() {
         final var user = User.findByUsername("user_0");
         final var blockCount = Block.count("source", user);
-        given().put("invalid/isBlocked").then().statusCode(404);
+        given().put("invalid/blocked").then().statusCode(404);
         assertEquals(blockCount, Block.count("source", user));
     }
 
@@ -49,7 +49,7 @@ public final class CreateBlockTests extends TransactionalTests {
     @TestSecurity(user = "user_0")
     public void createBlockWithSelf() {
         final var user = User.findByUsername("user_0");
-        given().put(user.id + "/isBlocked").then().statusCode(403);
+        given().put(user.id + "/blocked").then().statusCode(403);
         assertEquals(0, Block.count("source = ?1 and target = ?2", user, user));
     }
 }

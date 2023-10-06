@@ -25,7 +25,7 @@ public final class SetMainTests extends TransactionalTests {
     @TestSecurity(user = "user_0")
     public void setMain() {
         assertFalse(secondaryEmail.isMain());
-        given().post(secondaryEmail.id + "/isMain").then().statusCode(200);
+        given().post(secondaryEmail.id + "/main").then().statusCode(200);
         secondaryEmail = Email.findById(secondaryEmail.id);
         assertTrue(secondaryEmail.isMain());
     }
@@ -34,8 +34,8 @@ public final class SetMainTests extends TransactionalTests {
     @TestSecurity(user = "user_0")
     public void setMainTwice() {
         assertFalse(secondaryEmail.isMain());
-        given().post(secondaryEmail.id + "/isMain").then().statusCode(200);
-        given().post(secondaryEmail.id + "/isMain").then().statusCode(200);
+        given().post(secondaryEmail.id + "/main").then().statusCode(200);
+        given().post(secondaryEmail.id + "/main").then().statusCode(200);
         secondaryEmail = Email.findById(secondaryEmail.id);
         assertTrue(secondaryEmail.isMain());
     }
@@ -43,7 +43,7 @@ public final class SetMainTests extends TransactionalTests {
     @Test
     @TestSecurity(user = "user_0")
     public void setMainWithUnverifiedEmail() {
-        given().post(unverifiedEmail.id + "/isMain").then().statusCode(403);
+        given().post(unverifiedEmail.id + "/main").then().statusCode(403);
         secondaryEmail = Email.findById(secondaryEmail.id);
         assertFalse(secondaryEmail.isMain());
     }
@@ -52,7 +52,7 @@ public final class SetMainTests extends TransactionalTests {
     @TestSecurity(user = "user_0")
     public void setMainWithOtherEmail() {
         final var otherUser = User.findByUsername("user_1");
-        given().post(otherUser.mainEmail.id + "/isMain").then().statusCode(404);
+        given().post(otherUser.mainEmail.id + "/main").then().statusCode(404);
         secondaryEmail = Email.findById(secondaryEmail.id);
         assertFalse(secondaryEmail.isMain());
     }
@@ -60,7 +60,7 @@ public final class SetMainTests extends TransactionalTests {
     @Test
     @TestSecurity(user = "user_0")
     public void setMainWithNonExistentEmail() {
-        given().post("invalid" + "/isMain").then().statusCode(404);
+        given().post("invalid" + "/main").then().statusCode(404);
         secondaryEmail = Email.findById(secondaryEmail.id);
         assertFalse(secondaryEmail.isMain());
     }

@@ -22,7 +22,7 @@ public final class DeleteBlockTests extends TransactionalTests {
     public void deleteBlock() {
         final var user = User.findByUsername("user_0");
         final var otherUser = User.findByUsername("user_1");
-        given().delete(otherUser.id + "/isBlocked").then().statusCode(204);
+        given().delete(otherUser.id + "/blocked").then().statusCode(204);
         assertEquals(0, Block.count("source = ?1 and target = ?2", user, otherUser));
     }
 
@@ -31,8 +31,8 @@ public final class DeleteBlockTests extends TransactionalTests {
     public void deleteBlockTwice() {
         final var user = User.findByUsername("user_0");
         final var otherUser = User.findByUsername("user_1");
-        given().delete(otherUser.id + "/isBlocked").then().statusCode(204);
-        given().delete(otherUser.id + "/isBlocked").then().statusCode(204);
+        given().delete(otherUser.id + "/blocked").then().statusCode(204);
+        given().delete(otherUser.id + "/blocked").then().statusCode(204);
         assertEquals(0, Block.count("source = ?1 and target = ?2", user, otherUser));
     }
 
@@ -41,7 +41,7 @@ public final class DeleteBlockTests extends TransactionalTests {
     public void deleteBlockWithInvalidUser() {
         final var user = User.findByUsername("user_0");
         final var blockCount = Block.count("source", user);
-        given().delete("invalid/isBlocked").then().statusCode(404);
+        given().delete("invalid/blocked").then().statusCode(404);
         assertEquals(blockCount, Block.count("source", user));
     }
 

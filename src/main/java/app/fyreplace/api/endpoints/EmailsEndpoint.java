@@ -100,7 +100,7 @@ public final class EmailsEndpoint {
     }
 
     @POST
-    @Path("{id}/isMain")
+    @Path("{id}/main")
     @Authenticated
     @Transactional
     @APIResponse(responseCode = "200")

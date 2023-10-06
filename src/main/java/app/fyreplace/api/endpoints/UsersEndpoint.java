@@ -110,7 +110,7 @@ public final class UsersEndpoint {
     }
 
     @PUT
-    @Path("{id}/isBlocked")
+    @Path("{id}/blocked")
     @Authenticated
     @Transactional
     @APIResponse(responseCode = "200")
@@ -136,7 +136,7 @@ public final class UsersEndpoint {
     }
 
     @DELETE
-    @Path("{id}/isBlocked")
+    @Path("{id}/blocked")
     @Authenticated
     @Transactional
     @APIResponse(responseCode = "204")
