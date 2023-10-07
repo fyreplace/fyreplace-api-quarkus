@@ -56,22 +56,22 @@ public final class PostsEndpoint {
             @QueryParam("type") @NotNull final PostListingType type) {
         final var user = User.getFromSecurityContext(context);
         final var direction = ascending ? Direction.Ascending : Direction.Descending;
-        final var basicSort = Sort.by("datePublished", "id").direction(direction);
+        final var basicSort = Post.sorting().direction(direction);
 
         final var postStream =
                 switch (type) {
                     case SUBSCRIBED_TO -> Subscription.<Subscription>find(
                                     "user",
-                                    Sort.by("dateLastSeen", "post.datePublished", "post.id")
+                                    Sort.by("dateLastSeen", "post.dateCreated", "post.id")
                                             .direction(direction),
                                     user)
                             .page(page, pagingSize)
                             .stream()
                             .map(s -> s.post);
-                    case PUBLISHED -> Post.<Post>find("author = ?1 and datePublished is not null", basicSort, user)
+                    case PUBLISHED -> Post.<Post>find("author = ?1 and published = true", basicSort, user)
                             .page(page, pagingSize)
                             .stream();
-                    case DRAFTS -> Post.<Post>find("author = ?1 and datePublished is null", basicSort, user)
+                    case DRAFTS -> Post.<Post>find("author = ?1 and published = false", basicSort, user)
                             .page(page, pagingSize)
                             .stream();
                 };
@@ -202,8 +202,8 @@ public final class PostsEndpoint {
         final var user = User.getFromSecurityContext(context);
         return switch (type) {
             case SUBSCRIBED_TO -> Subscription.count("user", user);
-            case PUBLISHED -> Post.count("author = ?1 and datePublished is not null", user);
-            case DRAFTS -> Post.count("author = ?1 and datePublished is null", user);
+            case PUBLISHED -> Post.count("author = ?1 and published = true", user);
+            case DRAFTS -> Post.count("author = ?1 and published = false", user);
         };
     }
 
@@ -215,11 +215,11 @@ public final class PostsEndpoint {
         final var user = User.getFromSecurityContext(context);
 
         try (final var postStream = Post.<Post>find(
-                "author != ?1 and datePublished > ?2 and life > 0"
+                "author != ?1 and dateCreated > ?2 and published = true and life > 0"
                         + "and id not in (select post.id from Vote where user = ?1)"
                         + "and author.id not in (select target.id from Block where source = ?1)"
                         + "and author.id not in (select source.id from Block where target = ?1)",
-                Sort.by("life", "datePublished", "id"),
+                Sort.by("life", "dateCreated", "id"),
                 user,
                 Instant.now().minus(Post.shelfLife))
                 .range(0, 2)

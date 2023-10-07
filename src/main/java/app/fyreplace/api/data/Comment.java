@@ -1,7 +1,6 @@
 package app.fyreplace.api.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.quarkus.panache.common.Sort;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -37,9 +36,5 @@ public class Comment extends AuthoredEntityBase implements Comparable<Comment> {
         text = "";
         deleted = true;
         persist();
-    }
-
-    public static Sort sorting() {
-        return Sort.by("dateCreated", "id");
     }
 }

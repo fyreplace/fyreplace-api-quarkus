@@ -38,7 +38,7 @@ public final class PublishTests extends PostTestsBase {
                 .post(draft.id + "/publish")
                 .then()
                 .statusCode(200);
-        assertEquals(0, Post.count("id = ?1 and datePublished is null and anonymous = false", draft.id));
+        assertEquals(0, Post.count("id = ?1 and published = false and anonymous = false", draft.id));
     }
 
     @Test
@@ -49,7 +49,7 @@ public final class PublishTests extends PostTestsBase {
                 .post(draft.id + "/publish")
                 .then()
                 .statusCode(200);
-        assertEquals(0, Post.count("id = ?1 and datePublished is null and anonymous = true", draft.id));
+        assertEquals(0, Post.count("id = ?1 and published = false and anonymous = true", draft.id));
     }
 
     @Test
@@ -61,7 +61,7 @@ public final class PublishTests extends PostTestsBase {
                 .post(draft.id + "/publish")
                 .then()
                 .statusCode(403);
-        assertEquals(1, Post.count("id = ?1 and datePublished is null", draft.id));
+        assertEquals(1, Post.count("id = ?1 and published = false", draft.id));
     }
 
     @Test
@@ -82,7 +82,7 @@ public final class PublishTests extends PostTestsBase {
                 .post(draft.id + "/publish")
                 .then()
                 .statusCode(404);
-        assertEquals(1, Post.count("id = ?1 and datePublished is null", draft.id));
+        assertEquals(1, Post.count("id = ?1 and published = false", draft.id));
     }
 
     @Test
@@ -101,7 +101,7 @@ public final class PublishTests extends PostTestsBase {
                 .post(draft.id + "/publish")
                 .then()
                 .statusCode(401);
-        assertEquals(1, Post.count("id = ?1 and datePublished is null", draft.id));
+        assertEquals(1, Post.count("id = ?1 and published = false", draft.id));
     }
 
     @ParameterizedTest

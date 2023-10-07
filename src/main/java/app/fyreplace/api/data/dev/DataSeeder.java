@@ -9,7 +9,6 @@ import app.fyreplace.api.data.Post;
 import app.fyreplace.api.data.RandomCode;
 import app.fyreplace.api.data.StoredFile;
 import app.fyreplace.api.data.User;
-import io.quarkus.panache.common.Sort;
 import io.quarkus.runtime.LaunchMode;
 import io.quarkus.runtime.ShutdownEvent;
 import io.quarkus.runtime.StartupEvent;
@@ -47,8 +46,7 @@ public class DataSeeder {
         final var user = User.findByUsername("user_0");
         range(0, 20).forEach(i -> createPost(user, "Post " + i, true, false));
         range(0, 20).forEach(i -> createPost(user, "Draft " + i, false, false));
-        final var post = Post.<Post>find(
-                        "author = ?1 and datePublished is not null", Sort.by("datePublished", "id"), user)
+        final var post = Post.<Post>find("author = ?1 and published = true", Post.sorting(), user)
                 .firstResult();
         range(0, 10).forEach(i -> createComment(user, post, "Comment " + i, false));
     }

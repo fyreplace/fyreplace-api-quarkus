@@ -55,7 +55,7 @@ public final class ListTests extends TransactionalTests {
     public void listPublished() {
         final var user = User.findByUsername("user_0");
 
-        try (final var stream = Post.<Post>stream("author = ?1 and datePublished is not null", user)) {
+        try (final var stream = Post.<Post>stream("author = ?1 and published = true", user)) {
             final var publishedPostIds = stream.map(post -> post.id.toString()).toList();
             final var response = given().queryParam("page", 0)
                     .queryParam("ascending", false)
@@ -75,7 +75,7 @@ public final class ListTests extends TransactionalTests {
     public void listDrafts() {
         final var user = User.findByUsername("user_0");
 
-        try (final var stream = Post.<Post>stream("author = ?1 and datePublished is null", user)) {
+        try (final var stream = Post.<Post>stream("author = ?1 and published = false", user)) {
             final var draftIds = stream.map(post -> post.id.toString()).toList();
             final var response = given().queryParam("page", 0)
                     .queryParam("ascending", false)

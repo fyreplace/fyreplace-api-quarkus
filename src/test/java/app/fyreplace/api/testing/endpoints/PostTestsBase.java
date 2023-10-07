@@ -3,7 +3,6 @@ package app.fyreplace.api.testing.endpoints;
 import app.fyreplace.api.data.Post;
 import app.fyreplace.api.data.dev.DataSeeder;
 import app.fyreplace.api.testing.ImageTests;
-import io.quarkus.panache.common.Sort;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,9 +22,9 @@ public abstract class PostTestsBase extends ImageTests {
     @Override
     public void beforeEach() {
         super.beforeEach();
-        post = Post.find("author.username = 'user_0' and datePublished is not null", Sort.by("datePublished", "id"))
+        post = Post.find("author.username = 'user_0' and published = true", Post.sorting())
                 .firstResult();
-        draft = Post.find("author.username = 'user_0' and datePublished is null", Sort.by("datePublished", "id"))
+        draft = Post.find("author.username = 'user_0' and published = false", Post.sorting())
                 .firstResult();
         anonymousPost = dataSeeder.createPost(post.author, "Anonymous Post", true, true);
     }

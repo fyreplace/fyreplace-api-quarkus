@@ -65,7 +65,7 @@ public final class VoteTests extends PostTestsBase {
     public void voteOnOldPost() {
         QuarkusTransaction.requiringNew()
                 .run(() -> Post.update(
-                        "datePublished = ?1 where id = ?2",
+                        "dateCreated = ?1 where id = ?2",
                         Instant.now().minus(Post.shelfLife.plus(Duration.ofDays(1))),
                         post.id));
         final var voteCount = Vote.count();

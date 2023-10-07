@@ -1,7 +1,5 @@
 package app.fyreplace.api.data;
 
-import static java.util.Objects.requireNonNullElse;
-
 import app.fyreplace.api.exceptions.ForbiddenException;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.quarkus.panache.common.Sort;
@@ -18,8 +16,7 @@ import org.hibernate.annotations.Formula;
 @Entity
 @Table(name = "posts")
 public class Post extends AuthoredEntityBase {
-    @JsonIgnore
-    public Instant datePublished;
+    public boolean published = false;
 
     @Column(nullable = false)
     @JsonIgnore
@@ -35,21 +32,18 @@ public class Post extends AuthoredEntityBase {
 
     public static Duration shelfLife = Duration.ofDays(7);
 
-    public Instant getDateCreated() {
-        return requireNonNullElse(datePublished, dateCreated);
-    }
-
     public List<Chapter> getChapters() {
         return Chapter.find("post", Sort.by("position"), this).list();
     }
 
     @JsonIgnore
     public boolean isOld() {
-        return datePublished != null && Instant.now().isAfter(datePublished.plus(shelfLife));
+        return published && Instant.now().isAfter(dateCreated.plus(shelfLife));
     }
 
     public void publish(final int life, final boolean anonymous) {
-        datePublished = Instant.now();
+        dateCreated = Instant.now();
+        published = true;
         this.life = life;
         this.anonymous = anonymous;
         persist();
@@ -77,7 +71,7 @@ public class Post extends AuthoredEntityBase {
             @Nullable final User user,
             @Nullable final Boolean mustBePublished,
             final boolean mustBeAuthor) {
-        final Boolean postIsDraft = post != null && (post.datePublished == null);
+        final Boolean postIsDraft = post != null && (!post.published);
         final var userId = user != null ? user.id : null;
 
         if (post == null || (!post.author.id.equals(userId) && postIsDraft)) {
