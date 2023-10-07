@@ -5,6 +5,7 @@ import app.fyreplace.api.data.dev.DataSeeder;
 import app.fyreplace.api.testing.ImageTests;
 import io.quarkus.panache.common.Sort;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 
 public abstract class PostTestsBase extends ImageTests {
@@ -18,6 +19,7 @@ public abstract class PostTestsBase extends ImageTests {
     public Post anonymousPost;
 
     @BeforeEach
+    @Transactional
     @Override
     public void beforeEach() {
         super.beforeEach();
