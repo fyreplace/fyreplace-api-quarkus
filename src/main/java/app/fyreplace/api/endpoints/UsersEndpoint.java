@@ -33,9 +33,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 import jakarta.ws.rs.core.SecurityContext;
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.UUID;
@@ -203,15 +201,14 @@ public final class UsersEndpoint {
             content = @Content(mediaType = MediaType.TEXT_PLAIN, schema = @Schema(implementation = String.class)))
     @APIResponse(responseCode = "413")
     @APIResponse(responseCode = "415")
-    public String updateMeAvatar(final File input) throws IOException {
+    public String updateMeAvatar(final byte[] input) throws IOException {
         mimeTypeService.validate(input, KnownMimeTypes.IMAGE);
         final var user = User.getFromSecurityContext(context, LockModeType.PESSIMISTIC_WRITE);
-        final var data = Files.readAllBytes(input.toPath());
 
         if (user.avatar == null) {
-            user.avatar = new StoredFile("avatars/" + user.id, data);
+            user.avatar = new StoredFile("avatars/" + user.id, input);
         } else {
-            user.avatar.store(data);
+            user.avatar.store(input);
         }
 
         user.persist();

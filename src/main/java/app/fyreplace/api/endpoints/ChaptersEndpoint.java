@@ -26,9 +26,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 import jakarta.ws.rs.core.SecurityContext;
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.UUID;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.metadata.Property;
@@ -162,13 +160,12 @@ public final class ChaptersEndpoint {
     @APIResponse(responseCode = "400")
     @APIResponse(responseCode = "404")
     public String updateChapterImage(
-            @PathParam("id") final UUID id, @PathParam("position") final int position, final File input)
+            @PathParam("id") final UUID id, @PathParam("position") final int position, final byte[] input)
             throws IOException {
         mimeTypeService.validate(input, KnownMimeTypes.IMAGE);
         final var user = User.getFromSecurityContext(context);
         final var post = Post.<Post>findById(id);
         Post.validateAccess(post, user, false, true);
-        final var data = Files.readAllBytes(input.toPath());
 
         try {
             final var chapter = getChapter(post, position);
@@ -177,9 +174,9 @@ public final class ChaptersEndpoint {
             final var height = metadata.getInt(Metadata.IMAGE_LENGTH);
 
             if (chapter.image == null) {
-                chapter.image = new StoredFile("chapters/" + chapter.id, data);
+                chapter.image = new StoredFile("chapters/" + chapter.id, input);
             } else {
-                chapter.image.store(data);
+                chapter.image.store(input);
             }
 
             chapter.width = requireNonNullElse(width, metadata.getInt(Property.internalInteger("Image Width")));
