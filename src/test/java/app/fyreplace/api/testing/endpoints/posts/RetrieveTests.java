@@ -45,7 +45,9 @@ public final class RetrieveTests extends PostTestsBase {
                 .body("dateCreated", equalTo(anonymousPost.datePublished.toString()))
                 .body("author.username", equalTo("user_0"))
                 .body("anonymous", equalTo(true))
-                .body("chapters.size()", equalTo(anonymousPost.getChapters().size()));
+                .body("chapters.size()", equalTo(anonymousPost.getChapters().size()))
+                .body("commentCount", equalTo((int) Comment.count("post", anonymousPost)))
+                .body("voteCount", equalTo((int) Vote.count("post", anonymousPost)));
     }
 
     @Test
@@ -71,7 +73,9 @@ public final class RetrieveTests extends PostTestsBase {
                 .body("dateCreated", equalTo(post.datePublished.toString()))
                 .body("author.username", equalTo("user_0"))
                 .body("anonymous", equalTo(false))
-                .body("chapters.size()", equalTo(post.getChapters().size()));
+                .body("chapters.size()", equalTo(post.getChapters().size()))
+                .body("commentCount", equalTo((int) Comment.count("post", post)))
+                .body("voteCount", equalTo((int) Vote.count("post", post)));
     }
 
     @Test
@@ -84,7 +88,9 @@ public final class RetrieveTests extends PostTestsBase {
                 .body("dateCreated", equalTo(anonymousPost.datePublished.toString()))
                 .body("author", nullValue())
                 .body("anonymous", equalTo(true))
-                .body("chapters.size()", equalTo(anonymousPost.getChapters().size()));
+                .body("chapters.size()", equalTo(anonymousPost.getChapters().size()))
+                .body("commentCount", equalTo((int) Comment.count("post", anonymousPost)))
+                .body("voteCount", equalTo((int) Vote.count("post", anonymousPost)));
     }
 
     @Test
@@ -111,7 +117,9 @@ public final class RetrieveTests extends PostTestsBase {
                 .body("dateCreated", equalTo(anonymousPost.datePublished.toString()))
                 .body("author", nullValue())
                 .body("anonymous", equalTo(true))
-                .body("chapters.size()", equalTo(anonymousPost.getChapters().size()));
+                .body("chapters.size()", equalTo(anonymousPost.getChapters().size()))
+                .body("commentCount", equalTo((int) Comment.count("post", anonymousPost)))
+                .body("voteCount", equalTo((int) Vote.count("post", anonymousPost)));
     }
 
     @Test
@@ -123,7 +131,9 @@ public final class RetrieveTests extends PostTestsBase {
                 .body("dateCreated", equalTo(post.datePublished.toString()))
                 .body("author.username", equalTo("user_0"))
                 .body("anonymous", equalTo(false))
-                .body("chapters.size()", equalTo(post.getChapters().size()));
+                .body("chapters.size()", equalTo(post.getChapters().size()))
+                .body("commentCount", equalTo((int) Comment.count("post", post)))
+                .body("voteCount", equalTo((int) Vote.count("post", post)));
     }
 
     @Test
@@ -135,7 +145,9 @@ public final class RetrieveTests extends PostTestsBase {
                 .body("dateCreated", equalTo(anonymousPost.datePublished.toString()))
                 .body("author", nullValue())
                 .body("anonymous", equalTo(true))
-                .body("chapters.size()", equalTo(anonymousPost.getChapters().size()));
+                .body("chapters.size()", equalTo(anonymousPost.getChapters().size()))
+                .body("commentCount", equalTo((int) Comment.count("post", anonymousPost)))
+                .body("voteCount", equalTo((int) Vote.count("post", anonymousPost)));
     }
 
     @Test
