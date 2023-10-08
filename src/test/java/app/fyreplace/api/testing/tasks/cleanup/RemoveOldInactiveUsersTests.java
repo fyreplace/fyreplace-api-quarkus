@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import app.fyreplace.api.data.User;
 import app.fyreplace.api.tasks.CleanupTasks;
-import app.fyreplace.api.testing.TransactionalTests;
+import app.fyreplace.api.testing.TransactionalTestsBase;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -13,7 +13,7 @@ import java.time.Instant;
 import org.junit.jupiter.api.Test;
 
 @QuarkusTest
-public final class RemoveOldInactiveUsersTests extends TransactionalTests {
+public final class RemoveOldInactiveUsersTests extends TransactionalTestsBase {
     @Inject
     CleanupTasks cleanupTasks;
 

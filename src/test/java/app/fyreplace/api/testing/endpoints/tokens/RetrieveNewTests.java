@@ -4,7 +4,7 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.isA;
 
 import app.fyreplace.api.endpoints.TokensEndpoint;
-import app.fyreplace.api.testing.TransactionalTests;
+import app.fyreplace.api.testing.TransactionalTestsBase;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 
 @QuarkusTest
 @TestHTTPEndpoint(TokensEndpoint.class)
-public final class RetrieveNewTests extends TransactionalTests {
+public final class RetrieveNewTests extends TransactionalTestsBase {
     @Test
     @TestSecurity(user = "user_0")
     public void retrieveNew() {

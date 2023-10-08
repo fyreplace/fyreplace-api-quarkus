@@ -10,7 +10,7 @@ import app.fyreplace.api.data.User;
 import app.fyreplace.api.data.dev.DataSeeder;
 import app.fyreplace.api.endpoints.PostsEndpoint;
 import app.fyreplace.api.endpoints.PostsEndpoint.PostListingType;
-import app.fyreplace.api.testing.TransactionalTests;
+import app.fyreplace.api.testing.TransactionalTestsBase;
 import io.quarkus.narayana.jta.QuarkusTransaction;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
 
 @QuarkusTest
 @TestHTTPEndpoint(PostsEndpoint.class)
-public final class ListTests extends TransactionalTests {
+public final class ListTests extends TransactionalTestsBase {
     @ConfigProperty(name = "app.paging.size")
     int pagingSize;
 

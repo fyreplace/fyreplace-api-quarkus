@@ -14,7 +14,7 @@ import app.fyreplace.api.data.User;
 import app.fyreplace.api.data.UserCreation;
 import app.fyreplace.api.emails.UserActivationEmail;
 import app.fyreplace.api.endpoints.UsersEndpoint;
-import app.fyreplace.api.testing.TransactionalTests;
+import app.fyreplace.api.testing.TransactionalTestsBase;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
@@ -22,7 +22,7 @@ import org.junit.jupiter.api.Test;
 
 @QuarkusTest
 @TestHTTPEndpoint(UsersEndpoint.class)
-public final class CreateTests extends TransactionalTests {
+public final class CreateTests extends TransactionalTestsBase {
     @Test
     public void create() {
         final var userCount = User.count();

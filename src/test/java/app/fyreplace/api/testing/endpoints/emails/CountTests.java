@@ -8,7 +8,7 @@ import static org.hamcrest.Matchers.equalTo;
 import app.fyreplace.api.data.Email;
 import app.fyreplace.api.data.User;
 import app.fyreplace.api.endpoints.EmailsEndpoint;
-import app.fyreplace.api.testing.TransactionalTests;
+import app.fyreplace.api.testing.TransactionalTestsBase;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test;
 
 @QuarkusTest
 @TestHTTPEndpoint(EmailsEndpoint.class)
-public class CountTests extends TransactionalTests {
+public class CountTests extends TransactionalTestsBase {
     @Test
     @TestSecurity(user = "user_0")
     public void count() {

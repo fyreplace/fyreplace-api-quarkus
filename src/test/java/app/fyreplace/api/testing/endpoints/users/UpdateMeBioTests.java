@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import app.fyreplace.api.data.User;
 import app.fyreplace.api.endpoints.UsersEndpoint;
-import app.fyreplace.api.testing.TransactionalTests;
+import app.fyreplace.api.testing.TransactionalTestsBase;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
@@ -18,7 +18,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 @QuarkusTest
 @TestHTTPEndpoint(UsersEndpoint.class)
-public final class UpdateMeBioTests extends TransactionalTests {
+public final class UpdateMeBioTests extends TransactionalTestsBase {
     @ParameterizedTest
     @ValueSource(strings = {"Test", "Some random bio", ""})
     @TestSecurity(user = "user_0")

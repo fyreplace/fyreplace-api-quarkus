@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import app.fyreplace.api.data.Email;
 import app.fyreplace.api.data.User;
 import app.fyreplace.api.endpoints.EmailsEndpoint;
-import app.fyreplace.api.testing.TransactionalTests;
+import app.fyreplace.api.testing.TransactionalTestsBase;
 import io.quarkus.narayana.jta.QuarkusTransaction;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
@@ -19,7 +19,7 @@ import org.junit.jupiter.api.Test;
 
 @QuarkusTest
 @TestHTTPEndpoint(EmailsEndpoint.class)
-public final class SetMainTests extends TransactionalTests {
+public final class SetMainTests extends TransactionalTestsBase {
     private Email secondaryEmail;
 
     @Test

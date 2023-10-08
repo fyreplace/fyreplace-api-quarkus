@@ -4,12 +4,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import app.fyreplace.api.data.Chapter;
-import app.fyreplace.api.testing.TransactionalTests;
+import app.fyreplace.api.testing.TransactionalTestsBase;
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;
 
 @QuarkusTest
-public final class PositionBetweenTests extends TransactionalTests {
+public final class PositionBetweenTests extends TransactionalTestsBase {
     @Test
     public void positionBetweenNullAndNull() {
         assertEquals("z", Chapter.positionBetween(null, null));

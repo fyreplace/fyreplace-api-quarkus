@@ -2,12 +2,12 @@ package app.fyreplace.api.testing.endpoints;
 
 import app.fyreplace.api.data.Post;
 import app.fyreplace.api.data.dev.DataSeeder;
-import app.fyreplace.api.testing.ImageTests;
+import app.fyreplace.api.testing.ImageTestsBase;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 
-public abstract class PostTestsBase extends ImageTests {
+public abstract class PostTestsBase extends ImageTestsBase {
     @Inject
     DataSeeder dataSeeder;
 

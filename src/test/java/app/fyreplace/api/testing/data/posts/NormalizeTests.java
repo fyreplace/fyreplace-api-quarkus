@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import app.fyreplace.api.data.Chapter;
 import app.fyreplace.api.data.Post;
 import app.fyreplace.api.data.User;
-import app.fyreplace.api.testing.TransactionalTests;
+import app.fyreplace.api.testing.TransactionalTestsBase;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.transaction.Transactional;
 import java.util.List;
@@ -13,7 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 @QuarkusTest
-public final class NormalizeTests extends TransactionalTests {
+public final class NormalizeTests extends TransactionalTestsBase {
     private Post post;
 
     private Post emptyPost;
