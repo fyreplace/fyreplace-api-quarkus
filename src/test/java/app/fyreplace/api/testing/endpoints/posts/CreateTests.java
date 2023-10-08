@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import app.fyreplace.api.data.Post;
 import app.fyreplace.api.endpoints.PostsEndpoint;
-import app.fyreplace.api.testing.TransactionalTestsBase;
+import app.fyreplace.api.testing.PostTestsBase;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
 
 @QuarkusTest
 @TestHTTPEndpoint(PostsEndpoint.class)
-public final class CreateTests extends TransactionalTestsBase {
+public final class CreateTests extends PostTestsBase {
     @Test
     @TestSecurity(user = "user_0")
     public void create() {

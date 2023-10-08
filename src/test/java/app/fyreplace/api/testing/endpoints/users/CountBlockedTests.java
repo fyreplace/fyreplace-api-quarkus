@@ -6,7 +6,7 @@ import static org.hamcrest.Matchers.equalTo;
 import app.fyreplace.api.data.Block;
 import app.fyreplace.api.data.User;
 import app.fyreplace.api.endpoints.UsersEndpoint;
-import app.fyreplace.api.testing.TransactionalTestsBase;
+import app.fyreplace.api.testing.UserTestsBase;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
 
 @QuarkusTest
 @TestHTTPEndpoint(UsersEndpoint.class)
-public class CountBlockedTests extends TransactionalTestsBase {
+public class CountBlockedTests extends UserTestsBase {
     @Test
     @TestSecurity(user = "user_0")
     public void countBlocked() {

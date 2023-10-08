@@ -10,7 +10,7 @@ import app.fyreplace.api.data.RandomCode;
 import app.fyreplace.api.data.User;
 import app.fyreplace.api.endpoints.EmailsEndpoint;
 import app.fyreplace.api.services.RandomService;
-import app.fyreplace.api.testing.TransactionalTestsBase;
+import app.fyreplace.api.testing.UserTestsBase;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
@@ -22,7 +22,7 @@ import org.junit.jupiter.api.Test;
 
 @QuarkusTest
 @TestHTTPEndpoint(EmailsEndpoint.class)
-public final class ActivateTests extends TransactionalTestsBase {
+public final class ActivateTests extends UserTestsBase {
     @Inject
     RandomService randomService;
 

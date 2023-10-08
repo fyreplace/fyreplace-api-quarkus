@@ -7,7 +7,7 @@ import app.fyreplace.api.data.Chapter;
 import app.fyreplace.api.data.Post;
 import app.fyreplace.api.data.PostPublication;
 import app.fyreplace.api.endpoints.PostsEndpoint;
-import app.fyreplace.api.testing.endpoints.PostTestsBase;
+import app.fyreplace.api.testing.PostTestsBase;
 import io.quarkus.narayana.jta.QuarkusTransaction;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;

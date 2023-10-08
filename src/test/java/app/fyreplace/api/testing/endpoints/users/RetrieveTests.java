@@ -8,7 +8,7 @@ import static org.hamcrest.Matchers.nullValue;
 
 import app.fyreplace.api.data.User;
 import app.fyreplace.api.endpoints.UsersEndpoint;
-import app.fyreplace.api.testing.TransactionalTestsBase;
+import app.fyreplace.api.testing.UserTestsBase;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
@@ -17,7 +17,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 @QuarkusTest
 @TestHTTPEndpoint(UsersEndpoint.class)
-public final class RetrieveTests extends TransactionalTestsBase {
+public final class RetrieveTests extends UserTestsBase {
     @ParameterizedTest
     @ValueSource(strings = {"user_0", "user_1", "user_2"})
     public void retrieve(final String username) {

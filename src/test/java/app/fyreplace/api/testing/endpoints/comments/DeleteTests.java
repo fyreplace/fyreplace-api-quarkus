@@ -9,7 +9,7 @@ import app.fyreplace.api.data.Comment;
 import app.fyreplace.api.data.User;
 import app.fyreplace.api.data.dev.DataSeeder;
 import app.fyreplace.api.endpoints.CommentsEndpoint;
-import app.fyreplace.api.testing.endpoints.PostTestsBase;
+import app.fyreplace.api.testing.CommentTestsBase;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Test;
 
 @QuarkusTest
 @TestHTTPEndpoint(CommentsEndpoint.class)
-public class DeleteTests extends PostTestsBase {
+public class DeleteTests extends CommentTestsBase {
     @Inject
     DataSeeder dataSeeder;
 

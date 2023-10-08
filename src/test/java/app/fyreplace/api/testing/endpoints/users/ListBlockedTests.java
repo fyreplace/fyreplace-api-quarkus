@@ -8,7 +8,7 @@ import static org.hamcrest.Matchers.in;
 import app.fyreplace.api.data.Block;
 import app.fyreplace.api.data.User;
 import app.fyreplace.api.endpoints.UsersEndpoint;
-import app.fyreplace.api.testing.TransactionalTestsBase;
+import app.fyreplace.api.testing.UserTestsBase;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Test;
 
 @QuarkusTest
 @TestHTTPEndpoint(UsersEndpoint.class)
-public final class ListBlockedTests extends TransactionalTestsBase {
+public final class ListBlockedTests extends UserTestsBase {
     @ConfigProperty(name = "app.paging.size")
     int pagingSize;
 
@@ -65,8 +65,13 @@ public final class ListBlockedTests extends TransactionalTestsBase {
         super.beforeEach();
         final var user = User.findByUsername("user_0");
 
-        for (final var otherUser : User.<User>list("username > 'user_10'")) {
+        for (final var otherUser : User.<User>list("username > 'user_10' and active = true")) {
             user.block(otherUser);
         }
+    }
+
+    @Override
+    public int getActiveUserCount() {
+        return 20;
     }
 }

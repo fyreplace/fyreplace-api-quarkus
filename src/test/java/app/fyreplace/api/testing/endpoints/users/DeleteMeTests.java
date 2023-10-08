@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 import app.fyreplace.api.data.User;
 import app.fyreplace.api.endpoints.UsersEndpoint;
-import app.fyreplace.api.testing.TransactionalTestsBase;
+import app.fyreplace.api.testing.UserTestsBase;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 
 @QuarkusTest
 @TestHTTPEndpoint(UsersEndpoint.class)
-public final class DeleteMeTests extends TransactionalTestsBase {
+public final class DeleteMeTests extends UserTestsBase {
     @Test
     @TestSecurity(user = "user_0")
     public void deleteMe() {

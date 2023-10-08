@@ -8,7 +8,7 @@ import static org.hamcrest.Matchers.nullValue;
 
 import app.fyreplace.api.data.User;
 import app.fyreplace.api.endpoints.UsersEndpoint;
-import app.fyreplace.api.testing.TransactionalTestsBase;
+import app.fyreplace.api.testing.UserTestsBase;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
@@ -17,11 +17,11 @@ import org.junit.jupiter.api.Test;
 
 @QuarkusTest
 @TestHTTPEndpoint(UsersEndpoint.class)
-public final class RetrieveMeTests extends TransactionalTestsBase {
+public final class RetrieveMeTests extends UserTestsBase {
     @Test
-    @TestSecurity(user = "user_10")
+    @TestSecurity(user = "user_2")
     public void retrieveMe() {
-        final var user = requireNonNull(User.findByUsername("user_10"));
+        final var user = requireNonNull(User.findByUsername("user_2"));
         given().get("/me")
                 .then()
                 .contentType(ContentType.JSON)

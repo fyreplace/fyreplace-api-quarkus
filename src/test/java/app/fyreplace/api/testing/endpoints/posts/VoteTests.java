@@ -10,7 +10,7 @@ import app.fyreplace.api.data.User;
 import app.fyreplace.api.data.Vote;
 import app.fyreplace.api.data.VoteCreation;
 import app.fyreplace.api.endpoints.PostsEndpoint;
-import app.fyreplace.api.testing.endpoints.PostTestsBase;
+import app.fyreplace.api.testing.PostTestsBase;
 import io.quarkus.narayana.jta.QuarkusTransaction;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;

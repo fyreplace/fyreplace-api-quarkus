@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import app.fyreplace.api.data.StoredFile;
 import app.fyreplace.api.endpoints.UsersEndpoint;
-import app.fyreplace.api.testing.TransactionalTestsBase;
+import app.fyreplace.api.testing.UserTestsBase;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.common.http.TestHTTPResource;
 import io.quarkus.test.junit.QuarkusTest;
@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test;
 
 @QuarkusTest
 @TestHTTPEndpoint(UsersEndpoint.class)
-public final class DeleteMeAvatarTests extends TransactionalTestsBase {
+public final class DeleteMeAvatarTests extends UserTestsBase {
     @TestHTTPResource("image.jpeg")
     URL jpeg;
 

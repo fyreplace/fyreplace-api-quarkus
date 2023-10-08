@@ -9,7 +9,7 @@ import static org.hamcrest.Matchers.in;
 import app.fyreplace.api.data.Email;
 import app.fyreplace.api.data.User;
 import app.fyreplace.api.endpoints.EmailsEndpoint;
-import app.fyreplace.api.testing.TransactionalTestsBase;
+import app.fyreplace.api.testing.UserTestsBase;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
@@ -21,7 +21,7 @@ import org.junit.jupiter.api.Test;
 
 @QuarkusTest
 @TestHTTPEndpoint(EmailsEndpoint.class)
-public final class ListTests extends TransactionalTestsBase {
+public final class ListTests extends UserTestsBase {
     @ConfigProperty(name = "app.paging.size")
     int pagingSize;
 

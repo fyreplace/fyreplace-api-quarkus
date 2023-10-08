@@ -13,7 +13,7 @@ import app.fyreplace.api.data.TokenCreation;
 import app.fyreplace.api.data.User;
 import app.fyreplace.api.endpoints.TokensEndpoint;
 import app.fyreplace.api.services.RandomService;
-import app.fyreplace.api.testing.TransactionalTestsBase;
+import app.fyreplace.api.testing.UserTestsBase;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Test;
 
 @QuarkusTest
 @TestHTTPEndpoint(TokensEndpoint.class)
-public final class CreateTests extends TransactionalTestsBase {
+public final class CreateTests extends UserTestsBase {
     @Inject
     RandomService randomService;
 

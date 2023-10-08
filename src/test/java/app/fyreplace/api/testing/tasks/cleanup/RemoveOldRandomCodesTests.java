@@ -7,7 +7,7 @@ import app.fyreplace.api.data.RandomCode;
 import app.fyreplace.api.data.User;
 import app.fyreplace.api.services.RandomService;
 import app.fyreplace.api.tasks.CleanupTasks;
-import app.fyreplace.api.testing.TransactionalTestsBase;
+import app.fyreplace.api.testing.UserTestsBase;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -16,7 +16,7 @@ import java.time.Instant;
 import org.junit.jupiter.api.Test;
 
 @QuarkusTest
-public final class RemoveOldRandomCodesTests extends TransactionalTestsBase {
+public final class RemoveOldRandomCodesTests extends UserTestsBase {
     @Inject
     RandomService randomService;
 

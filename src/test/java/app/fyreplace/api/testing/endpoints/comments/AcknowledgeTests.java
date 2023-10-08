@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import app.fyreplace.api.data.Comment;
 import app.fyreplace.api.data.Subscription;
 import app.fyreplace.api.endpoints.CommentsEndpoint;
-import app.fyreplace.api.testing.endpoints.PostTestsBase;
+import app.fyreplace.api.testing.CommentTestsBase;
 import io.quarkus.narayana.jta.QuarkusTransaction;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 
 @QuarkusTest
 @TestHTTPEndpoint(CommentsEndpoint.class)
-public class AcknowledgeTests extends PostTestsBase {
+public class AcknowledgeTests extends CommentTestsBase {
     @Test
     @TestSecurity(user = "user_0")
     public void acknowledge() {

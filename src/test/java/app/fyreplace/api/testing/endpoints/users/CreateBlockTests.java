@@ -7,10 +7,9 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import app.fyreplace.api.data.Block;
-import app.fyreplace.api.data.Post;
 import app.fyreplace.api.data.User;
 import app.fyreplace.api.endpoints.UsersEndpoint;
-import app.fyreplace.api.testing.TransactionalTestsBase;
+import app.fyreplace.api.testing.PostTestsBase;
 import io.quarkus.narayana.jta.QuarkusTransaction;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
@@ -19,13 +18,12 @@ import org.junit.jupiter.api.Test;
 
 @QuarkusTest
 @TestHTTPEndpoint(UsersEndpoint.class)
-public final class CreateBlockTests extends TransactionalTestsBase {
+public final class CreateBlockTests extends PostTestsBase {
     @Test
     @TestSecurity(user = "user_0")
     public void createBlock() {
         final var user = requireNonNull(User.findByUsername("user_0"));
         final var otherUser = requireNonNull(User.findByUsername("user_1"));
-        final var post = Post.<Post>find("author", user).firstResult();
         QuarkusTransaction.requiringNew().run(() -> otherUser.subscribeTo(post));
         assertFalse(user.isBlocking(otherUser));
         given().put(otherUser.id + "/blocked").then().statusCode(200);

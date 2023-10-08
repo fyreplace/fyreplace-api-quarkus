@@ -11,7 +11,7 @@ import app.fyreplace.api.data.Comment;
 import app.fyreplace.api.data.User;
 import app.fyreplace.api.data.dev.DataSeeder;
 import app.fyreplace.api.endpoints.CommentsEndpoint;
-import app.fyreplace.api.testing.endpoints.PostTestsBase;
+import app.fyreplace.api.testing.CommentTestsBase;
 import io.quarkus.narayana.jta.QuarkusTransaction;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Test;
 
 @QuarkusTest
 @TestHTTPEndpoint(CommentsEndpoint.class)
-public class ListTests extends PostTestsBase {
+public class ListTests extends CommentTestsBase {
     @ConfigProperty(name = "app.paging.size")
     int pagingSize;
 

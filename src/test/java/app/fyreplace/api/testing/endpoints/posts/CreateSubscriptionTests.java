@@ -12,7 +12,7 @@ import app.fyreplace.api.data.Comment;
 import app.fyreplace.api.data.Subscription;
 import app.fyreplace.api.data.User;
 import app.fyreplace.api.endpoints.PostsEndpoint;
-import app.fyreplace.api.testing.endpoints.PostTestsBase;
+import app.fyreplace.api.testing.CommentTestsBase;
 import io.quarkus.narayana.jta.QuarkusTransaction;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
@@ -23,7 +23,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 @QuarkusTest
 @TestHTTPEndpoint(PostsEndpoint.class)
-public final class CreateSubscriptionTests extends PostTestsBase {
+public final class CreateSubscriptionTests extends CommentTestsBase {
     @Test
     @TestSecurity(user = "user_1")
     public void createSubscriptionWithOtherPost() {

@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import app.fyreplace.api.data.StoredFile;
 import app.fyreplace.api.data.User;
 import app.fyreplace.api.endpoints.UsersEndpoint;
-import app.fyreplace.api.testing.ImageTestsBase;
+import app.fyreplace.api.testing.UserTestsBase;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
@@ -21,7 +21,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 @QuarkusTest
 @TestHTTPEndpoint(UsersEndpoint.class)
-public final class UpdateMeAvatarTests extends ImageTestsBase {
+public final class UpdateMeAvatarTests extends UserTestsBase {
     @ParameterizedTest
     @ValueSource(strings = {"jpeg", "png", "webp"})
     @TestSecurity(user = "user_0")

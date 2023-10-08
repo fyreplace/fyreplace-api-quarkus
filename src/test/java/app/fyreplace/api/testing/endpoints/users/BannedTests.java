@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import app.fyreplace.api.data.User;
 import app.fyreplace.api.endpoints.UsersEndpoint;
-import app.fyreplace.api.testing.TransactionalTestsBase;
+import app.fyreplace.api.testing.UserTestsBase;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test;
 
 @QuarkusTest
 @TestHTTPEndpoint(UsersEndpoint.class)
-public final class BannedTests extends TransactionalTestsBase {
+public final class BannedTests extends UserTestsBase {
     @Test
     @TestSecurity(user = "user_0", roles = "ADMINISTRATOR")
     @Transactional
@@ -130,5 +130,10 @@ public final class BannedTests extends TransactionalTestsBase {
         user.banned = true;
         user.banCount = User.BanCount.ONCE;
         user.persist();
+    }
+
+    @Override
+    public int getActiveUserCount() {
+        return 20;
     }
 }

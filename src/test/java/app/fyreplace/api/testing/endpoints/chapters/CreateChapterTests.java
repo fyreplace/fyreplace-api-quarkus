@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import app.fyreplace.api.data.Chapter;
 import app.fyreplace.api.endpoints.ChaptersEndpoint;
-import app.fyreplace.api.testing.endpoints.PostTestsBase;
+import app.fyreplace.api.testing.PostTestsBase;
 import io.quarkus.narayana.jta.QuarkusTransaction;
 import io.quarkus.panache.common.Sort;
 import io.quarkus.test.common.http.TestHTTPEndpoint;

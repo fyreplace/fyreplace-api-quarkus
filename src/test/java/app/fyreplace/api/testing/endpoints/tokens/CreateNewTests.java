@@ -9,7 +9,7 @@ import app.fyreplace.api.data.NewTokenCreation;
 import app.fyreplace.api.data.User;
 import app.fyreplace.api.emails.UserConnectionEmail;
 import app.fyreplace.api.endpoints.TokensEndpoint;
-import app.fyreplace.api.testing.TransactionalTestsBase;
+import app.fyreplace.api.testing.UserTestsBase;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test;
 
 @QuarkusTest
 @TestHTTPEndpoint(TokensEndpoint.class)
-public final class CreateNewTests extends TransactionalTestsBase {
+public final class CreateNewTests extends UserTestsBase {
     @Test
     public void createNewWithUsername() {
         final var user = requireNonNull(User.findByUsername("user_0"));
