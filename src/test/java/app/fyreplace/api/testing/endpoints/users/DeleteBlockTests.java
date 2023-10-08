@@ -43,6 +43,16 @@ public final class DeleteBlockTests extends TransactionalTestsBase {
 
     @Test
     @TestSecurity(user = "user_0")
+    public void deleteBlockWithInactiveUser() {
+        final var user = User.findByUsername("user_0");
+        final var otherUser = requireNonNull(User.findByUsername("user_inactive_1"));
+        final var blockCount = Block.count("source", user);
+        given().delete(otherUser.id + "/blocked").then().statusCode(404);
+        assertEquals(blockCount, Block.count("source", user));
+    }
+
+    @Test
+    @TestSecurity(user = "user_0")
     public void deleteBlockWithInvalidUser() {
         final var user = User.findByUsername("user_0");
         final var blockCount = Block.count("source", user);

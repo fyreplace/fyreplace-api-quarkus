@@ -22,7 +22,7 @@ public final class BannedTests extends TransactionalTestsBase {
     @Test
     @TestSecurity(user = "user_0", roles = "ADMINISTRATOR")
     @Transactional
-    public void banWithAdministrator() {
+    public void updateBannedWithAdministrator() {
         final var user = requireNonNull(User.findByUsername("user_1"));
         given().put(user.id + "/banned").then().statusCode(200);
         user.refresh();
@@ -33,7 +33,7 @@ public final class BannedTests extends TransactionalTestsBase {
     @Test
     @TestSecurity(user = "user_0", roles = "MODERATOR")
     @Transactional
-    public void banWithModerator() {
+    public void updateBannedWithModerator() {
         final var user = requireNonNull(User.findByUsername("user_1"));
         given().put(user.id + "/banned").then().statusCode(200);
         user.refresh();
@@ -44,7 +44,7 @@ public final class BannedTests extends TransactionalTestsBase {
     @Test
     @TestSecurity(user = "user_0")
     @Transactional
-    public void banWithUser() {
+    public void updateBannedWithUser() {
         final var user = requireNonNull(User.findByUsername("user_1"));
         given().put(user.id + "/banned").then().statusCode(403);
         user.refresh();
@@ -54,7 +54,7 @@ public final class BannedTests extends TransactionalTestsBase {
 
     @Test
     @Transactional
-    public void banUnauthenticated() {
+    public void updateBannedUnauthenticated() {
         final var user = requireNonNull(User.findByUsername("user_1"));
         given().put(user.id + "/banned").then().statusCode(401);
         user.refresh();
@@ -65,7 +65,7 @@ public final class BannedTests extends TransactionalTestsBase {
     @Test
     @TestSecurity(user = "user_0", roles = "ADMINISTRATOR")
     @Transactional
-    public void banTwiceWithAdministrator() {
+    public void updateBannedTwiceWithAdministrator() {
         final var user = requireNonNull(User.findByUsername("user_2"));
         given().put(user.id + "/banned").then().statusCode(200);
         user.refresh();
@@ -76,7 +76,7 @@ public final class BannedTests extends TransactionalTestsBase {
     @Test
     @TestSecurity(user = "user_0", roles = "MODERATOR")
     @Transactional
-    public void banTwiceWithModerator() {
+    public void updateBannedTwiceWithModerator() {
         final var user = requireNonNull(User.findByUsername("user_2"));
         given().put(user.id + "/banned").then().statusCode(200);
         user.refresh();
@@ -87,7 +87,7 @@ public final class BannedTests extends TransactionalTestsBase {
     @Test
     @TestSecurity(user = "user_0")
     @Transactional
-    public void banTwiceWithUser() {
+    public void updateBannedTwiceWithUser() {
         final var user = requireNonNull(User.findByUsername("user_2"));
         given().put(user.id + "/banned").then().statusCode(403);
         user.refresh();
@@ -97,7 +97,7 @@ public final class BannedTests extends TransactionalTestsBase {
 
     @Test
     @Transactional
-    public void banTwiceUnauthenticated() {
+    public void updateBannedTwiceUnauthenticated() {
         final var user = requireNonNull(User.findByUsername("user_2"));
         given().put(user.id + "/banned").then().statusCode(401);
         user.refresh();
@@ -108,7 +108,7 @@ public final class BannedTests extends TransactionalTestsBase {
     @Test
     @TestSecurity(user = "user_0", roles = "ADMINISTRATOR")
     @Transactional
-    public void banAlreadyBanned() {
+    public void updateBannedAlreadyBanned() {
         final var user = requireNonNull(User.findByUsername("user_3"));
         given().put(user.id + "/banned").then().statusCode(200);
         user.refresh();

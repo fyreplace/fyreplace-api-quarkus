@@ -46,6 +46,16 @@ public final class CreateBlockTests extends TransactionalTestsBase {
 
     @Test
     @TestSecurity(user = "user_0")
+    public void createBlockWithInactiveUser() {
+        final var user = User.findByUsername("user_0");
+        final var otherUser = requireNonNull(User.findByUsername("user_inactive_1"));
+        final var blockCount = Block.count("source", user);
+        given().put(otherUser.id + "/blocked").then().statusCode(404);
+        assertEquals(blockCount, Block.count("source", user));
+    }
+
+    @Test
+    @TestSecurity(user = "user_0")
     public void createBlockWithInvalidUser() {
         final var user = User.findByUsername("user_0");
         final var blockCount = Block.count("source", user);

@@ -19,7 +19,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 @TestHTTPEndpoint(UsersEndpoint.class)
 public final class RetrieveTests extends TransactionalTestsBase {
     @ParameterizedTest
-    @ValueSource(strings = {"user_0", "user_12"})
+    @ValueSource(strings = {"user_0", "user_1", "user_2"})
     public void retrieve(final String username) {
         final var user = requireNonNull(User.findByUsername(username));
         given().get(user.id.toString())
@@ -33,6 +33,13 @@ public final class RetrieveTests extends TransactionalTestsBase {
                 .body("avatar", nullValue())
                 .body("bio", equalTo(""))
                 .body("banned", equalTo(false));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"user_inactive_0", "user_inactive_1", "user_inactive_2"})
+    public void retrieveInactive(final String username) {
+        final var user = requireNonNull(User.findByUsername(username));
+        given().get(user.id.toString()).then().statusCode(404);
     }
 
     @ParameterizedTest

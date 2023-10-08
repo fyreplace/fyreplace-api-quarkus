@@ -12,6 +12,7 @@ import app.fyreplace.api.services.MimeTypeService;
 import app.fyreplace.api.services.mimetype.KnownMimeTypes;
 import io.quarkus.panache.common.Sort;
 import io.quarkus.security.Authenticated;
+import jakarta.annotation.Nullable;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.persistence.LockModeType;
@@ -95,12 +96,8 @@ public final class UsersEndpoint {
     @APIResponse(responseCode = "404")
     public User retrieve(@PathParam("id") final UUID id) {
         final var user = User.<User>findById(id);
-
-        if (user == null) {
-            throw new NotFoundException();
-        } else {
-            return user;
-        }
+        validateUser(user);
+        return user;
     }
 
     @PUT
@@ -112,10 +109,9 @@ public final class UsersEndpoint {
     public Response createBlock(@PathParam("id") final UUID id) {
         final var source = User.getFromSecurityContext(context);
         final var target = User.<User>findById(id);
+        validateUser(target);
 
-        if (target == null) {
-            throw new NotFoundException();
-        } else if (source.id.equals(target.id)) {
+        if (source.id.equals(target.id)) {
             throw new ForbiddenException("user_is_self");
         } else {
             source.block(target);
@@ -133,11 +129,7 @@ public final class UsersEndpoint {
     public void deleteBlock(@PathParam("id") final UUID id) {
         final var source = User.getFromSecurityContext(context);
         final var target = User.<User>findById(id);
-
-        if (target == null) {
-            throw new NotFoundException();
-        }
-
+        validateUser(target);
         source.unblock(target);
     }
 
@@ -149,10 +141,9 @@ public final class UsersEndpoint {
     @APIResponse(responseCode = "404")
     public Response updateBanned(@PathParam("id") final UUID id) {
         final var user = User.<User>findById(id, LockModeType.PESSIMISTIC_WRITE);
+        validateUser(user);
 
-        if (user == null) {
-            throw new NotFoundException();
-        } else if (!user.banned) {
+        if (!user.banned) {
             if (user.banCount == User.BanCount.NEVER) {
                 user.dateBanEnd = Instant.now().plus(Duration.ofDays(7));
                 user.banCount = User.BanCount.ONCE;
@@ -188,7 +179,7 @@ public final class UsersEndpoint {
         final var user = User.getFromSecurityContext(context, LockModeType.PESSIMISTIC_READ);
         user.bio = input;
         user.persist();
-        return user.bio;
+        return input;
     }
 
     @PUT
@@ -258,5 +249,11 @@ public final class UsersEndpoint {
     @APIResponse(responseCode = "200")
     public long countBlocked() {
         return Block.count("source", User.getFromSecurityContext(context));
+    }
+
+    private void validateUser(@Nullable User user) {
+        if (user == null || !user.active) {
+            throw new NotFoundException();
+        }
     }
 }
