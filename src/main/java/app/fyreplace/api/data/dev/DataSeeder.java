@@ -2,13 +2,16 @@ package app.fyreplace.api.data.dev;
 
 import static java.util.stream.IntStream.range;
 
+import app.fyreplace.api.data.Block;
 import app.fyreplace.api.data.Chapter;
 import app.fyreplace.api.data.Comment;
 import app.fyreplace.api.data.Email;
 import app.fyreplace.api.data.Post;
 import app.fyreplace.api.data.RandomCode;
 import app.fyreplace.api.data.StoredFile;
+import app.fyreplace.api.data.Subscription;
 import app.fyreplace.api.data.User;
+import app.fyreplace.api.data.Vote;
 import io.quarkus.runtime.LaunchMode;
 import io.quarkus.runtime.ShutdownEvent;
 import io.quarkus.runtime.StartupEvent;
@@ -55,9 +58,17 @@ public class DataSeeder {
     public void deleteData() {
         Email.deleteAll();
         RandomCode.deleteAll();
+        Block.deleteAll();
         User.deleteAll();
+        Subscription.deleteAll();
+        Vote.deleteAll();
+        Chapter.deleteAll();
         Post.deleteAll();
-        StoredFile.<StoredFile>streamAll().forEach(StoredFile::delete);
+        Comment.deleteAll();
+
+        try (final var stream = StoredFile.<StoredFile>streamAll()) {
+            stream.forEach(StoredFile::delete);
+        }
     }
 
     @Transactional(Transactional.TxType.REQUIRES_NEW)
