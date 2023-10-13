@@ -47,9 +47,9 @@ public final class CommentsEndpoint {
         final var post = Post.<Post>findById(id);
         Post.validateAccess(post, user, true, false);
 
-        try (final var commentStream =
+        try (final var stream =
                 Comment.<Comment>find("post", Comment.sorting(), post).page(page, pagingSize).stream()) {
-            return commentStream.peek(c -> c.setCurrentUser(user)).toList();
+            return stream.peek(c -> c.setCurrentUser(user)).toList();
         }
     }
 

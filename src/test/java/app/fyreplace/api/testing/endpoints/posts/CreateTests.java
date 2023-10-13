@@ -20,7 +20,7 @@ public final class CreateTests extends PostTestsBase {
     @Test
     @TestSecurity(user = "user_0")
     public void create() {
-        final var postCount = Post.count("author.username", "user_0");
+        final var postCount = Post.count("author.username = 'user_0'");
         given().post()
                 .then()
                 .statusCode(201)
@@ -30,11 +30,13 @@ public final class CreateTests extends PostTestsBase {
                 .body("author.username", equalTo("user_0"))
                 .body("anonymous", equalTo(false))
                 .body("chapters.size()", equalTo(0));
-        assertEquals(postCount + 1, Post.count("author.username", "user_0"));
+        assertEquals(postCount + 1, Post.count("author.username = 'user_0'"));
     }
 
     @Test
     public void createUnauthenticated() {
+        final var postCount = Post.count("author.username = 'user_0'");
         given().post().then().statusCode(401);
+        assertEquals(postCount, Post.count());
     }
 }

@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import app.fyreplace.api.data.Chapter;
 import app.fyreplace.api.data.Post;
 import app.fyreplace.api.data.PostPublication;
+import app.fyreplace.api.data.Subscription;
 import app.fyreplace.api.endpoints.PostsEndpoint;
 import app.fyreplace.api.testing.PostTestsBase;
 import io.quarkus.narayana.jta.QuarkusTransaction;
@@ -33,23 +34,27 @@ public final class PublishTests extends PostTestsBase {
     @Test
     @TestSecurity(user = "user_0")
     public void publishOwnDraft() {
+        final var subscriptionCount = Subscription.count("user.username = 'user_0'");
         given().contentType(ContentType.JSON)
                 .body(new PostPublication(true))
                 .post(draft.id + "/publish")
                 .then()
                 .statusCode(200);
         assertEquals(0, Post.count("id = ?1 and published = false and anonymous = false", draft.id));
+        assertEquals(subscriptionCount + 1, Subscription.count("user.username = 'user_0'"));
     }
 
     @Test
     @TestSecurity(user = "user_0")
     public void publishAnonymouslyOwnDraft() {
+        final var subscriptionCount = Subscription.count("user.username = 'user_0'");
         given().contentType(ContentType.JSON)
                 .body(new PostPublication(false))
                 .post(draft.id + "/publish")
                 .then()
                 .statusCode(200);
         assertEquals(0, Post.count("id = ?1 and published = false and anonymous = true", draft.id));
+        assertEquals(subscriptionCount + 1, Subscription.count("user.username = 'user_0'"));
     }
 
     @Test

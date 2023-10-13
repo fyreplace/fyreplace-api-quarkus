@@ -42,6 +42,7 @@ public class Chapter extends EntityBase {
     @Column(nullable = false)
     public int height = 0;
 
+    @SuppressWarnings("unused")
     @PostRemove
     final void postRemove() {
         if (image != null) {

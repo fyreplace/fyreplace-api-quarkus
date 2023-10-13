@@ -33,7 +33,7 @@ public class Post extends AuthoredEntityBase {
     public static Duration shelfLife = Duration.ofDays(7);
 
     public List<Chapter> getChapters() {
-        return Chapter.find("post", Sort.by("position"), this).list();
+        return Chapter.list("post", Sort.by("position"), this);
     }
 
     @JsonIgnore

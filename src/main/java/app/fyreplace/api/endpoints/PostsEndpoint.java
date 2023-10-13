@@ -58,7 +58,7 @@ public final class PostsEndpoint {
         final var direction = ascending ? Direction.Ascending : Direction.Descending;
         final var basicSort = Post.sorting().direction(direction);
 
-        final var postStream =
+        final var stream =
                 switch (type) {
                     case SUBSCRIBED_TO -> Subscription.<Subscription>find(
                                     "user",
@@ -76,8 +76,8 @@ public final class PostsEndpoint {
                             .stream();
                 };
 
-        try (postStream) {
-            return postStream.peek(p -> p.setCurrentUser(user)).toList();
+        try (stream) {
+            return stream.peek(p -> p.setCurrentUser(user)).toList();
         }
     }
 
@@ -214,7 +214,7 @@ public final class PostsEndpoint {
     public Iterable<Post> listFeed() {
         final var user = User.getFromSecurityContext(context);
 
-        try (final var postStream = Post.<Post>find(
+        try (final var stream = Post.<Post>find(
                 "author != ?1 and dateCreated > ?2 and published = true and life > 0"
                         + "and id not in (select post.id from Vote where user = ?1)"
                         + "and author.id not in (select target.id from Block where source = ?1)"
@@ -224,7 +224,7 @@ public final class PostsEndpoint {
                 Instant.now().minus(Post.shelfLife))
                 .range(0, 2)
                 .stream()) {
-            return postStream.peek(p -> p.setCurrentUser(user)).toList();
+            return stream.peek(p -> p.setCurrentUser(user)).toList();
         }
     }
 

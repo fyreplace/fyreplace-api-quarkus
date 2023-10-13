@@ -2,7 +2,6 @@ package app.fyreplace.api.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import io.quarkus.panache.common.Sort;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.ws.rs.NotAuthorizedException;
@@ -146,7 +145,7 @@ public class User extends TimestampedEntityBase {
         subscription.user = this;
         subscription.post = post;
         subscription.lastCommentSeen =
-                Comment.find("post", Sort.descending("dateCreated"), post).firstResult();
+                Comment.find("post", Comment.sorting().descending(), post).firstResult();
         subscription.persist();
     }
 

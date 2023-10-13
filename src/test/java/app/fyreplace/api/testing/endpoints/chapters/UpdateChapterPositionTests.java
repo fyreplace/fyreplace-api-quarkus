@@ -41,8 +41,7 @@ public final class UpdateChapterPositionTests extends PostTestsBase {
                 .put(from + "/position")
                 .then()
                 .statusCode(200);
-        final var chapters =
-                Chapter.<Chapter>find("post", Sort.by("position"), draft).list();
+        final var chapters = Chapter.<Chapter>list("post", Sort.by("position"), draft);
         assertEquals(chapter.id, chapters.get(to).id);
     }
 
