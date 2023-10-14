@@ -62,7 +62,13 @@ public final class S3StorageService implements StorageService {
     public URI getUri(final String path) {
         try {
             return client.utilities()
-                    .getUrl(b -> b.bucket(config.bucket()).key(path))
+                    .getUrl(b -> {
+                        b.bucket(config.bucket()).key(path);
+
+                        if (config.customEndpoint().isPresent()) {
+                            b.endpoint(config.customEndpoint().get());
+                        }
+                    })
                     .toURI();
         } catch (final URISyntaxException e) {
             logger.error("Failed to get URI for S3 object", e);
