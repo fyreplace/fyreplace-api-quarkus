@@ -9,12 +9,10 @@ import io.quarkus.mailer.Mailer;
 import io.quarkus.qute.TemplateInstance;
 import io.smallrye.common.annotation.Blocking;
 import jakarta.inject.Inject;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
 import java.util.List;
 import java.util.ResourceBundle;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.jboss.logging.Logger;
 
 public abstract class EmailBase extends Mail {
     @ConfigProperty(name = "app.url")
@@ -32,8 +30,6 @@ public abstract class EmailBase extends Mail {
     private String code;
 
     private Email email;
-
-    private final Logger logger = Logger.getLogger(this.getClass());
 
     protected abstract String action();
 
@@ -64,13 +60,10 @@ public abstract class EmailBase extends Mail {
     }
 
     protected String getLink() {
-        try {
-            final var url = new URL(new URL(appUrl), "?action=" + action());
-            return String.format("%s#%s:%s", url, email.user.username, getRandomCode());
-        } catch (final MalformedURLException e) {
-            logger.error("Could not generate link", e);
-            return null;
-        }
+        return URI.create(appUrl)
+                .resolve("?action=" + action())
+                .resolve('#' + email.user.username + ':' + getRandomCode())
+                .toString();
     }
 
     protected ResourceBundle getResourceBundle() {
