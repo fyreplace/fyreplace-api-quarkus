@@ -1,7 +1,9 @@
 package app.fyreplace.api.endpoints;
 
+import app.fyreplace.api.cache.DuplicateRequestKeyGenerator;
 import app.fyreplace.api.data.User;
 import app.fyreplace.api.services.JwtService;
+import io.quarkus.cache.CacheResult;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.NotFoundException;
@@ -23,6 +25,7 @@ public final class DevUsersEndpoint {
             responseCode = "200",
             content = @Content(mediaType = MediaType.TEXT_PLAIN, schema = @Schema(implementation = String.class)))
     @APIResponse(responseCode = "404")
+    @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
     public String retrieveToken(@PathParam("username") final String username) {
         final var user = User.findByUsername(username);
 

@@ -1,5 +1,6 @@
 package app.fyreplace.api.endpoints;
 
+import app.fyreplace.api.cache.DuplicateRequestKeyGenerator;
 import app.fyreplace.api.data.Chapter;
 import app.fyreplace.api.data.Post;
 import app.fyreplace.api.data.PostPublication;
@@ -8,6 +9,7 @@ import app.fyreplace.api.data.User;
 import app.fyreplace.api.data.Vote;
 import app.fyreplace.api.data.VoteCreation;
 import app.fyreplace.api.exceptions.ForbiddenException;
+import io.quarkus.cache.CacheResult;
 import io.quarkus.panache.common.Sort;
 import io.quarkus.panache.common.Sort.Direction;
 import io.quarkus.security.Authenticated;
@@ -87,6 +89,7 @@ public final class PostsEndpoint {
             responseCode = "201",
             content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = Post.class)))
     @APIResponse(responseCode = "400")
+    @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
     public Response create() {
         final var user = User.getFromSecurityContext(context);
         final var post = new Post();
@@ -113,11 +116,13 @@ public final class PostsEndpoint {
     @Transactional
     @APIResponse(responseCode = "204")
     @APIResponse(responseCode = "404")
-    public void delete(@PathParam("id") final UUID id) {
+    @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
+    public Response delete(@PathParam("id") final UUID id) {
         final var user = User.getFromSecurityContext(context);
         final var post = Post.<Post>findById(id);
         Post.validateAccess(post, user, null, true);
         post.delete();
+        return Response.noContent().build();
     }
 
     @POST
@@ -126,6 +131,7 @@ public final class PostsEndpoint {
     @Transactional
     @APIResponse(responseCode = "200")
     @APIResponse(responseCode = "404")
+    @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
     public Response publish(@PathParam("id") final UUID id, @Valid @NotNull final PostPublication input) {
         final var user = User.getFromSecurityContext(context);
         final var post = Post.<Post>findById(id);
@@ -172,6 +178,7 @@ public final class PostsEndpoint {
     @Transactional
     @APIResponse(responseCode = "200")
     @APIResponse(responseCode = "404")
+    @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
     public Response vote(@PathParam("id") final UUID id, @Valid @NotNull final VoteCreation input) {
         final var user = User.getFromSecurityContext(context);
         final var post = Post.<Post>findById(id, LockModeType.PESSIMISTIC_WRITE);

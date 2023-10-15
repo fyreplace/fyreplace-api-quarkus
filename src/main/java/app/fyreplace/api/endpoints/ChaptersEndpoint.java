@@ -2,6 +2,7 @@ package app.fyreplace.api.endpoints;
 
 import static java.util.Objects.requireNonNullElse;
 
+import app.fyreplace.api.cache.DuplicateRequestKeyGenerator;
 import app.fyreplace.api.data.Chapter;
 import app.fyreplace.api.data.Post;
 import app.fyreplace.api.data.StoredFile;
@@ -9,6 +10,7 @@ import app.fyreplace.api.data.User;
 import app.fyreplace.api.exceptions.ForbiddenException;
 import app.fyreplace.api.services.MimeTypeService;
 import app.fyreplace.api.services.mimetype.KnownMimeTypes;
+import io.quarkus.cache.CacheResult;
 import io.quarkus.panache.common.Sort;
 import io.quarkus.security.Authenticated;
 import jakarta.inject.Inject;
@@ -55,6 +57,7 @@ public final class ChaptersEndpoint {
             content =
                     @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = Chapter.class)))
     @APIResponse(responseCode = "404")
+    @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
     public Response createChapter(@PathParam("id") final UUID id) {
         final var user = User.getFromSecurityContext(context);
         final var post = Post.<Post>findById(id);
@@ -79,11 +82,13 @@ public final class ChaptersEndpoint {
     @Transactional
     @APIResponse(responseCode = "204")
     @APIResponse(responseCode = "404")
-    public void deleteChapter(@PathParam("id") final UUID id, @PathParam("position") final int position) {
+    @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
+    public Response deleteChapter(@PathParam("id") final UUID id, @PathParam("position") final int position) {
         final var user = User.getFromSecurityContext(context);
         final var post = Post.<Post>findById(id);
         Post.validateAccess(post, user, false, true);
         getChapter(post, position).delete();
+        return Response.noContent().build();
     }
 
     @PUT

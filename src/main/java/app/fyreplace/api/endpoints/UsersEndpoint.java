@@ -1,5 +1,6 @@
 package app.fyreplace.api.endpoints;
 
+import app.fyreplace.api.cache.DuplicateRequestKeyGenerator;
 import app.fyreplace.api.data.Block;
 import app.fyreplace.api.data.Email;
 import app.fyreplace.api.data.StoredFile;
@@ -10,6 +11,7 @@ import app.fyreplace.api.exceptions.ConflictException;
 import app.fyreplace.api.exceptions.ForbiddenException;
 import app.fyreplace.api.services.MimeTypeService;
 import app.fyreplace.api.services.mimetype.KnownMimeTypes;
+import io.quarkus.cache.CacheResult;
 import io.quarkus.panache.common.Sort;
 import io.quarkus.security.Authenticated;
 import jakarta.annotation.Nullable;
@@ -66,6 +68,7 @@ public final class UsersEndpoint {
     @APIResponse(responseCode = "400")
     @APIResponse(responseCode = "403")
     @APIResponse(responseCode = "409")
+    @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
     public Response create(@Valid @NotNull final UserCreation input) {
         if (User.forbiddenUsernames.contains(input.username())) {
             throw new ForbiddenException("username_forbidden");
@@ -226,8 +229,10 @@ public final class UsersEndpoint {
     @Authenticated
     @Transactional
     @APIResponse(responseCode = "204")
-    public void deleteMe() {
+    @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
+    public Response deleteMe() {
         User.getFromSecurityContext(context).delete();
+        return Response.noContent().build();
     }
 
     @GET

@@ -1,11 +1,13 @@
 package app.fyreplace.api.endpoints;
 
+import app.fyreplace.api.cache.DuplicateRequestKeyGenerator;
 import app.fyreplace.api.data.Comment;
 import app.fyreplace.api.data.CommentCreation;
 import app.fyreplace.api.data.Post;
 import app.fyreplace.api.data.Subscription;
 import app.fyreplace.api.data.User;
 import app.fyreplace.api.exceptions.ForbiddenException;
+import io.quarkus.cache.CacheResult;
 import io.quarkus.security.Authenticated;
 import jakarta.annotation.Nullable;
 import jakarta.transaction.Transactional;
@@ -61,6 +63,7 @@ public final class CommentsEndpoint {
             content =
                     @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = Comment.class)))
     @APIResponse(responseCode = "404")
+    @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
     public Response create(@PathParam("id") final UUID id, @Valid @NotNull final CommentCreation input) {
         final var user = User.getFromSecurityContext(context);
         final var post = Post.<Post>findById(id);
@@ -86,7 +89,8 @@ public final class CommentsEndpoint {
     @Transactional
     @APIResponse(responseCode = "204")
     @APIResponse(responseCode = "404")
-    public void delete(@PathParam("id") final UUID id, @PathParam("position") @PositiveOrZero final int position) {
+    @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
+    public Response delete(@PathParam("id") final UUID id, @PathParam("position") @PositiveOrZero final int position) {
         final var user = User.getFromSecurityContext(context);
         final var post = Post.<Post>findById(id);
         Post.validateAccess(post, user, true, false);
@@ -97,6 +101,7 @@ public final class CommentsEndpoint {
         }
 
         comment.softDelete();
+        return Response.noContent().build();
     }
 
     @POST

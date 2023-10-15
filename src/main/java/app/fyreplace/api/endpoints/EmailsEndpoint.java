@@ -1,5 +1,6 @@
 package app.fyreplace.api.endpoints;
 
+import app.fyreplace.api.cache.DuplicateRequestKeyGenerator;
 import app.fyreplace.api.data.Email;
 import app.fyreplace.api.data.EmailActivation;
 import app.fyreplace.api.data.EmailCreation;
@@ -8,6 +9,7 @@ import app.fyreplace.api.data.User;
 import app.fyreplace.api.emails.EmailVerificationEmail;
 import app.fyreplace.api.exceptions.ConflictException;
 import app.fyreplace.api.exceptions.ForbiddenException;
+import io.quarkus.cache.CacheResult;
 import io.quarkus.panache.common.Sort;
 import io.quarkus.security.Authenticated;
 import jakarta.inject.Inject;
@@ -59,6 +61,7 @@ public final class EmailsEndpoint {
             responseCode = "201",
             content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = Email.class)))
     @APIResponse(responseCode = "409")
+    @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
     public Response create(@Valid @NotNull final EmailCreation input) {
         if (Email.count("email", input.email()) > 0) {
             throw new ConflictException("email_taken");
@@ -78,7 +81,8 @@ public final class EmailsEndpoint {
     @Transactional
     @APIResponse(responseCode = "204")
     @APIResponse(responseCode = "404")
-    public void delete(@PathParam("id") final UUID id) {
+    @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
+    public Response delete(@PathParam("id") final UUID id) {
         final var user = User.getFromSecurityContext(context);
         final var email = Email.<Email>find("user = ?1 and id = ?2", user, id).firstResult();
 
@@ -89,6 +93,7 @@ public final class EmailsEndpoint {
         }
 
         email.delete();
+        return Response.noContent().build();
     }
 
     @POST
@@ -127,6 +132,7 @@ public final class EmailsEndpoint {
     @APIResponse(responseCode = "200")
     @APIResponse(responseCode = "400")
     @APIResponse(responseCode = "404")
+    @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
     public Response activate(@NotNull @Valid final EmailActivation input) {
         var email = Email.<Email>find("email", input.email()).firstResult();
         final var randomCode = RandomCode.<RandomCode>find("email = ?1 and code = ?2", email, input.code())
