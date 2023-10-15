@@ -62,8 +62,7 @@ public final class PostsEndpoint {
                 switch (type) {
                     case SUBSCRIBED_TO -> Subscription.<Subscription>find(
                                     "user",
-                                    Sort.by("dateLastSeen", "post.dateCreated", "post.id")
-                                            .direction(direction),
+                                    Sort.by("post.dateCreated", "post.id").direction(direction),
                                     user)
                             .page(page, pagingSize)
                             .stream()

@@ -59,7 +59,7 @@ public final class DeleteTests extends PostTestsBase {
     @ParameterizedTest
     @ValueSource(strings = {"fake", "00000000-0000-0000-0000-000000000000"})
     @TestSecurity(user = "user_0")
-    public void deleteNonExistent(final String id) {
+    public void deleteNonExistentPost(final String id) {
         given().delete(id).then().statusCode(404);
     }
 }
