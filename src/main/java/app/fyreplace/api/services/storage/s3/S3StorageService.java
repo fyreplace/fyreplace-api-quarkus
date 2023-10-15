@@ -34,14 +34,12 @@ public final class S3StorageService implements StorageService {
 
     public void onStartup(@Observes final StartupEvent event) {
         client.putBucketPolicy(b -> {
-            final var statement = new Policy.Statement();
-            statement.Effect = "Allow";
-            statement.Principal = "*";
-            statement.Action = "s3:GetObject";
-            statement.Resource = "arn:aws:s3:::" + config.bucket() + "/*";
+            final var statement =
+                    new Policy.Statement("Allow", "*", "s3:GetObject", "arn:aws:s3:::" + config.bucket() + "/*");
 
             try {
-                b.bucket(config.bucket()).policy(objectMapper.writeValueAsString(new Policy(List.of(statement))));
+                b.bucket(config.bucket())
+                        .policy(objectMapper.writeValueAsString(new Policy(Policy.currentVersion, List.of(statement))));
             } catch (JsonProcessingException e) {
                 throw new RuntimeException(e);
             }
