@@ -38,7 +38,7 @@ public final class VoteTests extends PostTestsBase {
         assertEquals(voteCount + 1, Vote.count());
         final var vote =
                 Vote.<Vote>find("post = ?1 and user.username = 'user_1'", post).firstResult();
-        assertTrue(vote.isSpread);
+        assertTrue(vote.spread);
         assertEquals(postLife + 1, vote.post.life);
     }
 
@@ -56,7 +56,7 @@ public final class VoteTests extends PostTestsBase {
         assertEquals(voteCount + 1, Vote.count());
         final var vote =
                 Vote.<Vote>find("post = ?1 and user.username = 'user_1'", post).firstResult();
-        assertFalse(vote.isSpread);
+        assertFalse(vote.spread);
         assertEquals(postLife - 1, vote.post.life);
     }
 

@@ -5,6 +5,7 @@ import app.fyreplace.api.data.Chapter;
 import app.fyreplace.api.data.Post;
 import app.fyreplace.api.data.PostPublication;
 import app.fyreplace.api.data.Subscription;
+import app.fyreplace.api.data.SubscriptionUpdate;
 import app.fyreplace.api.data.User;
 import app.fyreplace.api.data.Vote;
 import app.fyreplace.api.data.VoteCreation;
@@ -130,6 +131,7 @@ public final class PostsEndpoint {
     @Authenticated
     @Transactional
     @APIResponse(responseCode = "200")
+    @APIResponse(responseCode = "400")
     @APIResponse(responseCode = "404")
     @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
     public Response publish(@PathParam("id") final UUID id, @Valid @NotNull final PostPublication input) {
@@ -150,26 +152,20 @@ public final class PostsEndpoint {
     @Authenticated
     @Transactional
     @APIResponse(responseCode = "200")
+    @APIResponse(responseCode = "400")
     @APIResponse(responseCode = "404")
-    public Response createSubscription(@PathParam("id") final UUID id) {
+    public Response updateSubscribed(@PathParam("id") final UUID id, @Valid @NotNull final SubscriptionUpdate input) {
         final var user = User.getFromSecurityContext(context);
         final var post = Post.<Post>findById(id);
         Post.validateAccess(post, user, true, false);
-        user.subscribeTo(post);
-        return Response.ok().build();
-    }
 
-    @DELETE
-    @Path("{id}/subscribed")
-    @Authenticated
-    @Transactional
-    @APIResponse(responseCode = "204")
-    @APIResponse(responseCode = "404")
-    public void deleteSubscription(@PathParam("id") final UUID id) {
-        final var user = User.getFromSecurityContext(context);
-        final var post = Post.<Post>findById(id);
-        Post.validateAccess(post, user, true, false);
-        user.unsubscribeFrom(post);
+        if (input.subscribed()) {
+            user.subscribeTo(post);
+        } else {
+            user.unsubscribeFrom(post);
+        }
+
+        return Response.ok().build();
     }
 
     @POST
@@ -177,6 +173,7 @@ public final class PostsEndpoint {
     @Authenticated
     @Transactional
     @APIResponse(responseCode = "200")
+    @APIResponse(responseCode = "400")
     @APIResponse(responseCode = "404")
     @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
     public Response vote(@PathParam("id") final UUID id, @Valid @NotNull final VoteCreation input) {
@@ -193,9 +190,9 @@ public final class PostsEndpoint {
         final var vote = new Vote();
         vote.user = user;
         vote.post = post;
-        vote.isSpread = input.isSpread();
+        vote.spread = input.spread();
         vote.persist();
-        post.life += vote.isSpread ? 1 : -1;
+        post.life += vote.spread ? 1 : -1;
         post.persist();
         return Response.ok().build();
     }
@@ -204,6 +201,7 @@ public final class PostsEndpoint {
     @Path("count")
     @Authenticated
     @APIResponse(responseCode = "200")
+    @APIResponse(responseCode = "400")
     public long count(@QueryParam("type") @NotNull final PostListingType type) {
         final var user = User.getFromSecurityContext(context);
         return switch (type) {

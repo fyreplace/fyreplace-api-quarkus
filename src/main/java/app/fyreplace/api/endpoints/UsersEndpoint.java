@@ -2,6 +2,7 @@ package app.fyreplace.api.endpoints;
 
 import app.fyreplace.api.cache.DuplicateRequestKeyGenerator;
 import app.fyreplace.api.data.Block;
+import app.fyreplace.api.data.BlockUpdate;
 import app.fyreplace.api.data.Email;
 import app.fyreplace.api.data.StoredFile;
 import app.fyreplace.api.data.User;
@@ -108,32 +109,22 @@ public final class UsersEndpoint {
     @Authenticated
     @Transactional
     @APIResponse(responseCode = "200")
+    @APIResponse(responseCode = "400")
     @APIResponse(responseCode = "404")
-    public Response createBlock(@PathParam("id") final UUID id) {
+    public Response updateBlocked(@PathParam("id") final UUID id, @Valid @NotNull final BlockUpdate input) {
         final var source = User.getFromSecurityContext(context);
         final var target = User.<User>findById(id);
         validateUser(target);
 
         if (source.id.equals(target.id)) {
             throw new ForbiddenException("user_is_self");
-        } else {
+        } else if (input.blocked()) {
             source.block(target);
+        } else {
+            source.unblock(target);
         }
 
         return Response.ok().build();
-    }
-
-    @DELETE
-    @Path("{id}/blocked")
-    @Authenticated
-    @Transactional
-    @APIResponse(responseCode = "204")
-    @APIResponse(responseCode = "404")
-    public void deleteBlock(@PathParam("id") final UUID id) {
-        final var source = User.getFromSecurityContext(context);
-        final var target = User.<User>findById(id);
-        validateUser(target);
-        source.unblock(target);
     }
 
     @PUT

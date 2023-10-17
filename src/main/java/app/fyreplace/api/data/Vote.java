@@ -25,5 +25,5 @@ public class Vote extends EntityBase {
     public Post post;
 
     @Column(nullable = false)
-    public boolean isSpread;
+    public boolean spread;
 }

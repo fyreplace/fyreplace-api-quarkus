@@ -10,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import app.fyreplace.api.data.Comment;
 import app.fyreplace.api.data.Subscription;
+import app.fyreplace.api.data.SubscriptionUpdate;
 import app.fyreplace.api.data.User;
 import app.fyreplace.api.endpoints.PostsEndpoint;
 import app.fyreplace.api.testing.CommentTestsBase;
@@ -17,19 +18,24 @@ import io.quarkus.narayana.jta.QuarkusTransaction;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
+import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 @QuarkusTest
 @TestHTTPEndpoint(PostsEndpoint.class)
-public final class CreateSubscriptionTests extends CommentTestsBase {
+public final class UpdateSubscribedToTrueTests extends CommentTestsBase {
     @Test
     @TestSecurity(user = "user_1")
-    public void createSubscriptionWithOtherPost() {
+    public void updateSubscribedWithOtherPost() {
         final var user = requireNonNull(User.findByUsername("user_1"));
         assertFalse(user.isSubscribedTo(post));
-        given().put(post.id + "/subscribed").then().statusCode(200);
+        given().contentType(ContentType.JSON)
+                .body(new SubscriptionUpdate(true))
+                .put(post.id + "/subscribed")
+                .then()
+                .statusCode(200);
         final var subscription = Subscription.<Subscription>find("user = ?1 and post = ?2", user, post)
                 .firstResult();
         assertNotNull(subscription);
@@ -40,10 +46,18 @@ public final class CreateSubscriptionTests extends CommentTestsBase {
 
     @Test
     @TestSecurity(user = "user_1")
-    public void createSubscriptionWithOtherPostTwice() {
+    public void updateSubscribedWithOtherPostTwice() {
         final var user = User.findByUsername("user_1");
-        given().put(post.id + "/subscribed").then().statusCode(200);
-        given().put(post.id + "/subscribed").then().statusCode(200);
+        given().contentType(ContentType.JSON)
+                .body(new SubscriptionUpdate(true))
+                .put(post.id + "/subscribed")
+                .then()
+                .statusCode(200);
+        given().contentType(ContentType.JSON)
+                .body(new SubscriptionUpdate(true))
+                .put(post.id + "/subscribed")
+                .then()
+                .statusCode(200);
         final var subscription = Subscription.<Subscription>find("user = ?1 and post = ?2", user, post)
                 .firstResult();
         assertNotNull(subscription);
@@ -54,10 +68,14 @@ public final class CreateSubscriptionTests extends CommentTestsBase {
 
     @Test
     @TestSecurity(user = "user_0")
-    public void createSubscriptionWithOwnPost() {
+    public void updateSubscribedWithOwnPost() {
         final var user = requireNonNull(User.findByUsername("user_0"));
         assertTrue(user.isSubscribedTo(post));
-        given().put(post.id + "/subscribed").then().statusCode(200);
+        given().contentType(ContentType.JSON)
+                .body(new SubscriptionUpdate(true))
+                .put(post.id + "/subscribed")
+                .then()
+                .statusCode(200);
         final var subscription = Subscription.<Subscription>find("user = ?1 and post = ?2", user, post)
                 .firstResult();
         assertNotNull(subscription);
@@ -66,62 +84,90 @@ public final class CreateSubscriptionTests extends CommentTestsBase {
 
     @Test
     @TestSecurity(user = "user_1")
-    public void createSubscriptionWithOtherDraft() {
+    public void updateSubscribedWithOtherDraft() {
         final var user = requireNonNull(User.findByUsername("user_1"));
         assertFalse(user.isSubscribedTo(draft));
-        given().put(draft.id + "/subscribed").then().statusCode(404);
+        given().contentType(ContentType.JSON)
+                .body(new SubscriptionUpdate(true))
+                .put(draft.id + "/subscribed")
+                .then()
+                .statusCode(404);
         assertFalse(user.isSubscribedTo(draft));
     }
 
     @Test
     @TestSecurity(user = "user_0")
-    public void createSubscriptionWithOwnDraft() {
+    public void updateSubscribedWithOwnDraft() {
         final var user = requireNonNull(User.findByUsername("user_0"));
         assertFalse(user.isSubscribedTo(draft));
-        given().put(draft.id + "/subscribed").then().statusCode(403);
+        given().contentType(ContentType.JSON)
+                .body(new SubscriptionUpdate(true))
+                .put(draft.id + "/subscribed")
+                .then()
+                .statusCode(403);
         assertFalse(user.isSubscribedTo(draft));
     }
 
     @Test
     @TestSecurity(user = "user_1")
-    public void createSubscriptionWithOtherPostWhenBlocked() {
+    public void updateSubscribedWithOtherPostWhenBlocked() {
         final var user = requireNonNull(User.findByUsername("user_1"));
         QuarkusTransaction.requiringNew().run(() -> post.author.block(user));
         assertFalse(user.isSubscribedTo(post));
-        given().put(post.id + "/subscribed").then().statusCode(403);
+        given().contentType(ContentType.JSON)
+                .body(new SubscriptionUpdate(true))
+                .put(post.id + "/subscribed")
+                .then()
+                .statusCode(403);
         assertFalse(user.isSubscribedTo(post));
     }
 
     @Test
     @TestSecurity(user = "user_1")
-    public void createSubscriptionWithOtherAnonymousPostWhenBlocked() {
+    public void updateSubscribedWithOtherAnonymousPostWhenBlocked() {
         final var user = requireNonNull(User.findByUsername("user_1"));
         QuarkusTransaction.requiringNew().run(() -> anonymousPost.author.block(user));
         assertFalse(user.isSubscribedTo(anonymousPost));
-        given().put(anonymousPost.id + "/subscribed").then().statusCode(200);
+        given().contentType(ContentType.JSON)
+                .body(new SubscriptionUpdate(true))
+                .put(anonymousPost.id + "/subscribed")
+                .then()
+                .statusCode(200);
         assertTrue(user.isSubscribedTo(anonymousPost));
     }
 
     @Test
-    public void createSubscriptionWithPostUnauthenticated() {
+    public void updateSubscribedWithPostUnauthenticated() {
         final var subscriptionCount = Subscription.count();
-        given().put(post.id + "/subscribed").then().statusCode(401);
+        given().contentType(ContentType.JSON)
+                .body(new SubscriptionUpdate(true))
+                .put(post.id + "/subscribed")
+                .then()
+                .statusCode(401);
         assertEquals(subscriptionCount, Subscription.count());
     }
 
     @Test
-    public void createSubscriptionWithDraftUnauthenticated() {
+    public void updateSubscribedWithDraftUnauthenticated() {
         final var subscriptionCount = Subscription.count();
-        given().put(draft.id + "/subscribed").then().statusCode(401);
+        given().contentType(ContentType.JSON)
+                .body(new SubscriptionUpdate(true))
+                .put(draft.id + "/subscribed")
+                .then()
+                .statusCode(401);
         assertEquals(subscriptionCount, Subscription.count());
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"fake", "00000000-0000-0000-0000-000000000000"})
     @TestSecurity(user = "user_0")
-    public void createSubscriptionWithNonExistent(final String id) {
+    public void updateSubscribedWithNonExistent(final String id) {
         final var subscriptionCount = Subscription.count();
-        given().put(id + "/subscribed").then().statusCode(404);
+        given().contentType(ContentType.JSON)
+                .body(new SubscriptionUpdate(true))
+                .put(id + "/subscribed")
+                .then()
+                .statusCode(404);
         assertEquals(subscriptionCount, Subscription.count());
     }
 }
