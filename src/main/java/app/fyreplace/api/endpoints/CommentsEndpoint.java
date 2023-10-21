@@ -7,9 +7,12 @@ import app.fyreplace.api.data.Post;
 import app.fyreplace.api.data.Subscription;
 import app.fyreplace.api.data.User;
 import app.fyreplace.api.exceptions.ForbiddenException;
+import app.fyreplace.api.pushnotifications.PushNotificationDispatcher;
 import io.quarkus.cache.CacheResult;
 import io.quarkus.security.Authenticated;
 import jakarta.annotation.Nullable;
+import jakarta.enterprise.inject.Instance;
+import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -36,6 +39,9 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 public final class CommentsEndpoint {
     @ConfigProperty(name = "app.paging.size")
     int pagingSize;
+
+    @Inject
+    Instance<PushNotificationDispatcher> pushNotificationDispatchers;
 
     @Context
     SecurityContext context;
@@ -80,6 +86,7 @@ public final class CommentsEndpoint {
         comment.anonymous = input.anonymous();
         comment.persist();
         comment.setCurrentUser(user);
+        pushNotificationDispatchers.forEach(d -> d.dispatch(comment));
         return Response.status(Status.CREATED).entity(comment).build();
     }
 
