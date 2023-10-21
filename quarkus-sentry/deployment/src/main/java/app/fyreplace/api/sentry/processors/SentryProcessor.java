@@ -1,6 +1,6 @@
 package app.fyreplace.api.sentry.processors;
 
-import app.fyreplace.api.sentry.SentrySpanProcessorProducer;
+import app.fyreplace.api.sentry.beans.SentrySpanProcessorProducer;
 import app.fyreplace.api.sentry.config.SentryConfig;
 import app.fyreplace.api.sentry.recorders.SentryRecorder;
 import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
@@ -10,7 +10,7 @@ import io.quarkus.deployment.annotations.Record;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
 import io.quarkus.deployment.builditem.LogHandlerBuildItem;
 
-final class SentryProcessor {
+public final class SentryProcessor {
     private static final String FEATURE = "sentry";
 
     @BuildStep
@@ -25,7 +25,7 @@ final class SentryProcessor {
     }
 
     @BuildStep
-    AdditionalBeanBuildItem addAdditionalBeans() {
+    AdditionalBeanBuildItem addSentrySpanProcessorProducer() {
         return AdditionalBeanBuildItem.builder()
                 .addBeanClass(SentrySpanProcessorProducer.class)
                 .build();

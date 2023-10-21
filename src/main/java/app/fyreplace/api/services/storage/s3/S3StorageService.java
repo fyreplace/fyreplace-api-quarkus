@@ -40,7 +40,7 @@ public final class S3StorageService implements StorageService {
             try {
                 b.bucket(config.bucket())
                         .policy(objectMapper.writeValueAsString(new Policy(Policy.currentVersion, List.of(statement))));
-            } catch (JsonProcessingException e) {
+            } catch (final JsonProcessingException e) {
                 throw new RuntimeException(e);
             }
         });
@@ -62,10 +62,7 @@ public final class S3StorageService implements StorageService {
             return client.utilities()
                     .getUrl(b -> {
                         b.bucket(config.bucket()).key(path);
-
-                        if (config.customEndpoint().isPresent()) {
-                            b.endpoint(config.customEndpoint().get());
-                        }
+                        config.customEndpoint().ifPresent(b::endpoint);
                     })
                     .toURI();
         } catch (final URISyntaxException e) {

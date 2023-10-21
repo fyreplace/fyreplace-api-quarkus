@@ -13,14 +13,14 @@ public final class JwtService {
     String appUrl;
 
     public String makeJwt(final User user) {
-        return makeJwt(user.mainEmail);
+        return Jwt.issuer(appUrl)
+                .subject(user.username)
+                .groups(user.getGroups())
+                .expiresIn(Duration.ofDays(3))
+                .sign();
     }
 
     public String makeJwt(final Email email) {
-        return Jwt.issuer(appUrl)
-                .subject(email.user.username)
-                .groups(email.user.getGroups())
-                .expiresIn(Duration.ofDays(3))
-                .sign();
+        return makeJwt(email.user);
     }
 }

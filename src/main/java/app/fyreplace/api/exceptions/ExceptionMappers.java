@@ -3,6 +3,7 @@ package app.fyreplace.api.exceptions;
 import jakarta.ws.rs.core.Response;
 import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
 
+@SuppressWarnings("unused")
 public final class ExceptionMappers {
     @ServerExceptionMapper
     public Response handleForbiddenException(final ForbiddenException exception) {
