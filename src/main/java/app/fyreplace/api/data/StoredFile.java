@@ -1,5 +1,6 @@
 package app.fyreplace.api.data;
 
+import app.fyreplace.api.services.MimeTypeService;
 import app.fyreplace.api.services.StorageService;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
@@ -13,12 +14,16 @@ import jakarta.persistence.PreRemove;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import java.io.IOException;
+import java.nio.file.Paths;
 
 @Entity
 @Table(name = "remote_files")
 public class StoredFile extends EntityBase {
     @Transient
     private StorageService storageService;
+
+    @Transient
+    private MimeTypeService mimeTypeService;
 
     @Column(unique = true, nullable = false)
     public String path;
@@ -30,13 +35,13 @@ public class StoredFile extends EntityBase {
     @SuppressWarnings("unused")
     public StoredFile() {
         data = null;
-        initStorageService();
+        initServices();
     }
 
-    public StoredFile(final String path, @Nullable final byte[] data) {
-        this.path = path;
+    public StoredFile(final String directory, final String name, @Nullable final byte[] data) {
+        initServices();
+        this.path = Paths.get(directory, name) + mimeTypeService.getExtension(data);
         this.data = data;
-        initStorageService();
     }
 
     @Override
@@ -65,9 +70,11 @@ public class StoredFile extends EntityBase {
         storageService.remove(path);
     }
 
-    private void initStorageService() {
-        try (final var service = Arc.container().instance(StorageService.class)) {
-            storageService = service.get();
+    private void initServices() {
+        try (final var storage = Arc.container().instance(StorageService.class);
+                final var mimeType = Arc.container().instance(MimeTypeService.class)) {
+            storageService = storage.get();
+            mimeTypeService = mimeType.get();
         }
     }
 

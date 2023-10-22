@@ -7,14 +7,27 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import org.apache.tika.Tika;
 import org.apache.tika.metadata.Metadata;
+import org.apache.tika.mime.MimeTypeException;
+import org.apache.tika.mime.MimeTypes;
 
 @ApplicationScoped
 public final class MimeTypeService {
-    public void validate(final byte[] data, final KnownMimeTypes types) {
-        final var tika = new Tika();
-        final var mimeType = tika.detect(data);
+    public String getMimeType(final byte[] data) {
+        return new Tika().detect(data);
+    }
 
-        if (mimeType == null || !types.types.contains(mimeType)) {
+    public String getExtension(final byte[] data) {
+        try {
+            return MimeTypes.getDefaultMimeTypes().forName(getMimeType(data)).getExtension();
+        } catch (final MimeTypeException e) {
+            return ".unknown";
+        }
+    }
+
+    public void validate(final byte[] data, final KnownMimeTypes types) {
+        final var mimeType = getMimeType(data);
+
+        if (!types.types.contains(mimeType)) {
             throw new UnsupportedMediaTypeException("invalid_media_type");
         }
     }

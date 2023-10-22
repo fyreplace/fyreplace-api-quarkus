@@ -179,7 +179,7 @@ public final class ChaptersEndpoint {
             final var height = metadata.getInt(Metadata.IMAGE_LENGTH);
 
             if (chapter.image == null) {
-                chapter.image = new StoredFile("chapters/" + chapter.id, input);
+                chapter.image = new StoredFile("chapters", chapter.id.toString(), input);
             } else {
                 chapter.image.store(input);
             }

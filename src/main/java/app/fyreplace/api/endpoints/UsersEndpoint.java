@@ -191,7 +191,7 @@ public final class UsersEndpoint {
         final var user = User.getFromSecurityContext(context, LockModeType.PESSIMISTIC_WRITE);
 
         if (user.avatar == null) {
-            user.avatar = new StoredFile("avatars/" + user.id, input);
+            user.avatar = new StoredFile("avatars", user.username, input);
         } else {
             user.avatar.store(input);
         }
