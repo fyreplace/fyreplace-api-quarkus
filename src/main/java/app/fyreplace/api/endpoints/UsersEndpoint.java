@@ -129,7 +129,7 @@ public final class UsersEndpoint {
 
     @PUT
     @Path("{id}/banned")
-    @RolesAllowed({"ADMINISTRATOR", "MODERATOR"})
+    @RolesAllowed("MODERATOR")
     @Transactional
     @APIResponse(responseCode = "200")
     @APIResponse(responseCode = "404")

@@ -20,20 +20,9 @@ import org.junit.jupiter.api.Test;
 @TestHTTPEndpoint(UsersEndpoint.class)
 public final class BannedTests extends UserTestsBase {
     @Test
-    @TestSecurity(user = "user_0", roles = "ADMINISTRATOR")
-    @Transactional
-    public void updateBannedWithAdministrator() {
-        final var user = requireNonNull(User.findByUsername("user_1"));
-        given().put(user.id + "/banned").then().statusCode(200);
-        user.refresh();
-        assertTrue(user.banned);
-        assertEquals(User.BanCount.ONCE, user.banCount);
-    }
-
-    @Test
     @TestSecurity(user = "user_0", roles = "MODERATOR")
     @Transactional
-    public void updateBannedWithModerator() {
+    public void updateBannedAsModerator() {
         final var user = requireNonNull(User.findByUsername("user_1"));
         given().put(user.id + "/banned").then().statusCode(200);
         user.refresh();
@@ -44,7 +33,7 @@ public final class BannedTests extends UserTestsBase {
     @Test
     @TestSecurity(user = "user_0")
     @Transactional
-    public void updateBannedWithUser() {
+    public void updateBannedAsUser() {
         final var user = requireNonNull(User.findByUsername("user_1"));
         given().put(user.id + "/banned").then().statusCode(403);
         user.refresh();
@@ -63,20 +52,9 @@ public final class BannedTests extends UserTestsBase {
     }
 
     @Test
-    @TestSecurity(user = "user_0", roles = "ADMINISTRATOR")
-    @Transactional
-    public void updateBannedTwiceWithAdministrator() {
-        final var user = requireNonNull(User.findByUsername("user_2"));
-        given().put(user.id + "/banned").then().statusCode(200);
-        user.refresh();
-        assertTrue(user.banned);
-        assertEquals(User.BanCount.ONE_TOO_MANY, user.banCount);
-    }
-
-    @Test
     @TestSecurity(user = "user_0", roles = "MODERATOR")
     @Transactional
-    public void updateBannedTwiceWithModerator() {
+    public void updateBannedTwiceAsModerator() {
         final var user = requireNonNull(User.findByUsername("user_2"));
         given().put(user.id + "/banned").then().statusCode(200);
         user.refresh();
@@ -87,7 +65,7 @@ public final class BannedTests extends UserTestsBase {
     @Test
     @TestSecurity(user = "user_0")
     @Transactional
-    public void updateBannedTwiceWithUser() {
+    public void updateBannedTwiceAsUser() {
         final var user = requireNonNull(User.findByUsername("user_2"));
         given().put(user.id + "/banned").then().statusCode(403);
         user.refresh();
@@ -106,11 +84,22 @@ public final class BannedTests extends UserTestsBase {
     }
 
     @Test
-    @TestSecurity(user = "user_0", roles = "ADMINISTRATOR")
+    @TestSecurity(user = "user_0", roles = "MODERATOR")
     @Transactional
-    public void updateBannedAlreadyBanned() {
+    public void updateBannedAlreadyBannedAsModerator() {
         final var user = requireNonNull(User.findByUsername("user_3"));
         given().put(user.id + "/banned").then().statusCode(200);
+        user.refresh();
+        assertTrue(user.banned);
+        assertEquals(User.BanCount.ONCE, user.banCount);
+    }
+
+    @Test
+    @TestSecurity(user = "user_0")
+    @Transactional
+    public void updateBannedAlreadyBannedAsUser() {
+        final var user = requireNonNull(User.findByUsername("user_3"));
+        given().put(user.id + "/banned").then().statusCode(403);
         user.refresh();
         assertTrue(user.banned);
         assertEquals(User.BanCount.ONCE, user.banCount);
