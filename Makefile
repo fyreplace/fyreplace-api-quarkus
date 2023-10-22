@@ -2,7 +2,7 @@
 
 emails: src/main/resources/templates/*/html.html
 
-src/main/resources/templates/%/html.html: src/main/resources/templates/%/html.html.mjml
+src/main/resources/templates/%/html.html: src/main/resources/templates/%/html.html.mjml src/main/resources/templates/emails/*.mjml
 	npx mjml -c.minify=true $< -o $@
 
 keygen-rsa:

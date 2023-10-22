@@ -23,13 +23,13 @@ public final class UserActivationEmail extends EmailBase {
 
     @Override
     protected TemplateInstance htmlTemplate() {
-        return Templates.html(getResourceBundle(), appName, getRandomCode(), getLink());
+        return Templates.html(getResourceBundle(), appUrl, appName, getRandomCode(), getLink());
     }
 
     @CheckedTemplate
     public static class Templates {
         public static native TemplateInstance text(ResourceBundle res, String appName, String code, String link);
 
-        public static native TemplateInstance html(ResourceBundle res, String appName, String code, String link);
+        public static native TemplateInstance html(ResourceBundle res, String appUrl, String appName, String code, String link);
     }
 }

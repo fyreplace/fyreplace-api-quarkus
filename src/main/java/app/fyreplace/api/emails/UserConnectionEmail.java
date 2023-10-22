@@ -19,13 +19,13 @@ public class UserConnectionEmail extends EmailBase {
 
     @Override
     protected TemplateInstance htmlTemplate() {
-        return Templates.html(getResourceBundle(), getRandomCode(), getLink());
+        return Templates.html(getResourceBundle(), appUrl, getRandomCode(), getLink());
     }
 
     @CheckedTemplate
     public static class Templates {
         public static native TemplateInstance text(ResourceBundle res, String code, String link);
 
-        public static native TemplateInstance html(ResourceBundle res, String code, String link);
+        public static native TemplateInstance html(ResourceBundle res, String appUrl, String code, String link);
     }
 }
