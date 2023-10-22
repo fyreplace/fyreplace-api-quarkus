@@ -30,6 +30,7 @@ public final class UserActivationEmail extends EmailBase {
     public static class Templates {
         public static native TemplateInstance text(ResourceBundle res, String appName, String code, String link);
 
-        public static native TemplateInstance html(ResourceBundle res, String appUrl, String appName, String code, String link);
+        public static native TemplateInstance html(
+                ResourceBundle res, String appUrl, String appName, String code, String link);
     }
 }
