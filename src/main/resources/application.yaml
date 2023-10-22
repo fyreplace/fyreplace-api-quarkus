@@ -42,6 +42,9 @@ app:
   name: Fyreplace
   use-example-data: false
 
+  front:
+    url: ""
+
   paging:
     size: 12
 

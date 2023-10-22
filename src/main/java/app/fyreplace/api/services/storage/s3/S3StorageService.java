@@ -10,12 +10,15 @@ import io.quarkus.runtime.StartupEvent;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
+import jakarta.ws.rs.NotFoundException;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import org.jboss.logging.Logger;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
 
 @SuppressWarnings("unused")
 @ApplicationScoped
@@ -48,6 +51,15 @@ public final class S3StorageService implements StorageService {
                 throw new RuntimeException(e);
             }
         });
+    }
+
+    @Override
+    public byte[] fetch(final String path) throws IOException {
+        try {
+            return client.getObject(b -> b.bucket(config.bucket()).key(path)).readAllBytes();
+        } catch (final NoSuchKeyException e) {
+            throw new NotFoundException();
+        }
     }
 
     @Override

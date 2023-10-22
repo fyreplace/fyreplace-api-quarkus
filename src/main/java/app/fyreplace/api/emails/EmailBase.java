@@ -15,8 +15,8 @@ import java.util.ResourceBundle;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 public abstract class EmailBase extends Mail {
-    @ConfigProperty(name = "app.url")
-    String appUrl;
+    @ConfigProperty(name = "app.front.url")
+    String appFrontUrl;
 
     @Inject
     Mailer mailer;
@@ -60,7 +60,7 @@ public abstract class EmailBase extends Mail {
     }
 
     protected String getLink() {
-        return URI.create(appUrl)
+        return URI.create(appFrontUrl)
                 .resolve("?action=" + action())
                 .resolve('#' + email.user.username + ':' + getRandomCode())
                 .toString();
