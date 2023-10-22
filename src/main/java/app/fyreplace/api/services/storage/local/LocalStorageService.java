@@ -1,11 +1,13 @@
 package app.fyreplace.api.services.storage.local;
 
+import app.fyreplace.api.endpoints.StoredFilesEndpoint;
 import app.fyreplace.api.services.StorageService;
 import io.quarkus.arc.Unremovable;
 import io.quarkus.arc.properties.IfBuildProperty;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.NotFoundException;
+import jakarta.ws.rs.Path;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -54,7 +56,8 @@ public final class LocalStorageService implements StorageService {
 
     @Override
     public URI getUri(final String path) {
-        return URI.create(appUrl).resolve(Paths.get("stored-files", path).toString());
+        final var pathBase = StoredFilesEndpoint.class.getAnnotation(Path.class).value();
+        return URI.create(appUrl).resolve(Paths.get(pathBase, path).toString());
     }
 
     private File getFile(final String path) throws IOException {
