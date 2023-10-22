@@ -48,7 +48,7 @@ public final class LocalStorageService implements StorageService {
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override
-    public void remove(final String path) {
+    public void remove(final String path) throws IOException {
         getFile(path).delete();
     }
 
@@ -57,7 +57,13 @@ public final class LocalStorageService implements StorageService {
         return URI.create(appUrl).resolve(Paths.get("stored-files", path).toString());
     }
 
-    private File getFile(final String path) {
-        return Paths.get(config.path(), path).toFile();
+    private File getFile(final String path) throws IOException {
+        final var file = config.path().resolve(path).toFile();
+
+        if (!file.getCanonicalPath().startsWith(config.path().toFile().getCanonicalPath())) {
+            throw new NotFoundException();
+        }
+
+        return file;
     }
 }
