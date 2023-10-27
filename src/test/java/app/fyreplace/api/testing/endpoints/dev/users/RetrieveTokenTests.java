@@ -1,4 +1,4 @@
-package app.fyreplace.api.testing.endpoints.users.dev;
+package app.fyreplace.api.testing.endpoints.dev.users;
 
 import static io.restassured.RestAssured.given;
 

@@ -59,28 +59,26 @@ public final class UpdateBlockedToTrueTests extends PostTestsBase {
     @Test
     @TestSecurity(user = "user_0")
     public void updateBlockedWithInactiveUser() {
-        final var user = User.findByUsername("user_0");
         final var otherUser = requireNonNull(User.findByUsername("user_inactive_1"));
-        final var blockCount = Block.count("source", user);
+        final var blockCount = Block.count();
         given().contentType(ContentType.JSON)
                 .body(new BlockUpdate(true))
                 .put(otherUser.id + "/blocked")
                 .then()
                 .statusCode(404);
-        assertEquals(blockCount, Block.count("source", user));
+        assertEquals(blockCount, Block.count());
     }
 
     @Test
     @TestSecurity(user = "user_0")
     public void updateBlockedWithInvalidUser() {
-        final var user = User.findByUsername("user_0");
-        final var blockCount = Block.count("source", user);
+        final var blockCount = Block.count();
         given().contentType(ContentType.JSON)
                 .body(new BlockUpdate(true))
                 .put("invalid/blocked")
                 .then()
                 .statusCode(404);
-        assertEquals(blockCount, Block.count("source", user));
+        assertEquals(blockCount, Block.count());
     }
 
     @Test

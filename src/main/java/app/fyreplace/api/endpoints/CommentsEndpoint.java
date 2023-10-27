@@ -142,6 +142,7 @@ public final class CommentsEndpoint {
     @Path("count")
     @Authenticated
     @APIResponse(responseCode = "200")
+    @APIResponse(responseCode = "404")
     public long count(@PathParam("id") final UUID id, @QueryParam("read") @Nullable final Boolean read) {
         final var user = User.getFromSecurityContext(context);
         final var post = Post.<Post>findById(id);

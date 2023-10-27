@@ -18,7 +18,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 
 @Path("subscriptions")
-public class SubscriptionsEndpoint {
+public final class SubscriptionsEndpoint {
     @ConfigProperty(name = "app.paging.size")
     int pagingSize;
 

@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 
 @QuarkusTest
 @TestHTTPEndpoint(SubscriptionsEndpoint.class)
-public class ListUnreadTests extends SubscriptionTestsBase {
+public final class ListUnreadTests extends SubscriptionTestsBase {
     @ConfigProperty(name = "app.paging.size")
     int pagingSize;
 

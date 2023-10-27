@@ -19,7 +19,7 @@ import org.junit.jupiter.api.Test;
 
 @QuarkusTest
 @TestHTTPEndpoint(PostsEndpoint.class)
-public class CountTests extends PostTestsBase {
+public final class CountTests extends PostTestsBase {
     @Inject
     DataSeeder dataSeeder;
 

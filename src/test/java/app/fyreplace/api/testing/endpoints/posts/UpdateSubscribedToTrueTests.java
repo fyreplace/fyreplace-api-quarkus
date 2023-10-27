@@ -161,7 +161,7 @@ public final class UpdateSubscribedToTrueTests extends CommentTestsBase {
     @ParameterizedTest
     @ValueSource(strings = {"fake", "00000000-0000-0000-0000-000000000000"})
     @TestSecurity(user = "user_0")
-    public void updateSubscribedWithNonExistent(final String id) {
+    public void updateSubscribedWithNonExistentPost(final String id) {
         final var subscriptionCount = Subscription.count();
         given().contentType(ContentType.JSON)
                 .body(new SubscriptionUpdate(true))

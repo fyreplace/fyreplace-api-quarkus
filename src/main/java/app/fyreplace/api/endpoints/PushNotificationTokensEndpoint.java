@@ -13,7 +13,7 @@ import jakarta.ws.rs.core.SecurityContext;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 
 @Path("push-notification-tokens")
-public class PushNotificationTokensEndpoint {
+public final class PushNotificationTokensEndpoint {
     @Context
     SecurityContext context;
 

@@ -49,6 +49,7 @@ public final class EmailsEndpoint {
 
     @GET
     @Authenticated
+    @APIResponse(responseCode = "200")
     public List<Email> list(@QueryParam("page") @PositiveOrZero final int page) {
         final var user = User.getFromSecurityContext(context);
         return Email.find("user", Sort.by("email"), user).page(page, pagingSize).list();

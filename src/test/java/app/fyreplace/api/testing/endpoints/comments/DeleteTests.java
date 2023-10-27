@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Test;
 
 @QuarkusTest
 @TestHTTPEndpoint(CommentsEndpoint.class)
-public class DeleteTests extends CommentTestsBase {
+public final class DeleteTests extends CommentTestsBase {
     @Inject
     DataSeeder dataSeeder;
 

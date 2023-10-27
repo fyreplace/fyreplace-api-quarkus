@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 
 @QuarkusTest
 @TestHTTPEndpoint(SubscriptionsEndpoint.class)
-public class DeleteTests extends SubscriptionTestsBase {
+public final class DeleteTests extends SubscriptionTestsBase {
     @Test
     @TestSecurity(user = "user_0")
     public void delete() {

@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 
 @QuarkusTest
 @TestHTTPEndpoint(CommentsEndpoint.class)
-public class CountTests extends CommentTestsBase {
+public final class CountTests extends CommentTestsBase {
     @Inject
     DataSeeder dataSeeder;
 

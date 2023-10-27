@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test;
 
 @QuarkusTest
 @TestHTTPEndpoint(EmailsEndpoint.class)
-public class CountTests extends UserTestsBase {
+public final class CountTests extends UserTestsBase {
     @Test
     @TestSecurity(user = "user_0")
     public void count() {

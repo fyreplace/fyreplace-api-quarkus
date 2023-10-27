@@ -13,7 +13,7 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 
 @Path("stored-files")
 @IfBuildProperty(name = "app.storage.type", stringValue = "local")
-public class StoredFilesEndpoint {
+public final class StoredFilesEndpoint {
     @Inject
     StorageService storageService;
 

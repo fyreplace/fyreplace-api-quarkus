@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 
 @QuarkusTest
 @TestHTTPEndpoint(PushNotificationTokensEndpoint.class)
-public class UpdateTests extends UserTestsBase {
+public final class UpdateTests extends UserTestsBase {
     @Test
     @TestSecurity(user = "user_0")
     public void update() {

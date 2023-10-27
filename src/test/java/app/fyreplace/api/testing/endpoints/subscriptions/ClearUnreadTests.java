@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 
 @QuarkusTest
 @TestHTTPEndpoint(SubscriptionsEndpoint.class)
-public class ClearUnreadTests extends SubscriptionTestsBase {
+public final class ClearUnreadTests extends SubscriptionTestsBase {
     @Test
     @TestSecurity(user = "user_0")
     public void clearUnread() {

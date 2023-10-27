@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test;
 
 @QuarkusTest
 @TestHTTPEndpoint(UsersEndpoint.class)
-public final class BannedTests extends UserTestsBase {
+public final class UpdateBannedTests extends UserTestsBase {
     @Test
     @TestSecurity(user = "user_0", roles = "MODERATOR")
     @Transactional

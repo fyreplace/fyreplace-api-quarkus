@@ -19,7 +19,7 @@ import org.junit.jupiter.api.Test;
 
 @QuarkusTest
 @TestHTTPEndpoint(CommentsEndpoint.class)
-public class CreateTests extends CommentTestsBase {
+public final class CreateTests extends CommentTestsBase {
     @Test
     @TestSecurity(user = "user_0")
     public void createOnOwnPost() {

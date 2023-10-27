@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Test;
 
 @QuarkusTest
 @TestHTTPEndpoint(CommentsEndpoint.class)
-public class ListTests extends CommentTestsBase {
+public final class ListTests extends CommentTestsBase {
     @ConfigProperty(name = "app.paging.size")
     int pagingSize;
 
