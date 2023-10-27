@@ -4,6 +4,7 @@ import app.fyreplace.api.cache.DuplicateRequestKeyGenerator;
 import app.fyreplace.api.data.Chapter;
 import app.fyreplace.api.data.Post;
 import app.fyreplace.api.data.PostPublication;
+import app.fyreplace.api.data.ReportUpdate;
 import app.fyreplace.api.data.Subscription;
 import app.fyreplace.api.data.SubscriptionUpdate;
 import app.fyreplace.api.data.User;
@@ -107,7 +108,7 @@ public final class PostsEndpoint {
     public Post retrieve(@PathParam("id") final UUID id) {
         final var user = User.getFromSecurityContext(context, null, false);
         final var post = Post.<Post>findById(id);
-        Post.validateAccess(post, user, null, false);
+        Post.validateAccess(post, user, null, null);
         return post;
     }
 
@@ -124,6 +125,47 @@ public final class PostsEndpoint {
         Post.validateAccess(post, user, null, true);
         post.delete();
         return Response.noContent().build();
+    }
+
+    @PUT
+    @Path("{id}/subscribed")
+    @Authenticated
+    @Transactional
+    @APIResponse(responseCode = "200")
+    @APIResponse(responseCode = "400")
+    @APIResponse(responseCode = "404")
+    public Response updateSubscribed(@PathParam("id") final UUID id, @Valid @NotNull final SubscriptionUpdate input) {
+        final var user = User.getFromSecurityContext(context);
+        final var post = Post.<Post>findById(id);
+        Post.validateAccess(post, user, true, null);
+
+        if (input.subscribed()) {
+            user.subscribeTo(post);
+        } else {
+            user.unsubscribeFrom(post);
+        }
+
+        return Response.ok().build();
+    }
+
+    @PUT
+    @Path("{id}/reported")
+    @Authenticated
+    @Transactional
+    @APIResponse(responseCode = "200")
+    @APIResponse(responseCode = "404")
+    public Response updateReported(@PathParam("id") final UUID id, @NotNull @Valid final ReportUpdate input) {
+        final var user = User.getFromSecurityContext(context);
+        final var post = Post.<Post>findById(id);
+        Post.validateAccess(post, user, true, false);
+
+        if (input.reported()) {
+            post.reportBy(user);
+        } else {
+            post.absolveBy(user);
+        }
+
+        return Response.ok().build();
     }
 
     @POST
@@ -144,27 +186,6 @@ public final class PostsEndpoint {
         }
 
         post.publish(postsStartingLife, input.anonymous());
-        return Response.ok().build();
-    }
-
-    @PUT
-    @Path("{id}/subscribed")
-    @Authenticated
-    @Transactional
-    @APIResponse(responseCode = "200")
-    @APIResponse(responseCode = "400")
-    @APIResponse(responseCode = "404")
-    public Response updateSubscribed(@PathParam("id") final UUID id, @Valid @NotNull final SubscriptionUpdate input) {
-        final var user = User.getFromSecurityContext(context);
-        final var post = Post.<Post>findById(id);
-        Post.validateAccess(post, user, true, false);
-
-        if (input.subscribed()) {
-            user.subscribeTo(post);
-        } else {
-            user.unsubscribeFrom(post);
-        }
-
         return Response.ok().build();
     }
 

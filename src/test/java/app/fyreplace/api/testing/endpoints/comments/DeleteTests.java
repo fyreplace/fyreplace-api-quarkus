@@ -125,7 +125,7 @@ public final class DeleteTests extends CommentTestsBase {
 
     private Comment getComment(final int position) {
         return Comment.<Comment>find("post", Comment.sorting(), post)
-                .range(position, position + 1)
+                .range(position, position)
                 .firstResult();
     }
 }

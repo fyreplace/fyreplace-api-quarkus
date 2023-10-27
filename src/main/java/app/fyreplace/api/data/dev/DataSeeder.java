@@ -9,6 +9,7 @@ import app.fyreplace.api.data.Email;
 import app.fyreplace.api.data.Post;
 import app.fyreplace.api.data.PushNotificationToken;
 import app.fyreplace.api.data.RandomCode;
+import app.fyreplace.api.data.Report;
 import app.fyreplace.api.data.StoredFile;
 import app.fyreplace.api.data.Subscription;
 import app.fyreplace.api.data.User;
@@ -61,6 +62,7 @@ public class DataSeeder {
         RandomCode.deleteAll();
         Block.deleteAll();
         PushNotificationToken.deleteAll();
+        Report.deleteAll();
         User.deleteAll();
         Subscription.deleteAll();
         Vote.deleteAll();

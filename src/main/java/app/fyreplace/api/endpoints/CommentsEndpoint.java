@@ -4,6 +4,7 @@ import app.fyreplace.api.cache.DuplicateRequestKeyGenerator;
 import app.fyreplace.api.data.Comment;
 import app.fyreplace.api.data.CommentCreation;
 import app.fyreplace.api.data.Post;
+import app.fyreplace.api.data.ReportUpdate;
 import app.fyreplace.api.data.Subscription;
 import app.fyreplace.api.data.User;
 import app.fyreplace.api.exceptions.ForbiddenException;
@@ -21,6 +22,7 @@ import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.QueryParam;
@@ -53,7 +55,7 @@ public final class CommentsEndpoint {
     public Iterable<Comment> list(@PathParam("id") final UUID id, @QueryParam("page") @PositiveOrZero final int page) {
         final var user = User.getFromSecurityContext(context);
         final var post = Post.<Post>findById(id);
-        Post.validateAccess(post, user, true, false);
+        Post.validateAccess(post, user, true, null);
 
         try (final var stream =
                 Comment.<Comment>find("post", Comment.sorting(), post).page(page, pagingSize).stream()) {
@@ -73,7 +75,7 @@ public final class CommentsEndpoint {
     public Response create(@PathParam("id") final UUID id, @Valid @NotNull final CommentCreation input) {
         final var user = User.getFromSecurityContext(context);
         final var post = Post.<Post>findById(id);
-        Post.validateAccess(post, user, true, false);
+        Post.validateAccess(post, user, true, null);
 
         if (input.anonymous() && !user.id.equals(post.author.id)) {
             throw new ForbiddenException("invalid_post_author");
@@ -100,7 +102,7 @@ public final class CommentsEndpoint {
     public Response delete(@PathParam("id") final UUID id, @PathParam("position") @PositiveOrZero final int position) {
         final var user = User.getFromSecurityContext(context);
         final var post = Post.<Post>findById(id);
-        Post.validateAccess(post, user, true, false);
+        Post.validateAccess(post, user, true, null);
         final var comment = getComment(post, position);
 
         if (!user.id.equals(comment.author.id)) {
@@ -109,6 +111,34 @@ public final class CommentsEndpoint {
 
         comment.softDelete();
         return Response.noContent().build();
+    }
+
+    @PUT
+    @Path("{position}/reported")
+    @Authenticated
+    @Transactional
+    @APIResponse(responseCode = "200")
+    @APIResponse(responseCode = "404")
+    public Response updateReported(
+            @PathParam("id") final UUID id,
+            @PathParam("position") @PositiveOrZero final int position,
+            @NotNull @Valid final ReportUpdate input) {
+        final var user = User.getFromSecurityContext(context);
+        final var post = Post.<Post>findById(id);
+        Post.validateAccess(post, user, true, null);
+        final var comment = getComment(post, position);
+
+        if (user.id.equals(comment.author.id)) {
+            throw new ForbiddenException("invalid_author");
+        }
+
+        if (input.reported()) {
+            comment.reportBy(user);
+        } else {
+            comment.absolveBy(user);
+        }
+
+        return Response.ok().build();
     }
 
     @POST
@@ -121,7 +151,7 @@ public final class CommentsEndpoint {
             @PathParam("id") final UUID id, @PathParam("position") @PositiveOrZero final int position) {
         final var user = User.getFromSecurityContext(context);
         final var post = Post.<Post>findById(id);
-        Post.validateAccess(post, user, true, false);
+        Post.validateAccess(post, user, true, null);
         final var comment = getComment(post, position);
         final var subscription = Subscription.<Subscription>find("user = ?1 and post = ?2", user, post)
                 .firstResult();
@@ -146,7 +176,7 @@ public final class CommentsEndpoint {
     public long count(@PathParam("id") final UUID id, @QueryParam("read") @Nullable final Boolean read) {
         final var user = User.getFromSecurityContext(context);
         final var post = Post.<Post>findById(id);
-        Post.validateAccess(post, user, true, false);
+        Post.validateAccess(post, user, true, null);
 
         if (read == null) {
             return Comment.count("post.id", post.id);
@@ -168,7 +198,7 @@ public final class CommentsEndpoint {
 
     private Comment getComment(final Post post, final int position) {
         final var comment = Comment.<Comment>find("post", Comment.sorting(), post)
-                .range(position, position + 1)
+                .range(position, position)
                 .firstResult();
 
         if (comment == null) {

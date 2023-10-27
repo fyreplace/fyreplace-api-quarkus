@@ -4,6 +4,7 @@ import app.fyreplace.api.cache.DuplicateRequestKeyGenerator;
 import app.fyreplace.api.data.Block;
 import app.fyreplace.api.data.BlockUpdate;
 import app.fyreplace.api.data.Email;
+import app.fyreplace.api.data.ReportUpdate;
 import app.fyreplace.api.data.StoredFile;
 import app.fyreplace.api.data.User;
 import app.fyreplace.api.data.UserCreation;
@@ -147,6 +148,28 @@ public final class UsersEndpoint {
 
             user.banned = true;
             user.persist();
+        }
+
+        return Response.ok().build();
+    }
+
+    @PUT
+    @Path("{id}/reported")
+    @Authenticated
+    @Transactional
+    @APIResponse(responseCode = "200")
+    @APIResponse(responseCode = "404")
+    public Response updateReported(@PathParam("id") final UUID id, @NotNull @Valid final ReportUpdate input) {
+        final var source = User.getFromSecurityContext(context);
+        final var target = User.<User>findById(id);
+        validateUser(target);
+
+        if (source.id.equals(target.id)) {
+            throw new ForbiddenException("user_is_self");
+        } else if (input.reported()) {
+            target.reportBy(source);
+        } else {
+            target.absolveBy(source);
         }
 
         return Response.ok().build();

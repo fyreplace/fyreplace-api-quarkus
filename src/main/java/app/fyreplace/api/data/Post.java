@@ -15,7 +15,7 @@ import org.hibernate.annotations.Formula;
 
 @Entity
 @Table(name = "posts")
-public class Post extends AuthoredEntityBase {
+public class Post extends AuthoredEntityBase implements Reportable {
     public boolean published = false;
 
     @Column(nullable = false)
@@ -70,7 +70,7 @@ public class Post extends AuthoredEntityBase {
             @Nullable final Post post,
             @Nullable final User user,
             @Nullable final Boolean mustBePublished,
-            final boolean mustBeAuthor) {
+            @Nullable final Boolean mustBeAuthor) {
         final Boolean postIsDraft = post != null && (!post.published);
         final var userId = user != null ? user.id : null;
 
@@ -78,7 +78,7 @@ public class Post extends AuthoredEntityBase {
             throw new NotFoundException();
         } else if (mustBePublished == postIsDraft) {
             throw new ForbiddenException(postIsDraft ? "post_not_published" : "post_is_published");
-        } else if (mustBeAuthor && !post.author.id.equals(userId)) {
+        } else if (mustBeAuthor != null && mustBeAuthor != post.author.id.equals(userId)) {
             throw new ForbiddenException("invalid_author");
         } else if (!post.anonymous && user != null && post.author.isBlocking(user)) {
             throw new ForbiddenException("user_is_blocked");

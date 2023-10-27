@@ -18,7 +18,7 @@ import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Table(name = "users")
-public class User extends TimestampedEntityBase {
+public class User extends TimestampedEntityBase implements Reportable {
     public static final Set<String> forbiddenUsernames = new HashSet<>(Arrays.asList(
             "admin",
             "admins",

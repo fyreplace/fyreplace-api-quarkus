@@ -14,7 +14,7 @@ import org.hibernate.annotations.OnDeleteAction;
 @Table(
         name = "comments",
         indexes = {@Index(columnList = "post_id")})
-public class Comment extends AuthoredEntityBase implements Comparable<Comment> {
+public class Comment extends AuthoredEntityBase implements Comparable<Comment>, Reportable {
     @ManyToOne(optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore

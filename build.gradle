@@ -3,6 +3,7 @@ plugins {
     id "io.quarkus"
     id "com.palantir.git-version" version "${gitPluginVersion}"
     id "com.diffplug.spotless" version "${spotlessPluginVersion}"
+    id "io.freefair.lombok" version "${lombokPluginVersion}"
     id "io.sentry.jvm.gradle" version "${sentryPluginVersion}"
 }
 

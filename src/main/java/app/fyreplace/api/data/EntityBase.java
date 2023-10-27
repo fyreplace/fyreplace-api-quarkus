@@ -5,8 +5,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import java.util.UUID;
+import lombok.Getter;
 import org.hibernate.annotations.UuidGenerator;
 
+@Getter
 @MappedSuperclass
 public abstract class EntityBase extends PanacheEntityBase {
     @Id
