@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.nio.file.Paths;
 
 @Entity
-@Table(name = "remote_files")
+@Table(name = "stored_files")
 public class StoredFile extends EntityBase {
     @Transient
     private StorageService storageService;
