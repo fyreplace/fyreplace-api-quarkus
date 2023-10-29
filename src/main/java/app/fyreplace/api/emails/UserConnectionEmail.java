@@ -6,7 +6,7 @@ import jakarta.enterprise.context.Dependent;
 import java.util.ResourceBundle;
 
 @Dependent
-public class UserConnectionEmail extends EmailBase {
+public final class UserConnectionEmail extends EmailBase {
     @Override
     protected String action() {
         return "connect";
