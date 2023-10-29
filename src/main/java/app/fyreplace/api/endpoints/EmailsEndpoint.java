@@ -143,9 +143,7 @@ public final class EmailsEndpoint {
             throw new NotFoundException();
         }
 
-        randomCode.email.verified = true;
-        randomCode.email.persist();
-        randomCode.delete();
+        randomCode.validateEmail();
         return Response.ok().build();
     }
 }

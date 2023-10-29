@@ -21,4 +21,10 @@ public class RandomCode extends TimestampedEntityBase {
     public String toString() {
         return code;
     }
+
+    public void validateEmail() {
+        email.verified = true;
+        email.persist();
+        delete();
+    }
 }

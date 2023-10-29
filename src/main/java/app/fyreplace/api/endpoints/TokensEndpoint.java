@@ -55,9 +55,9 @@ public final class TokensEndpoint {
             throw new NotFoundException();
         }
 
-        randomCode.email.verified = true;
-        randomCode.email.persist();
-        randomCode.delete();
+        randomCode.validateEmail();
+        randomCode.email.user.active = true;
+        randomCode.email.user.persist();
         return Response.status(Status.CREATED).entity(jwtService.makeJwt(email)).build();
     }
 
