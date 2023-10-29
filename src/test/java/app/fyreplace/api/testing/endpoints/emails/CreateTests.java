@@ -31,7 +31,7 @@ public final class CreateTests extends UserTestsBase {
                 .statusCode(201)
                 .body("email", equalTo(email))
                 .body("verified", equalTo(false))
-                .body("isMain", equalTo(false));
+                .body("main", equalTo(false));
         assertEquals(emailCount + 1, Email.count());
     }
 

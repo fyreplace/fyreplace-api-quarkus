@@ -23,7 +23,7 @@ public class Email extends EntityBase {
     @Column(nullable = false)
     public boolean verified = false;
 
-    @JsonProperty("isMain")
+    @JsonProperty("main")
     public boolean isMain() {
         return id.equals(user.mainEmail.id);
     }
