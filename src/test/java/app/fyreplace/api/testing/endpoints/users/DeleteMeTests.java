@@ -1,8 +1,9 @@
 package app.fyreplace.api.testing.endpoints.users;
 
 import static io.restassured.RestAssured.given;
+import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import app.fyreplace.api.data.User;
 import app.fyreplace.api.endpoints.UsersEndpoint;
@@ -18,10 +19,9 @@ public final class DeleteMeTests extends UserTestsBase {
     @Test
     @TestSecurity(user = "user_0")
     public void deleteMe() {
-        final var userCount = User.count();
         given().delete("me").then().statusCode(204);
-        assertEquals(userCount - 1, User.count());
-        assertNull(User.findByUsername("user_0"));
+        final var user = requireNonNull(User.findByUsername("user_0"));
+        assertTrue(user.deleted);
     }
 
     @Test

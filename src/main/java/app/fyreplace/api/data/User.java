@@ -18,7 +18,7 @@ import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Table(name = "users")
-public class User extends TimestampedEntityBase implements Reportable {
+public class User extends SoftDeletableEntityBase implements Reportable {
     public static final Set<String> forbiddenUsernames = new HashSet<>(Arrays.asList(
             "admin",
             "admins",
@@ -61,7 +61,7 @@ public class User extends TimestampedEntityBase implements Reportable {
             "void",
             "voids"));
 
-    @Column(length = 100, unique = true, nullable = false)
+    @Column(length = 100, unique = true)
     public String username;
 
     @ManyToOne
@@ -94,6 +94,19 @@ public class User extends TimestampedEntityBase implements Reportable {
 
     @JsonIgnore
     public Instant dateBanEnd;
+
+    @Override
+    public void scrub() {
+        super.scrub();
+        Email.delete("user", this);
+        username = null;
+        mainEmail = null;
+        bio = "";
+
+        if (avatar != null) {
+            avatar.delete();
+        }
+    }
 
     @JsonIgnore
     public Set<String> getGroups() {

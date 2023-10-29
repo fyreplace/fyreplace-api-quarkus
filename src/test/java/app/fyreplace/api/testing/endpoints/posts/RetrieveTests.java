@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.nullValue;
 
 import app.fyreplace.api.data.Comment;
+import app.fyreplace.api.data.Post;
 import app.fyreplace.api.data.User;
 import app.fyreplace.api.data.Vote;
 import app.fyreplace.api.endpoints.PostsEndpoint;
@@ -153,6 +154,13 @@ public final class RetrieveTests extends PostTestsBase {
     @Test
     public void retrieveDraftUnauthenticated() {
         given().get(draft.id.toString()).then().statusCode(404);
+    }
+
+    @Test
+    public void retrieveDeletedPost() {
+        QuarkusTransaction.requiringNew()
+                .run(() -> Post.<Post>findById(this.post.id).softDelete());
+        given().get(post.id.toString()).then().statusCode(410);
     }
 
     @ParameterizedTest

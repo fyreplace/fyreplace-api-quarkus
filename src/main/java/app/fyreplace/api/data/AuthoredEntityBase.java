@@ -11,7 +11,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 @MappedSuperclass
-public class AuthoredEntityBase extends TimestampedEntityBase {
+public abstract class AuthoredEntityBase extends SoftDeletableEntityBase {
     @ManyToOne(optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore

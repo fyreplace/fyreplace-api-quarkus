@@ -11,6 +11,7 @@ import app.fyreplace.api.data.UserCreation;
 import app.fyreplace.api.emails.UserActivationEmail;
 import app.fyreplace.api.exceptions.ConflictException;
 import app.fyreplace.api.exceptions.ForbiddenException;
+import app.fyreplace.api.exceptions.GoneException;
 import app.fyreplace.api.services.MimeTypeService;
 import app.fyreplace.api.services.mimetype.KnownMimeTypes;
 import io.quarkus.cache.CacheResult;
@@ -245,7 +246,7 @@ public final class UsersEndpoint {
     @APIResponse(responseCode = "204")
     @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
     public Response deleteMe() {
-        User.getFromSecurityContext(context).delete();
+        User.getFromSecurityContext(context).softDelete();
         return Response.noContent().build();
     }
 
@@ -257,7 +258,7 @@ public final class UsersEndpoint {
         final var user = User.getFromSecurityContext(context);
         final var blocks = Block.<Block>find("source", Sort.by("id"), user);
 
-        try (final var stream = blocks.page(page, pagingSize).stream()) {
+        try (final var stream = blocks.filter("existing").page(page, pagingSize).stream()) {
             return stream.map(block -> block.target.getProfile()).toList();
         }
     }
@@ -273,6 +274,8 @@ public final class UsersEndpoint {
     private void validateUser(@Nullable User user) {
         if (user == null || !user.active) {
             throw new NotFoundException();
+        } else if (user.deleted) {
+            throw new GoneException();
         }
     }
 }

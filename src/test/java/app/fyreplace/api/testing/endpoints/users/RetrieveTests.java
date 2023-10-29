@@ -9,9 +9,12 @@ import static org.hamcrest.Matchers.nullValue;
 import app.fyreplace.api.data.User;
 import app.fyreplace.api.endpoints.UsersEndpoint;
 import app.fyreplace.api.testing.UserTestsBase;
+import io.quarkus.narayana.jta.QuarkusTransaction;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
+import jakarta.transaction.Transactional;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -40,6 +43,14 @@ public final class RetrieveTests extends UserTestsBase {
     public void retrieveInactive(final String username) {
         final var user = requireNonNull(User.findByUsername(username));
         given().get(user.id.toString()).then().statusCode(404);
+    }
+
+    @Test
+    @Transactional
+    public void retrieveDeleted() {
+        final var user = requireNonNull(User.findByUsername("user_0"));
+        QuarkusTransaction.requiringNew().run(() -> User.<User>findById(user.id).softDelete());
+        given().get(user.id.toString()).then().statusCode(410);
     }
 
     @ParameterizedTest

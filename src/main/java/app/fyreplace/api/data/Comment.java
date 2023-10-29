@@ -1,6 +1,7 @@
 package app.fyreplace.api.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -23,18 +24,21 @@ public class Comment extends AuthoredEntityBase implements Comparable<Comment>, 
     @Column(length = 1500, nullable = false)
     public String text;
 
-    @Column(nullable = false)
-    public boolean deleted;
-
     @Override
     public int compareTo(@Nonnull final Comment other) {
         final var dateComparison = dateCreated.compareTo(other.dateCreated);
         return dateComparison != 0 ? dateComparison : id.compareTo(other.id);
     }
 
-    public void softDelete() {
+    @Override
+    public void scrub() {
+        super.scrub();
         text = "";
-        deleted = true;
-        persist();
+    }
+
+    @SuppressWarnings("unused")
+    @JsonProperty("deleted")
+    public boolean isDeleted() {
+        return deleted;
     }
 }

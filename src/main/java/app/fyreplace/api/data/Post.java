@@ -1,6 +1,7 @@
 package app.fyreplace.api.data;
 
 import app.fyreplace.api.exceptions.ForbiddenException;
+import app.fyreplace.api.exceptions.GoneException;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.quarkus.panache.common.Sort;
 import jakarta.annotation.Nullable;
@@ -31,6 +32,12 @@ public class Post extends AuthoredEntityBase implements Reportable {
     public long voteCount;
 
     public static Duration shelfLife = Duration.ofDays(7);
+
+    @Override
+    public void scrub() {
+        super.scrub();
+        getChapters().forEach(Chapter::delete);
+    }
 
     public List<Chapter> getChapters() {
         return Chapter.list("post", Sort.by("position"), this);
@@ -71,11 +78,13 @@ public class Post extends AuthoredEntityBase implements Reportable {
             @Nullable final User user,
             @Nullable final Boolean mustBePublished,
             @Nullable final Boolean mustBeAuthor) {
-        final Boolean postIsDraft = post != null && (!post.published);
+        final Boolean postIsDraft = post != null && !post.published;
         final var userId = user != null ? user.id : null;
 
         if (post == null || (!post.author.id.equals(userId) && postIsDraft)) {
             throw new NotFoundException();
+        } else if (post.deleted) {
+            throw new GoneException();
         } else if (mustBePublished == postIsDraft) {
             throw new ForbiddenException(postIsDraft ? "post_not_published" : "post_is_published");
         } else if (mustBeAuthor != null && mustBeAuthor != post.author.id.equals(userId)) {

@@ -20,7 +20,7 @@ public final class DeleteTests extends PostTestsBase {
     @TestSecurity(user = "user_0")
     public void deleteOwnPost() {
         given().delete(post.id.toString()).then().statusCode(204);
-        assertEquals(0, Post.count("id", post.id));
+        assertEquals(1, Post.count("id = ?1 and deleted = true", post.id));
     }
 
     @Test

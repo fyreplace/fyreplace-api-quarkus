@@ -109,7 +109,7 @@ public final class CommentsEndpoint {
             throw new ForbiddenException("invalid_author");
         }
 
-        comment.softDelete();
+        comment.scrub();
         return Response.noContent().build();
     }
 
