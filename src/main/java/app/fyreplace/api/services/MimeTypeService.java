@@ -28,7 +28,7 @@ public final class MimeTypeService {
         final var mimeType = getMimeType(data);
 
         if (!types.types.contains(mimeType)) {
-            throw new UnsupportedMediaTypeException("invalid_media_type");
+            throw new UnsupportedMediaTypeException();
         }
     }
 
