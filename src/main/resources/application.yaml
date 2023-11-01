@@ -1,105 +1,79 @@
-# Main profile
-
+---
 quarkus:
   datasource:
-   db-kind: postgresql
-
+    db-kind: "postgresql"
   hibernate-orm:
-    physical-naming-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
-
+    physical-naming-strategy: "org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy"
+  liquibase:
+    change-log: "db/changeLog.yaml"
+    migrate-at-start: true
   qute:
     content-types:
-      mjml: text/plain
-
+      mjml: "text/plain"
   http:
     auth:
       permission:
         dev:
-          paths: /dev/*
-          policy: deny
-
+          paths: "/dev/*"
+          policy: "deny"
     cors:
-      ~: true
-
+      "~": true
     limits:
-      max-body-size: 1M
-
+      max-body-size: "1M"
   mailer:
     port: 587
-    start-tls: REQUIRED
-
+    start-tls: "REQUIRED"
   s3:
     devservices:
       enabled: false
-
 mp:
   jwt:
     verify:
-      issuer: ${app.url}
-
+      issuer: "${app.url}"
 app:
   url: ""
-  name: Fyreplace
+  name: "Fyreplace"
   use-example-data: false
-
   front:
     url: ""
-
   paging:
     size: 12
-
   storage:
-    type: local
-
+    type: "local"
     local:
       path: ""
-
     s3:
       bucket: ""
       custom-endpoint: ""
-
   posts:
     max-chapter-count: 10
     starting-life: 4
-
-# Dev profile
-
-"%dev":
+'%dev':
   quarkus:
     hibernate-orm:
       database:
         generation:
-          ~: drop-and-create
-
+          "~": "drop-and-create"
+    liquibase:
+      enabled: false
     http:
       auth:
         permission:
           dev:
-            paths: /dev/*
-            policy: permit
-
+            paths: "/dev/*"
+            policy: "permit"
   app:
     use-example-data: true
-
-# Test profile
-
-"%test":
+'%test':
   quarkus:
     datasource:
-      db-kind: h2
+      db-kind: "h2"
       jdbc:
-        user: h2
-        password: h2
-        url: jdbc:h2:mem:fyreplace
-
-    hibernate-orm:
-      database:
-        generation:
-          ~: drop-and-create
-
+        user: "h2"
+        password: "h2"
+        url: "jdbc:h2:mem:fyreplace"
     http:
       cors:
-        origins: /.*/
-
+        origins: "/.*/"
     scheduler:
       enabled: false
