@@ -16,8 +16,7 @@ quarkus:
         dev:
           paths: "/dev/*"
           policy: "deny"
-    cors:
-      "~": true
+    cors: true
     limits:
       max-body-size: "1M"
   mailer:
@@ -52,8 +51,7 @@ app:
   quarkus:
     hibernate-orm:
       database:
-        generation:
-          "~": "drop-and-create"
+        generation: "drop-and-create"
     liquibase:
       enabled: false
     http:
