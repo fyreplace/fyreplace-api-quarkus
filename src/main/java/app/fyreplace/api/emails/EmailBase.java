@@ -65,7 +65,7 @@ public abstract class EmailBase extends Mail {
     protected String getLink() {
         return URI.create(appFrontUrl)
                 .resolve("?action=" + action())
-                .resolve('#' + email.user.username + ':' + getRandomCode())
+                .resolve('#' + email.email + ':' + getRandomCode())
                 .toString();
     }
 
