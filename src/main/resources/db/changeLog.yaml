@@ -1,7 +1,7 @@
 ---
 databaseChangeLog:
 - changeSet:
-    id: "initial-0001"
+    id: "stored_files-0001"
     author: "generated"
     changes:
     - createTable:
@@ -20,7 +20,7 @@ databaseChangeLog:
             type: "VARCHAR(255)"
         tableName: "stored_files"
 - changeSet:
-    id: "initial-0002"
+    id: "stored_files-0002"
     author: "generated"
     changes:
     - addUniqueConstraint:
@@ -28,7 +28,7 @@ databaseChangeLog:
         constraintName: "stored_files_path_key"
         tableName: "stored_files"
 - changeSet:
-    id: "initial-0003"
+    id: "users-0001"
     author: "generated"
     changes:
     - createTable:
@@ -94,7 +94,7 @@ databaseChangeLog:
             type: "VARCHAR(3000)"
         tableName: "users"
 - changeSet:
-    id: "initial-0004"
+    id: "users-0002"
     author: "generated"
     changes:
     - addUniqueConstraint:
@@ -102,7 +102,7 @@ databaseChangeLog:
         constraintName: "users_avatar_id_key"
         tableName: "users"
 - changeSet:
-    id: "initial-0005"
+    id: "users-0003"
     author: "generated"
     changes:
     - addUniqueConstraint:
@@ -110,7 +110,7 @@ databaseChangeLog:
         constraintName: "users_username_key"
         tableName: "users"
 - changeSet:
-    id: "initial-0006"
+    id: "users-0004"
     author: "generated"
     changes:
     - addForeignKeyConstraint:
@@ -125,7 +125,54 @@ databaseChangeLog:
         referencedTableName: "stored_files"
         validate: true
 - changeSet:
-    id: "initial-0007"
+    id: "passwords-0001"
+    author: "generated"
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: "passwords_pkey"
+            name: "id"
+            type: "UUID"
+        - column:
+            constraints:
+              nullable: false
+            name: "user_id"
+            type: "UUID"
+        - column:
+            constraints:
+              nullable: false
+            name: "password"
+            type: "VARCHAR(255)"
+        tableName: "passwords"
+- changeSet:
+    id: "passwords-0002"
+    author: "generated"
+    changes:
+    - addUniqueConstraint:
+        columnNames: "user_id"
+        constraintName: "passwords_user_id_key"
+        tableName: "passwords"
+- changeSet:
+    id: "passwords-0003"
+    author: "generated"
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: "user_id"
+        baseTableName: "passwords"
+        constraintName: "fkqiupw3oqiukdfyc45xvoky044"
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: "CASCADE"
+        onUpdate: "NO ACTION"
+        referencedColumnNames: "id"
+        referencedTableName: "users"
+        validate: true
+- changeSet:
+    id: "emails-0001"
     author: "generated"
     changes:
     - createTable:
@@ -154,15 +201,7 @@ databaseChangeLog:
             type: "VARCHAR(254)"
         tableName: "emails"
 - changeSet:
-    id: "initial-0008"
-    author: "generated"
-    changes:
-    - addUniqueConstraint:
-        columnNames: "email"
-        constraintName: "emails_email_key"
-        tableName: "emails"
-- changeSet:
-    id: "initial-0009"
+    id: "users-0005"
     author: "generated"
     changes:
     - addForeignKeyConstraint:
@@ -177,7 +216,15 @@ databaseChangeLog:
         referencedTableName: "emails"
         validate: true
 - changeSet:
-    id: "initial-0010"
+    id: "emails-0002"
+    author: "generated"
+    changes:
+    - addUniqueConstraint:
+        columnNames: "email"
+        constraintName: "emails_email_key"
+        tableName: "emails"
+- changeSet:
+    id: "emails-003"
     author: "generated"
     changes:
     - addForeignKeyConstraint:
@@ -192,7 +239,7 @@ databaseChangeLog:
         referencedTableName: "users"
         validate: true
 - changeSet:
-    id: "initial-0011"
+    id: "random_codes-0001"
     author: "generated"
     changes:
     - createTable:
@@ -221,7 +268,7 @@ databaseChangeLog:
             type: "VARCHAR(255)"
         tableName: "random_codes"
 - changeSet:
-    id: "initial-0012"
+    id: "random_codes-0002"
     author: "generated"
     changes:
     - addForeignKeyConstraint:
@@ -236,7 +283,7 @@ databaseChangeLog:
         referencedTableName: "emails"
         validate: true
 - changeSet:
-    id: "initial-0013"
+    id: "blocks-0001"
     author: "generated"
     changes:
     - createTable:
@@ -260,7 +307,7 @@ databaseChangeLog:
             type: "UUID"
         tableName: "blocks"
 - changeSet:
-    id: "initial-0014"
+    id: "blocks-0002"
     author: "generated"
     changes:
     - addUniqueConstraint:
@@ -268,7 +315,7 @@ databaseChangeLog:
         constraintName: "ukou6l1m15jrlhofu7hn5ueytw"
         tableName: "blocks"
 - changeSet:
-    id: "initial-0015"
+    id: "blocks-0003"
     author: "generated"
     changes:
     - addForeignKeyConstraint:
@@ -283,7 +330,7 @@ databaseChangeLog:
         referencedTableName: "users"
         validate: true
 - changeSet:
-    id: "initial-0016"
+    id: "blocks-0004"
     author: "generated"
     changes:
     - addForeignKeyConstraint:
@@ -298,7 +345,7 @@ databaseChangeLog:
         referencedTableName: "users"
         validate: true
 - changeSet:
-    id: "initial-0017"
+    id: "push_notification_tokens-0001"
     author: "generated"
     changes:
     - createTable:
@@ -327,7 +374,7 @@ databaseChangeLog:
             type: "VARCHAR(255)"
         tableName: "push_notification_tokens"
 - changeSet:
-    id: "initial-0018"
+    id: "push_notification_tokens-0002"
     author: "generated"
     changes:
     - addForeignKeyConstraint:
@@ -342,7 +389,7 @@ databaseChangeLog:
         referencedTableName: "users"
         validate: true
 - changeSet:
-    id: "initial-0019"
+    id: "reports-0001"
     author: "generated"
     changes:
     - createTable:
@@ -376,7 +423,7 @@ databaseChangeLog:
             type: "VARCHAR(255)"
         tableName: "reports"
 - changeSet:
-    id: "initial-0020"
+    id: "reports-0002"
     author: "generated"
     changes:
     - addUniqueConstraint:
@@ -384,7 +431,7 @@ databaseChangeLog:
         constraintName: "uka65rlbm4g84192wjr0gidyos1"
         tableName: "reports"
 - changeSet:
-    id: "initial-0021"
+    id: "reports-0003"
     author: "generated"
     changes:
     - addForeignKeyConstraint:
@@ -399,7 +446,7 @@ databaseChangeLog:
         referencedTableName: "users"
         validate: true
 - changeSet:
-    id: "initial-0022"
+    id: "posts-0001"
     author: "generated"
     changes:
     - createTable:
@@ -448,7 +495,7 @@ databaseChangeLog:
             type: "UUID"
         tableName: "posts"
 - changeSet:
-    id: "initial-0023"
+    id: "posts-0002"
     author: "generated"
     changes:
     - addForeignKeyConstraint:
@@ -463,7 +510,7 @@ databaseChangeLog:
         referencedTableName: "users"
         validate: true
 - changeSet:
-    id: "initial-0024"
+    id: "chapters-0001"
     author: "generated"
     changes:
     - createTable:
@@ -505,7 +552,7 @@ databaseChangeLog:
             type: "VARCHAR(500)"
         tableName: "chapters"
 - changeSet:
-    id: "initial-0025"
+    id: "chapters-0002"
     author: "generated"
     changes:
     - addUniqueConstraint:
@@ -513,7 +560,7 @@ databaseChangeLog:
         constraintName: "chapters_image_id_key"
         tableName: "chapters"
 - changeSet:
-    id: "initial-0026"
+    id: "chapters-0003"
     author: "generated"
     changes:
     - addUniqueConstraint:
@@ -521,7 +568,7 @@ databaseChangeLog:
         constraintName: "ukqj1py5nfact1vlvjgtflawowy"
         tableName: "chapters"
 - changeSet:
-    id: "initial-0027"
+    id: "chapters-0004"
     author: "generated"
     changes:
     - addForeignKeyConstraint:
@@ -536,7 +583,7 @@ databaseChangeLog:
         referencedTableName: "stored_files"
         validate: true
 - changeSet:
-    id: "initial-0028"
+    id: "chapters-0005"
     author: "generated"
     changes:
     - addForeignKeyConstraint:
@@ -551,7 +598,7 @@ databaseChangeLog:
         referencedTableName: "posts"
         validate: true
 - changeSet:
-    id: "initial-0029"
+    id: "comments-0001"
     author: "generated"
     changes:
     - createTable:
@@ -600,7 +647,7 @@ databaseChangeLog:
             type: "VARCHAR(1500)"
         tableName: "comments"
 - changeSet:
-    id: "initial-0030"
+    id: "comments-0002"
     author: "generated"
     changes:
     - createIndex:
@@ -610,7 +657,7 @@ databaseChangeLog:
         indexName: "idx2ocgo3lfadb3wq0tx8wyt7sj2"
         tableName: "comments"
 - changeSet:
-    id: "initial-0031"
+    id: "comments-0003"
     author: "generated"
     changes:
     - addForeignKeyConstraint:
@@ -625,7 +672,7 @@ databaseChangeLog:
         referencedTableName: "users"
         validate: true
 - changeSet:
-    id: "initial-0032"
+    id: "comments-0004"
     author: "generated"
     changes:
     - addForeignKeyConstraint:
@@ -640,7 +687,7 @@ databaseChangeLog:
         referencedTableName: "posts"
         validate: true
 - changeSet:
-    id: "initial-0033"
+    id: "subscriptions-0001"
     author: "generated"
     changes:
     - createTable:
@@ -672,7 +719,7 @@ databaseChangeLog:
             type: "UUID"
         tableName: "subscriptions"
 - changeSet:
-    id: "initial-0034"
+    id: "subscriptions-0002"
     author: "generated"
     changes:
     - addUniqueConstraint:
@@ -680,7 +727,7 @@ databaseChangeLog:
         constraintName: "ukjvj9d1ro9lw17oe2pyl9bonm4"
         tableName: "subscriptions"
 - changeSet:
-    id: "initial-0035"
+    id: "subscriptions-0003"
     author: "generated"
     changes:
     - addForeignKeyConstraint:
@@ -695,7 +742,7 @@ databaseChangeLog:
         referencedTableName: "comments"
         validate: true
 - changeSet:
-    id: "initial-0036"
+    id: "subscriptions-0004"
     author: "generated"
     changes:
     - addForeignKeyConstraint:
@@ -710,7 +757,7 @@ databaseChangeLog:
         referencedTableName: "posts"
         validate: true
 - changeSet:
-    id: "initial-0037"
+    id: "subscriptions-0005"
     author: "generated"
     changes:
     - addForeignKeyConstraint:
@@ -725,7 +772,7 @@ databaseChangeLog:
         referencedTableName: "users"
         validate: true
 - changeSet:
-    id: "initial-0038"
+    id: "votes-0001"
     author: "generated"
     changes:
     - createTable:
@@ -754,7 +801,7 @@ databaseChangeLog:
             type: "UUID"
         tableName: "votes"
 - changeSet:
-    id: "initial-0039"
+    id: "votes-0002"
     author: "generated"
     changes:
     - createIndex:
@@ -764,7 +811,7 @@ databaseChangeLog:
         indexName: "idxsnowcffjecrw34fxm6h5fyah4"
         tableName: "votes"
 - changeSet:
-    id: "initial-0040"
+    id: "votes-0003"
     author: "generated"
     changes:
     - addUniqueConstraint:
@@ -772,7 +819,7 @@ databaseChangeLog:
         constraintName: "ukpa0qu72klq223r3f3mpgf9ele"
         tableName: "votes"
 - changeSet:
-    id: "initial-0041"
+    id: "votes-0004"
     author: "generated"
     changes:
     - addForeignKeyConstraint:
@@ -787,7 +834,7 @@ databaseChangeLog:
         referencedTableName: "posts"
         validate: true
 - changeSet:
-    id: "initial-0042"
+    id: "votes-0005"
     author: "generated"
     changes:
     - addForeignKeyConstraint:

@@ -3,12 +3,14 @@ package app.fyreplace.api.endpoints;
 import app.fyreplace.api.cache.DuplicateRequestKeyGenerator;
 import app.fyreplace.api.data.Email;
 import app.fyreplace.api.data.NewTokenCreation;
+import app.fyreplace.api.data.Password;
 import app.fyreplace.api.data.RandomCode;
 import app.fyreplace.api.data.TokenCreation;
 import app.fyreplace.api.data.User;
 import app.fyreplace.api.emails.UserConnectionEmail;
 import app.fyreplace.api.services.JwtService;
 import io.quarkus.cache.CacheResult;
+import io.quarkus.elytron.security.common.BcryptUtil;
 import io.quarkus.security.Authenticated;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -48,17 +50,24 @@ public final class TokensEndpoint {
     @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
     public Response create(@Valid @NotNull final TokenCreation input) {
         final var email = getEmail(input.identifier());
-        final var randomCode = RandomCode.<RandomCode>find("email = ?1 and code = ?2", email, input.code())
+        final var randomCode = RandomCode.<RandomCode>find("email = ?1 and code = ?2", email, input.secret())
                 .firstResult();
+        final var password = Password.<Password>find("user", email.user).firstResult();
 
-        if (randomCode == null) {
+        if (randomCode != null) {
+            randomCode.validateEmail();
+        } else if (password != null && BcryptUtil.matches(input.secret(), password.password)) {
+            email.verified = true;
+            email.persist();
+        } else {
             throw new NotFoundException();
         }
 
-        randomCode.validateEmail();
-        randomCode.email.user.active = true;
-        randomCode.email.user.persist();
-        return Response.status(Status.CREATED).entity(jwtService.makeJwt(email)).build();
+        email.user.active = true;
+        email.user.persist();
+        return Response.status(Status.CREATED)
+                .entity(jwtService.makeJwt(email.user))
+                .build();
     }
 
     @GET

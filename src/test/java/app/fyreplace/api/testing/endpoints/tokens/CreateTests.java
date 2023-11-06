@@ -8,12 +8,14 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import app.fyreplace.api.data.Email;
+import app.fyreplace.api.data.Password;
 import app.fyreplace.api.data.RandomCode;
 import app.fyreplace.api.data.TokenCreation;
 import app.fyreplace.api.data.User;
 import app.fyreplace.api.endpoints.TokensEndpoint;
 import app.fyreplace.api.services.RandomService;
 import app.fyreplace.api.testing.UserTestsBase;
+import io.quarkus.elytron.security.common.BcryptUtil;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
@@ -31,6 +33,7 @@ public final class CreateTests extends UserTestsBase {
     private RandomCode normalUserRandomCode;
     private RandomCode otherNormalUserRandomCode;
     private RandomCode newUserRandomCode;
+    private Password password;
 
     @Test
     public void createWithUsername() {
@@ -91,6 +94,22 @@ public final class CreateTests extends UserTestsBase {
     }
 
     @Test
+    public void createWithPassword() {
+        final var randomCodeCount = RandomCode.count();
+        assertFalse(password.user.mainEmail.verified);
+        given().contentType(ContentType.JSON)
+                .body(new TokenCreation(password.user.mainEmail.email, "password"))
+                .post()
+                .then()
+                .statusCode(201)
+                .contentType(ContentType.TEXT)
+                .body(isA(String.class));
+        assertEquals(randomCodeCount, RandomCode.count());
+        final var email = Email.<Email>find("id", password.user.mainEmail.id).firstResult();
+        assertTrue(email.verified);
+    }
+
+    @Test
     public void createWithInvalidUsername() {
         given().contentType(ContentType.JSON)
                 .body(new TokenCreation("bad", normalUserRandomCode.code))
@@ -100,7 +119,7 @@ public final class CreateTests extends UserTestsBase {
     }
 
     @Test
-    public void createWithInvalidCode() {
+    public void createWithInvalidSecret() {
         given().contentType(ContentType.JSON)
                 .body(new TokenCreation(normalUserRandomCode.email.user.username, "bad"))
                 .post()
@@ -137,6 +156,10 @@ public final class CreateTests extends UserTestsBase {
         normalUserRandomCode = makeRandomCode("user_0");
         otherNormalUserRandomCode = makeRandomCode("user_1");
         newUserRandomCode = makeRandomCode("user_inactive_0");
+        password = new Password();
+        password.user = User.findByUsername("user_inactive_1");
+        password.password = BcryptUtil.bcryptHash("password");
+        password.persist();
     }
 
     private RandomCode makeRandomCode(final String username) {

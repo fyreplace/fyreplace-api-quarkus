@@ -22,6 +22,7 @@ dependencies {
     implementation("io.quarkus:quarkus-arc")
     implementation("io.quarkus:quarkus-cache")
     implementation("io.quarkus:quarkus-config-yaml")
+    implementation("io.quarkus:quarkus-elytron-security-jdbc")
     implementation("io.quarkus:quarkus-hibernate-orm-panache")
     implementation("io.quarkus:quarkus-hibernate-validator")
     implementation("io.quarkus:quarkus-jdbc-h2")

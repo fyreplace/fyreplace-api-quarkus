@@ -135,7 +135,7 @@ public final class EmailsEndpoint {
     @APIResponse(responseCode = "404")
     @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
     public Response activate(@NotNull @Valid final EmailActivation input) {
-        var email = Email.<Email>find("email", input.email()).firstResult();
+        final var email = Email.<Email>find("email", input.email()).firstResult();
         final var randomCode = RandomCode.<RandomCode>find("email = ?1 and code = ?2", email, input.code())
                 .firstResult();
 

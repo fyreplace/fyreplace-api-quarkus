@@ -6,6 +6,7 @@ import app.fyreplace.api.data.Block;
 import app.fyreplace.api.data.Chapter;
 import app.fyreplace.api.data.Comment;
 import app.fyreplace.api.data.Email;
+import app.fyreplace.api.data.Password;
 import app.fyreplace.api.data.Post;
 import app.fyreplace.api.data.PushNotificationToken;
 import app.fyreplace.api.data.RandomCode;
@@ -59,6 +60,7 @@ public class DataSeeder {
     @Transactional
     public void deleteData() {
         Email.deleteAll();
+        Password.deleteAll();
         RandomCode.deleteAll();
         Block.deleteAll();
         PushNotificationToken.deleteAll();

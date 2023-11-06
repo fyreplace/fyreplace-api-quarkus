@@ -1,6 +1,5 @@
 package app.fyreplace.api.services;
 
-import app.fyreplace.api.data.Email;
 import app.fyreplace.api.data.User;
 import io.smallrye.jwt.build.Jwt;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -18,9 +17,5 @@ public final class JwtService {
                 .groups(user.getGroups())
                 .expiresIn(Duration.ofDays(3))
                 .sign();
-    }
-
-    public String makeJwt(final Email email) {
-        return makeJwt(email.user);
     }
 }
