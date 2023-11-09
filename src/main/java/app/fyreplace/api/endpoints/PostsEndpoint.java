@@ -60,28 +60,16 @@ public final class PostsEndpoint {
             @QueryParam("type") @NotNull final PostListingType type) {
         final var user = User.getFromSecurityContext(context);
         final var direction = ascending ? Direction.Ascending : Direction.Descending;
-        final var basicSort = Post.sorting().direction(direction);
-
-        final var stream =
+        final var sorting = Post.sorting().direction(direction);
+        final var query =
                 switch (type) {
-                    case SUBSCRIBED_TO -> Subscription.<Subscription>find(
-                                    "user = ?1 and post.deleted = false",
-                                    Sort.by("post.dateCreated", "post.id").direction(direction),
-                                    user)
-                            .page(page, pagingSize)
-                            .stream()
-                            .map(s -> s.post);
-                    case PUBLISHED -> Post.<Post>find("author = ?1 and published = true", basicSort, user)
-                            .filter("existing")
-                            .page(page, pagingSize)
-                            .stream();
-                    case DRAFTS -> Post.<Post>find("author = ?1 and published = false", basicSort, user)
-                            .filter("existing")
-                            .page(page, pagingSize)
-                            .stream();
+                    case SUBSCRIBED_TO -> "from Post p where (select count(*) from Subscription where user = ?1 and post.id = p.id) > 0";
+                    case PUBLISHED -> "author = ?1 and published = true";
+                    case DRAFTS -> "author = ?1 and published = false";
                 };
 
-        try (stream) {
+        try (final var stream =
+                Post.<Post>find(query, sorting, user).filter("existing").page(page, pagingSize).stream()) {
             return stream.peek(p -> p.setCurrentUser(user)).toList();
         }
     }
