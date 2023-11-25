@@ -7,7 +7,6 @@ import app.fyreplace.api.services.RandomService;
 import io.quarkus.mailer.Mail;
 import io.quarkus.mailer.Mailer;
 import io.quarkus.qute.TemplateInstance;
-import io.smallrye.common.annotation.Blocking;
 import jakarta.inject.Inject;
 import java.net.URI;
 import java.util.List;
@@ -40,7 +39,6 @@ public abstract class EmailBase extends Mail {
 
     protected abstract TemplateInstance htmlTemplate();
 
-    @Blocking
     public void sendTo(final Email email) {
         this.email = email;
         mailer.send(this.setSubject(getResourceBundle().getString("subject"))
