@@ -17,7 +17,7 @@ import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Table(name = "chapters", uniqueConstraints = @UniqueConstraint(columnNames = {"post_id", "position"}))
-public class Chapter extends EntityBase {
+public class Chapter extends EntityBase implements Comparable<Chapter> {
     @ManyToOne(optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
@@ -41,6 +41,11 @@ public class Chapter extends EntityBase {
 
     @Column(nullable = false)
     public int height = 0;
+
+    @Override
+    public int compareTo(final Chapter other) {
+        return position.compareTo(other.position);
+    }
 
     @SuppressWarnings("unused")
     @PostRemove
