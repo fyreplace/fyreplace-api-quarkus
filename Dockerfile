@@ -9,6 +9,9 @@ RUN make emails
 
 FROM eclipse-temurin:21-jdk AS build-code
 
+ARG APP_STORAGE_TYPE
+ENV APP_STORAGE_TYPE=$APP_STORAGE_TYPE
+
 RUN apt-get update && apt-get install -y git
 WORKDIR /app
 
