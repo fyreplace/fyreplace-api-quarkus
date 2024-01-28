@@ -1,8 +1,8 @@
 .PHONY: emails keygen-rsa
 
-emails: src/main/resources/templates/*Email/html.html
+emails: src/main/resources/templates/*/html.html
 
-src/main/resources/templates/%/html.html: src/main/resources/templates/%/html.html.mjml src/main/resources/templates/emails/*.mjml
+src/main/resources/templates/%/html.html: src/main/resources/templates/%/html.html.mjml src/main/resources/templates/*.mjml
 	npx mjml -c.minify=true $< -o $@
 
 keygen-rsa:
