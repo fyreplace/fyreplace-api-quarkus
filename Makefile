@@ -1,9 +1,10 @@
 .PHONY: emails keygen-rsa
 
-emails: src/main/resources/templates/*/html.html
-
-src/main/resources/templates/%/html.html: src/main/resources/templates/%/html.html.mjml src/main/resources/templates/*.mjml
-	npx mjml -c.minify=true $< -o $@
+emails:
+	for email_path in src/main/resources/templates/*/html.html.mjml; \
+	do \
+		npx mjml -c.minify=true $$email_path -o $${email_path%.mjml}; \
+	done
 
 keygen-rsa:
 	openssl genrsa > src/main/resources/keys/jwt.rsa 2048
