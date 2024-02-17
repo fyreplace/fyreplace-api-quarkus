@@ -15,8 +15,8 @@ repositories {
 }
 
 dependencies {
-    implementation(enforcedPlatform("io.quarkus:quarkus-bom:${quarkusVersion}"))
-    implementation(enforcedPlatform("io.quarkiverse.amazonservices:quarkus-amazon-services-bom:${quarkusAmazonVersion}"))
+    implementation(enforcedPlatform("io.quarkus.platform:quarkus-bom:${quarkusVersion}"))
+    implementation(enforcedPlatform("io.quarkus.platform:quarkus-amazon-services-bom:${quarkusVersion}"))
     implementation(enforcedPlatform("io.sentry:sentry-bom:${sentryVersion}"))
     implementation(enforcedPlatform("org.apache.tika:tika-bom:${tikaVersion}"))
     implementation("io.quarkus:quarkus-arc")
