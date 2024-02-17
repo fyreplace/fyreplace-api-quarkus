@@ -38,8 +38,11 @@ jobs:
           java-version: '21'
           cache: gradle
 
+      - name: Build emails
+        run: make emails
+
       - name: Run tests
-        run: ./gradlew --no-daemon compileMjml test
+        run: ./gradlew --no-daemon test
         env:
           MP_JWT_VERIFY_PUBLICKEY: ${{ vars.MP_JWT_VERIFY_PUBLICKEY }}
           SMALLRYE_JWT_SIGN_KEY: ${{ secrets.SMALLRYE_JWT_SIGN_KEY }}
