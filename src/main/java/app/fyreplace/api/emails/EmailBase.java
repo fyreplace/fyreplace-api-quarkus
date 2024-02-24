@@ -8,7 +8,7 @@ import io.quarkus.mailer.Mail;
 import io.quarkus.mailer.Mailer;
 import io.quarkus.qute.TemplateInstance;
 import jakarta.inject.Inject;
-import java.net.URI;
+import jakarta.ws.rs.core.UriBuilder;
 import java.util.List;
 import java.util.ResourceBundle;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
@@ -61,9 +61,10 @@ public abstract class EmailBase extends Mail {
     }
 
     protected String getLink() {
-        return URI.create(appFrontUrl)
-                .resolve("?action=" + action())
-                .resolve('#' + email.email + ':' + getRandomCode())
+        return UriBuilder.fromUri(appFrontUrl)
+                .queryParam("action", action())
+                .fragment(email.email + ':' + getRandomCode())
+                .build()
                 .toString();
     }
 

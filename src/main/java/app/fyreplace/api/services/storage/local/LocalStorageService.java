@@ -8,13 +8,13 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.core.UriBuilder;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URI;
-import java.nio.file.Paths;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 @SuppressWarnings("unused")
@@ -57,7 +57,7 @@ public final class LocalStorageService implements StorageService {
     @Override
     public URI getUri(final String path) {
         final var pathBase = StoredFilesEndpoint.class.getAnnotation(Path.class).value();
-        return URI.create(appUrl).resolve(Paths.get(pathBase, path).toString());
+        return UriBuilder.fromUri(appUrl).path(pathBase).path(path).build();
     }
 
     private File getFile(final String path) {
