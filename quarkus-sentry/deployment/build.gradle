@@ -6,7 +6,9 @@ repositories {
 }
 
 dependencies {
-    implementation("io.quarkus:quarkus-core-deployment")
     implementation("io.quarkus:quarkus-arc-deployment")
+    implementation("io.quarkus:quarkus-core-deployment")
+    implementation("io.quarkus:quarkus-opentelemetry-deployment")
+    implementation("io.quarkus:quarkus-resteasy-reactive-deployment")
     implementation(project(":quarkus-sentry:runtime"))
 }
