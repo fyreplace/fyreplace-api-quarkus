@@ -19,6 +19,9 @@ quarkus:
     cors: true
     limits:
       max-body-size: "1M"
+  otel:
+    security-events:
+      enabled: true
   mailer:
     port: 587
     start-tls: "REQUIRED"
