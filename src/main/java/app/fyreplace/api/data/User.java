@@ -3,7 +3,14 @@ package app.fyreplace.api.data;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.annotation.Nullable;
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.LockModeType;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.PostRemove;
+import jakarta.persistence.Table;
 import jakarta.ws.rs.NotAuthorizedException;
 import jakarta.ws.rs.core.SecurityContext;
 import java.time.Instant;
@@ -174,7 +181,6 @@ public class User extends SoftDeletableEntityBase implements Reportable {
         return findByUsername(username, null);
     }
 
-    @SuppressWarnings("DataFlowIssue")
     public static @Nullable User findByUsername(final String username, @Nullable final LockModeType lock) {
         return User.<User>find("username", username).withLock(lock).firstResult();
     }
