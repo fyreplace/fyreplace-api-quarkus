@@ -34,6 +34,12 @@ public class Post extends AuthoredEntityBase implements Reportable {
     public static final Duration shelfLife = Duration.ofDays(7);
 
     @Override
+    public void softDelete() {
+        super.softDelete();
+        Subscription.delete("post", this);
+    }
+
+    @Override
     public void scrub() {
         super.scrub();
         getChapters().forEach(Chapter::delete);

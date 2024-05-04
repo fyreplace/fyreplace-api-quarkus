@@ -128,6 +128,12 @@ public class User extends SoftDeletableEntityBase implements Reportable {
         return new Profile(id, username, avatar != null ? avatar.toString() : null);
     }
 
+    @Override
+    public void softDelete() {
+        super.softDelete();
+        Subscription.delete("user", this);
+    }
+
     @SuppressWarnings("unused")
     @PostRemove
     final void postRemove() {
