@@ -1,6 +1,7 @@
 package app.fyreplace.api.testing.endpoints.users;
 
 import static io.restassured.RestAssured.given;
+import static java.util.Objects.requireNonNull;
 import static org.hamcrest.Matchers.isA;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -39,7 +40,7 @@ public final class UpdateMeAvatarTests extends UserTestsBase {
         }
 
         assertEquals(remoteFileCount + 1, StoredFile.count());
-        final var user = User.findByUsername("user_0");
+        final var user = requireNonNull(User.findByUsername("user_0"));
         assertNotNull(user.avatar);
     }
 
@@ -58,7 +59,7 @@ public final class UpdateMeAvatarTests extends UserTestsBase {
         }
 
         assertEquals(remoteFileCount, StoredFile.count());
-        final var user = User.findByUsername("user_0");
+        final var user = requireNonNull(User.findByUsername("user_0"));
         assertNull(user.avatar);
     }
 
@@ -68,7 +69,7 @@ public final class UpdateMeAvatarTests extends UserTestsBase {
         final var remoteFileCount = StoredFile.count();
         given().contentType(ContentType.BINARY).put("me/avatar").then().statusCode(415);
         assertEquals(remoteFileCount, StoredFile.count());
-        final var user = User.findByUsername("user_0");
+        final var user = requireNonNull(User.findByUsername("user_0"));
         assertNull(user.avatar);
     }
 }

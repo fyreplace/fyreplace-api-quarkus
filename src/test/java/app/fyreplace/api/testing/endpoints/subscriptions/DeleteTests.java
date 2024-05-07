@@ -19,7 +19,7 @@ public final class DeleteTests extends SubscriptionTestsBase {
     public void delete() {
         final var subscriptions =
                 Subscription.<Subscription>list("user.username = 'user_0' and unreadCommentCount > 0");
-        given().delete(subscriptions.get(0).id.toString()).then().statusCode(204);
+        given().delete(subscriptions.getFirst().id.toString()).then().statusCode(204);
         assertEquals(
                 subscriptions.size() - 1, Subscription.count("user.username = 'user_0' and unreadCommentCount > 0"));
     }
@@ -29,7 +29,7 @@ public final class DeleteTests extends SubscriptionTestsBase {
     public void deleteOtherSubscription() {
         final var subscriptions =
                 Subscription.<Subscription>list("user.username = 'user_0' and unreadCommentCount > 0");
-        given().delete(subscriptions.get(0).id.toString()).then().statusCode(404);
+        given().delete(subscriptions.getFirst().id.toString()).then().statusCode(404);
         assertEquals(subscriptions.size(), Subscription.count("user.username = 'user_0' and unreadCommentCount > 0"));
     }
 

@@ -34,7 +34,7 @@ public final class UpdateChapterImageTests extends PostTestsBase {
                     .statusCode(403);
         }
 
-        final var chapter = post.getChapters().get(position);
+        final var chapter = post.getChapters().getFirst();
         assertHasNoImage(chapter);
     }
 
@@ -53,7 +53,7 @@ public final class UpdateChapterImageTests extends PostTestsBase {
                     .statusCode(200);
         }
 
-        final var chapter = draft.getChapters().get(position);
+        final var chapter = draft.getChapters().getFirst();
         assertHasImage(chapter);
     }
 
@@ -86,7 +86,7 @@ public final class UpdateChapterImageTests extends PostTestsBase {
                     .statusCode(415);
         }
 
-        final var chapter = draft.getChapters().get(position);
+        final var chapter = draft.getChapters().getFirst();
         assertHasNoImage(chapter);
     }
 
@@ -95,7 +95,7 @@ public final class UpdateChapterImageTests extends PostTestsBase {
     public void updateChapterImageInOwnDraftWithoutInput() {
         final var position = 0;
         given().pathParam("id", draft.id).put(position + "/image").then().statusCode(415);
-        final var chapter = draft.getChapters().get(position);
+        final var chapter = draft.getChapters().getFirst();
         assertHasNoImage(chapter);
     }
 
@@ -113,7 +113,7 @@ public final class UpdateChapterImageTests extends PostTestsBase {
                     .statusCode(403);
         }
 
-        final var chapter = post.getChapters().get(position);
+        final var chapter = post.getChapters().getFirst();
         assertHasNoImage(chapter);
     }
 
@@ -131,7 +131,7 @@ public final class UpdateChapterImageTests extends PostTestsBase {
                     .statusCode(404);
         }
 
-        final var chapter = post.getChapters().get(position);
+        final var chapter = post.getChapters().getFirst();
         assertHasNoImage(chapter);
     }
 
@@ -148,7 +148,7 @@ public final class UpdateChapterImageTests extends PostTestsBase {
                     .statusCode(401);
         }
 
-        final var chapter = post.getChapters().get(position);
+        final var chapter = post.getChapters().getFirst();
         assertHasNoImage(chapter);
     }
 
@@ -165,7 +165,7 @@ public final class UpdateChapterImageTests extends PostTestsBase {
                     .statusCode(401);
         }
 
-        final var chapter = draft.getChapters().get(position);
+        final var chapter = draft.getChapters().getFirst();
         assertHasNoImage(chapter);
     }
 
@@ -183,7 +183,7 @@ public final class UpdateChapterImageTests extends PostTestsBase {
                     .statusCode(404);
         }
 
-        final var chapter = draft.getChapters().get(position);
+        final var chapter = draft.getChapters().getFirst();
         assertHasNoImage(chapter);
     }
 

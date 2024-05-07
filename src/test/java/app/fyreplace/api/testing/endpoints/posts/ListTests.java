@@ -1,6 +1,7 @@
 package app.fyreplace.api.testing.endpoints.posts;
 
 import static io.restassured.RestAssured.given;
+import static java.util.Objects.requireNonNull;
 import static java.util.stream.IntStream.range;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.in;
@@ -92,9 +93,9 @@ public final class ListTests extends PostTestsBase {
 
     @Transactional
     public void makeSubscribedToPosts() {
-        final var user0 = User.findByUsername("user_0");
-        final var user1 = User.findByUsername("user_1");
-        final var user2 = User.findByUsername("user_2");
+        final var user0 = requireNonNull(User.findByUsername("user_0"));
+        final var user1 = requireNonNull(User.findByUsername("user_1"));
+        final var user2 = requireNonNull(User.findByUsername("user_2"));
 
         range(0, 20).forEach(i -> dataSeeder.createPost(user1, "Post " + i, true, false));
         range(0, 20).forEach(i -> dataSeeder.createPost(user2, "Post " + i, true, false));

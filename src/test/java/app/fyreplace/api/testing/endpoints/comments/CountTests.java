@@ -84,7 +84,7 @@ public final class CountTests extends CommentTestsBase {
         final var user1 = User.findByUsername("user_1");
         final var user2 = User.findByUsername("user_2");
         range(0, readCommentCount).forEach(i -> dataSeeder.createComment(user2, post, "Comment " + i, false));
-        user1.subscribeTo(post);
+        requireNonNull(user1).subscribeTo(post);
         final var subscription = Subscription.<Subscription>find("user = ?1 and post = ?2", user1, post)
                 .firstResult();
         subscription.lastCommentSeen = Comment.<Comment>find(

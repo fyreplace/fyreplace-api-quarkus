@@ -1,6 +1,7 @@
 package app.fyreplace.api.testing.endpoints.emails;
 
 import static io.restassured.RestAssured.given;
+import static java.util.Objects.requireNonNull;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -64,7 +65,7 @@ public final class CreateTests extends UserTestsBase {
     @Test
     @TestSecurity(user = "user_0")
     public void createWithExistingEmail() {
-        final var existingUser = User.findByUsername("user_1");
+        final var existingUser = requireNonNull(User.findByUsername("user_1"));
         final var emailCount = Email.count();
         given().contentType(ContentType.JSON)
                 .body(new EmailCreation(existingUser.mainEmail.email))

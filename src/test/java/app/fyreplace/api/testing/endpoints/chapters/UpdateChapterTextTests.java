@@ -21,7 +21,7 @@ public final class UpdateChapterTextTests extends PostTestsBase {
     @Transactional
     public void updateChapterTextInOwnPost() {
         final var position = 0;
-        final var chapter = post.getChapters().get(position);
+        final var chapter = post.getChapters().getFirst();
         final var oldText = chapter.text;
         given().body("Hello")
                 .pathParam("id", post.id)
@@ -42,7 +42,7 @@ public final class UpdateChapterTextTests extends PostTestsBase {
                 .put(position + "/text")
                 .then()
                 .statusCode(200);
-        final var chapter = draft.getChapters().get(position);
+        final var chapter = draft.getChapters().getFirst();
         assertEquals(text, chapter.text);
     }
 
@@ -62,7 +62,7 @@ public final class UpdateChapterTextTests extends PostTestsBase {
     @Transactional
     public void updateChapterTextInOwnDraftWithInvalidInput() {
         final var position = 0;
-        final var chapter = draft.getChapters().get(position);
+        final var chapter = draft.getChapters().getFirst();
         final var oldText = chapter.text;
         given().body("a".repeat(501))
                 .pathParam("id", draft.id)
@@ -78,7 +78,7 @@ public final class UpdateChapterTextTests extends PostTestsBase {
     @Transactional
     public void updateChapterTextInOtherPost() {
         final var position = 0;
-        final var chapter = post.getChapters().get(position);
+        final var chapter = post.getChapters().getFirst();
         final var oldText = chapter.text;
         given().body("Hello")
                 .pathParam("id", post.id)
@@ -94,7 +94,7 @@ public final class UpdateChapterTextTests extends PostTestsBase {
     @Transactional
     public void updateChapterTextInOtherDraft() {
         final var position = 0;
-        final var chapter = draft.getChapters().get(position);
+        final var chapter = draft.getChapters().getFirst();
         final var oldText = chapter.text;
         given().body("Hello")
                 .pathParam("id", draft.id)
@@ -109,7 +109,7 @@ public final class UpdateChapterTextTests extends PostTestsBase {
     @Transactional
     public void updateChapterTextInPostUnauthenticated() {
         final var position = 0;
-        final var chapter = post.getChapters().get(position);
+        final var chapter = post.getChapters().getFirst();
         final var oldText = chapter.text;
         given().body("Hello")
                 .pathParam("id", post.id)
@@ -124,7 +124,7 @@ public final class UpdateChapterTextTests extends PostTestsBase {
     @Transactional
     public void updateChapterTextInDraftUnauthenticated() {
         final var position = 0;
-        final var chapter = draft.getChapters().get(position);
+        final var chapter = draft.getChapters().getFirst();
         final var oldText = chapter.text;
         given().body("Hello")
                 .pathParam("id", draft.id)
@@ -140,7 +140,7 @@ public final class UpdateChapterTextTests extends PostTestsBase {
     @Transactional
     public void updateChapterTextInNonExistentPost() {
         final var position = 0;
-        final var chapter = draft.getChapters().get(position);
+        final var chapter = draft.getChapters().getFirst();
         final var oldText = chapter.text;
         given().body("Hello")
                 .pathParam("id", fakeId)

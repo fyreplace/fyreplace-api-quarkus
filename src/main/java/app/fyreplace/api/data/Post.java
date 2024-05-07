@@ -31,7 +31,7 @@ public class Post extends AuthoredEntityBase implements Reportable {
     @Formula("(select count(*) from votes where votes.post_id = id)")
     public long voteCount;
 
-    public static Duration shelfLife = Duration.ofDays(7);
+    public static final Duration shelfLife = Duration.ofDays(7);
 
     @Override
     public void scrub() {

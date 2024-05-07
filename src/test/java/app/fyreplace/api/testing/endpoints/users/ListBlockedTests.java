@@ -1,6 +1,7 @@
 package app.fyreplace.api.testing.endpoints.users;
 
 import static io.restassured.RestAssured.given;
+import static java.util.Objects.requireNonNull;
 import static java.util.stream.IntStream.range;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.in;
@@ -63,7 +64,7 @@ public final class ListBlockedTests extends UserTestsBase {
     @Override
     public void beforeEach() {
         super.beforeEach();
-        final var user = User.findByUsername("user_0");
+        final var user = requireNonNull(User.findByUsername("user_0"));
 
         for (final var otherUser : User.<User>list("username > 'user_10' and active = true")) {
             user.block(otherUser);

@@ -9,6 +9,6 @@ import java.util.List;
 public final class Assertions {
     public static <T> void assertSingleEmail(final Class<T> emailClass, final List<Mail> mails) {
         assertEquals(1, mails.size());
-        assertInstanceOf(emailClass, mails.get(0));
+        assertInstanceOf(emailClass, mails.getFirst());
     }
 }

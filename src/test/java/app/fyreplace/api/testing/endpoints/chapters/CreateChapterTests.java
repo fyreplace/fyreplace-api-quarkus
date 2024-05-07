@@ -56,7 +56,7 @@ public final class CreateChapterTests extends PostTestsBase {
         QuarkusTransaction.requiringNew().run(() -> {
             final var chapters = draft.getChapters();
             final var newChapters = postsMaxChapterCount - chapters.size();
-            String before = chapters.get(chapters.size() - 1).position;
+            String before = chapters.getLast().position;
 
             for (var i = 0; i < newChapters; i++) {
                 final var chapter = new Chapter();
