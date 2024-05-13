@@ -41,8 +41,8 @@ app:
   paging:
     size: 12
   storage:
-    type: "local"
-    local:
+    type: "file"
+    file:
       path: ""
     s3:
       bucket: ""
@@ -65,6 +65,8 @@ app:
             policy: "permit"
   app:
     use-example-data: true
+    storage:
+      type: "memory"
 '%test':
   quarkus:
     datasource:
@@ -78,3 +80,6 @@ app:
         origins: "/.*/"
     scheduler:
       enabled: false
+  app:
+    storage:
+      type: "memory"

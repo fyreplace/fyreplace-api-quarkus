@@ -6,6 +6,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import io.quarkus.arc.Arc;
+import io.sentry.Sentry;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,6 +15,7 @@ import jakarta.persistence.PreRemove;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Paths;
 
 @Entity
@@ -46,7 +48,12 @@ public class StoredFile extends EntityBase {
 
     @Override
     public String toString() {
-        return storageService.getUri(path).toString();
+        try {
+            return storageService.getUri(path).toString();
+        } catch (final URISyntaxException e) {
+            Sentry.captureException(e);
+            return "";
+        }
     }
 
     public void store(final byte[] data) throws IOException {

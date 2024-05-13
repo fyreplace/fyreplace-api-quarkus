@@ -48,4 +48,3 @@ jobs:
           SMALLRYE_JWT_SIGN_KEY: ${{ secrets.SMALLRYE_JWT_SIGN_KEY }}
           APP_URL: https://api.fyreplace.example.org
           APP_FRONT_URL: https://fyreplace.example.org
-          APP_STORAGE_LOCAL_PATH: /tmp/fyreplace/storage

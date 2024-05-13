@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
-import org.jboss.logging.Logger;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
@@ -25,8 +24,6 @@ import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
 @Unremovable
 @IfBuildProperty(name = "app.storage.type", stringValue = "s3")
 public final class S3StorageService implements StorageService {
-    private static final Logger logger = Logger.getLogger(S3StorageService.class);
-
     @Inject
     S3StorageConfig config;
 
@@ -75,17 +72,12 @@ public final class S3StorageService implements StorageService {
     }
 
     @Override
-    public URI getUri(final String path) {
-        try {
-            return client.utilities()
-                    .getUrl(b -> {
-                        b.bucket(config.bucket()).key(path);
-                        config.customEndpoint().ifPresent(b::endpoint);
-                    })
-                    .toURI();
-        } catch (final URISyntaxException e) {
-            logger.error("Failed to get URI for S3 object", e);
-            return null;
-        }
+    public URI getUri(final String path) throws URISyntaxException {
+        return client.utilities()
+                .getUrl(b -> {
+                    b.bucket(config.bucket()).key(path);
+                    config.customEndpoint().ifPresent(b::endpoint);
+                })
+                .toURI();
     }
 }

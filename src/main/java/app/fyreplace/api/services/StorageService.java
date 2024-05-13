@@ -2,6 +2,7 @@ package app.fyreplace.api.services;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 
 public interface StorageService {
     byte[] fetch(final String path) throws IOException;
@@ -10,5 +11,5 @@ public interface StorageService {
 
     void remove(final String path) throws IOException;
 
-    URI getUri(final String path);
+    URI getUri(final String path) throws URISyntaxException;
 }
