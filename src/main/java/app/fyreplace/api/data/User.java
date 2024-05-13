@@ -2,6 +2,7 @@ package app.fyreplace.api.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import io.sentry.Sentry;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -207,6 +208,18 @@ public class User extends SoftDeletableEntityBase implements Reportable {
         if (user == null && required) {
             throw new NotAuthorizedException("Bearer");
         }
+
+        Sentry.configureScope(scope -> {
+            if (user != null) {
+                final var sentryUser = new io.sentry.protocol.User();
+                sentryUser.setId(user.id.toString());
+                sentryUser.setUsername(user.username);
+                sentryUser.setEmail(user.mainEmail != null ? user.mainEmail.email : null);
+                scope.setUser(sentryUser);
+            } else {
+                scope.setUser(null);
+            }
+        });
 
         return user;
     }
