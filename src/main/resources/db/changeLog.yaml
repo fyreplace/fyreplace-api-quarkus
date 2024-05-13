@@ -345,50 +345,6 @@ databaseChangeLog:
         referencedTableName: "users"
         validate: true
 - changeSet:
-    id: "push_notification_tokens-0001"
-    author: "generated"
-    changes:
-    - createTable:
-        columns:
-        - column:
-            constraints:
-              nullable: false
-              primaryKey: true
-              primaryKeyName: "push_notification_tokens_pkey"
-            name: "id"
-            type: "UUID"
-        - column:
-            constraints:
-              nullable: false
-            name: "user_id"
-            type: "UUID"
-        - column:
-            constraints:
-              nullable: false
-            name: "service"
-            type: "VARCHAR(255)"
-        - column:
-            constraints:
-              nullable: false
-            name: "token"
-            type: "VARCHAR(255)"
-        tableName: "push_notification_tokens"
-- changeSet:
-    id: "push_notification_tokens-0002"
-    author: "generated"
-    changes:
-    - addForeignKeyConstraint:
-        baseColumnNames: "user_id"
-        baseTableName: "push_notification_tokens"
-        constraintName: "fkg63ygyp1y6pvmypol9d7gp40d"
-        deferrable: false
-        initiallyDeferred: false
-        onDelete: "CASCADE"
-        onUpdate: "NO ACTION"
-        referencedColumnNames: "id"
-        referencedTableName: "users"
-        validate: true
-- changeSet:
     id: "reports-0001"
     author: "generated"
     changes:
