@@ -13,7 +13,8 @@ public final class JwtService {
 
     public String makeJwt(final User user) {
         return Jwt.issuer(appUrl)
-                .subject(user.username)
+                .subject(user.id.toString())
+                .upn(user.username)
                 .groups(user.getGroups())
                 .expiresIn(Duration.ofDays(3))
                 .sign();
