@@ -1,8 +1,10 @@
 package app.fyreplace.api.data;
 
 import java.util.UUID;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 public interface Reportable {
+    @Schema(required = true)
     UUID getId();
 
     default void reportBy(final User user) {

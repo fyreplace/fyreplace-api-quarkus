@@ -52,8 +52,8 @@ public final class PostsEndpoint {
 
     @GET
     @Authenticated
-    @APIResponse(responseCode = "200")
-    @APIResponse(responseCode = "400")
+    @APIResponse(responseCode = "200", description = "OK")
+    @APIResponse(responseCode = "400", description = "Bad Request")
     public Iterable<Post> list(
             @QueryParam("page") @PositiveOrZero final int page,
             @QueryParam("ascending") final boolean ascending,
@@ -79,8 +79,9 @@ public final class PostsEndpoint {
     @Transactional
     @APIResponse(
             responseCode = "201",
+            description = "Created",
             content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = Post.class)))
-    @APIResponse(responseCode = "400")
+    @APIResponse(responseCode = "400", description = "Bad Request")
     @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
     public Response create() {
         final var user = User.getFromSecurityContext(context);
@@ -93,8 +94,8 @@ public final class PostsEndpoint {
 
     @GET
     @Path("{id}")
-    @APIResponse(responseCode = "200")
-    @APIResponse(responseCode = "404")
+    @APIResponse(responseCode = "200", description = "OK")
+    @APIResponse(responseCode = "404", description = "Not Found")
     public Post retrieve(@PathParam("id") final UUID id) {
         final var user = User.getFromSecurityContext(context, null, false);
         final var post = Post.<Post>findById(id);
@@ -106,8 +107,8 @@ public final class PostsEndpoint {
     @Path("{id}")
     @Authenticated
     @Transactional
-    @APIResponse(responseCode = "204")
-    @APIResponse(responseCode = "404")
+    @APIResponse(responseCode = "204", description = "No Content")
+    @APIResponse(responseCode = "404", description = "Not Found")
     @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
     public Response delete(@PathParam("id") final UUID id) {
         final var user = User.getFromSecurityContext(context);
@@ -127,9 +128,9 @@ public final class PostsEndpoint {
     @Path("{id}/subscribed")
     @Authenticated
     @Transactional
-    @APIResponse(responseCode = "200")
-    @APIResponse(responseCode = "400")
-    @APIResponse(responseCode = "404")
+    @APIResponse(responseCode = "200", description = "OK")
+    @APIResponse(responseCode = "400", description = "Bad Request")
+    @APIResponse(responseCode = "404", description = "Not Found")
     public Response updateSubscribed(@PathParam("id") final UUID id, @Valid @NotNull final SubscriptionUpdate input) {
         final var user = User.getFromSecurityContext(context);
         final var post = Post.<Post>findById(id);
@@ -148,8 +149,8 @@ public final class PostsEndpoint {
     @Path("{id}/reported")
     @Authenticated
     @Transactional
-    @APIResponse(responseCode = "200")
-    @APIResponse(responseCode = "404")
+    @APIResponse(responseCode = "200", description = "OK")
+    @APIResponse(responseCode = "404", description = "Not Found")
     public Response updateReported(@PathParam("id") final UUID id, @NotNull @Valid final ReportUpdate input) {
         final var user = User.getFromSecurityContext(context);
         final var post = Post.<Post>findById(id);
@@ -168,9 +169,9 @@ public final class PostsEndpoint {
     @Path("{id}/publish")
     @Authenticated
     @Transactional
-    @APIResponse(responseCode = "200")
-    @APIResponse(responseCode = "400")
-    @APIResponse(responseCode = "404")
+    @APIResponse(responseCode = "200", description = "OK")
+    @APIResponse(responseCode = "400", description = "Bad Request")
+    @APIResponse(responseCode = "404", description = "Not Found")
     @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
     public Response publish(@PathParam("id") final UUID id, @Valid @NotNull final PostPublication input) {
         final var user = User.getFromSecurityContext(context);
@@ -189,9 +190,9 @@ public final class PostsEndpoint {
     @Path("{id}/vote")
     @Authenticated
     @Transactional
-    @APIResponse(responseCode = "200")
-    @APIResponse(responseCode = "400")
-    @APIResponse(responseCode = "404")
+    @APIResponse(responseCode = "200", description = "OK")
+    @APIResponse(responseCode = "400", description = "Bad Request")
+    @APIResponse(responseCode = "404", description = "Not Found")
     @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
     public Response vote(@PathParam("id") final UUID id, @Valid @NotNull final VoteCreation input) {
         final var user = User.getFromSecurityContext(context);
@@ -217,8 +218,8 @@ public final class PostsEndpoint {
     @GET
     @Path("count")
     @Authenticated
-    @APIResponse(responseCode = "200")
-    @APIResponse(responseCode = "400")
+    @APIResponse(responseCode = "200", description = "OK")
+    @APIResponse(responseCode = "400", description = "Bad Request")
     public long count(@QueryParam("type") @NotNull final PostListingType type) {
         final var user = User.getFromSecurityContext(context);
         return switch (type) {
@@ -231,7 +232,7 @@ public final class PostsEndpoint {
     @GET
     @Path("feed")
     @Authenticated
-    @APIResponse(responseCode = "200")
+    @APIResponse(responseCode = "200", description = "OK")
     public Iterable<Post> listFeed() {
         final var user = User.getFromSecurityContext(context);
 

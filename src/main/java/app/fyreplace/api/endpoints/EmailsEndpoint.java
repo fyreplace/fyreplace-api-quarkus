@@ -49,7 +49,7 @@ public final class EmailsEndpoint {
 
     @GET
     @Authenticated
-    @APIResponse(responseCode = "200")
+    @APIResponse(responseCode = "200", description = "OK")
     public Iterable<Email> list(@QueryParam("page") @PositiveOrZero final int page) {
         final var user = User.getFromSecurityContext(context);
         return Email.find("user", Sort.by("email"), user).page(page, pagingSize).list();
@@ -60,8 +60,9 @@ public final class EmailsEndpoint {
     @Transactional
     @APIResponse(
             responseCode = "201",
+            description = "Created",
             content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = Email.class)))
-    @APIResponse(responseCode = "409")
+    @APIResponse(responseCode = "409", description = "Conflict")
     @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
     public Response create(@Valid @NotNull final EmailCreation input) {
         if (Email.count("email", input.email()) > 0) {
@@ -80,8 +81,8 @@ public final class EmailsEndpoint {
     @Path("{id}")
     @Authenticated
     @Transactional
-    @APIResponse(responseCode = "204")
-    @APIResponse(responseCode = "404")
+    @APIResponse(responseCode = "204", description = "No Content")
+    @APIResponse(responseCode = "404", description = "Not Found")
     @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
     public Response delete(@PathParam("id") final UUID id) {
         final var user = User.getFromSecurityContext(context);
@@ -101,8 +102,8 @@ public final class EmailsEndpoint {
     @Path("{id}/main")
     @Authenticated
     @Transactional
-    @APIResponse(responseCode = "200")
-    @APIResponse(responseCode = "404")
+    @APIResponse(responseCode = "200", description = "OK")
+    @APIResponse(responseCode = "404", description = "Not Found")
     public Response updateMain(@PathParam("id") final UUID id) {
         final var user = User.getFromSecurityContext(context);
         final var email = Email.<Email>find("user = ?1 and id = ?2", user, id).firstResult();
@@ -121,7 +122,7 @@ public final class EmailsEndpoint {
     @GET
     @Path("count")
     @Authenticated
-    @APIResponse(responseCode = "200")
+    @APIResponse(responseCode = "200", description = "OK")
     public long count() {
         return Email.count("user", User.getFromSecurityContext(context));
     }
@@ -130,9 +131,9 @@ public final class EmailsEndpoint {
     @Path("activate")
     @Authenticated
     @Transactional
-    @APIResponse(responseCode = "200")
-    @APIResponse(responseCode = "400")
-    @APIResponse(responseCode = "404")
+    @APIResponse(responseCode = "200", description = "OK")
+    @APIResponse(responseCode = "400", description = "Bad Request")
+    @APIResponse(responseCode = "404", description = "Not Found")
     @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
     public Response activate(@NotNull @Valid final EmailActivation input) {
         final var email = Email.<Email>find("email", input.email()).firstResult();

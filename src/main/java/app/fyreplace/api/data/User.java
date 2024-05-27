@@ -72,6 +72,7 @@ public class User extends SoftDeletableEntityBase implements Reportable {
             "voids"));
 
     @Column(length = 100, unique = true)
+    @Schema(required = true)
     public String username;
 
     @ManyToOne
@@ -84,18 +85,21 @@ public class User extends SoftDeletableEntityBase implements Reportable {
     public boolean active = false;
 
     @Column(nullable = false)
+    @Schema(required = true)
     public Rank rank = Rank.CITIZEN;
 
     @OneToOne(cascade = CascadeType.PERSIST)
     @OnDelete(action = OnDeleteAction.SET_NULL)
     @JsonSerialize(using = StoredFile.Serializer.class)
-    @Schema(implementation = String.class)
+    @Schema(required = true, implementation = String.class)
     public StoredFile avatar;
 
     @Column(length = 3000, nullable = false)
+    @Schema(required = true)
     public String bio = "";
 
     @Column(nullable = false)
+    @Schema(required = true)
     public boolean banned = false;
 
     @Column(nullable = false)
@@ -131,6 +135,7 @@ public class User extends SoftDeletableEntityBase implements Reportable {
         return new Profile(id, username, avatar != null ? avatar.toString() : null, getTint());
     }
 
+    @Schema(required = true)
     public String getTint() {
         final var crc = new CRC32();
         crc.update(username.getBytes());
@@ -249,5 +254,9 @@ public class User extends SoftDeletableEntityBase implements Reportable {
         ONE_TOO_MANY
     }
 
-    public record Profile(UUID id, String username, String avatar, String tint) {}
+    public record Profile(
+            @Schema(required = true) UUID id,
+            @Schema(required = true) String username,
+            @Schema(required = true) String avatar,
+            @Schema(required = true) String tint) {}
 }

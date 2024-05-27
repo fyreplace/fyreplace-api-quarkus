@@ -9,6 +9,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import java.time.Instant;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -25,6 +26,7 @@ public class Subscription extends EntityBase {
 
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @Schema(required = true)
     public Post post;
 
     @SuppressWarnings("unused")
@@ -57,6 +59,7 @@ public class Subscription extends EntityBase {
                 )
             )
             """)
+    @Schema(required = true)
     public long unreadCommentCount;
 
     public void markAsRead() {

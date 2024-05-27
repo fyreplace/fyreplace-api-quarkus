@@ -6,6 +6,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -18,12 +19,15 @@ public class Email extends EntityBase {
     public User user;
 
     @Column(length = 254, unique = true, nullable = false)
+    @Schema(required = true)
     public String email;
 
     @Column(nullable = false)
+    @Schema(required = true)
     public boolean verified = false;
 
     @JsonProperty("main")
+    @Schema(required = true)
     public boolean isMain() {
         return id.equals(user.mainEmail.id);
     }

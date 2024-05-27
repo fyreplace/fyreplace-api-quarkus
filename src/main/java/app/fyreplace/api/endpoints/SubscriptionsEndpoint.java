@@ -29,8 +29,8 @@ public final class SubscriptionsEndpoint {
     @Path("{id}")
     @Authenticated
     @Transactional
-    @APIResponse(responseCode = "204")
-    @APIResponse(responseCode = "404")
+    @APIResponse(responseCode = "204", description = "No Content")
+    @APIResponse(responseCode = "404", description = "Not Found")
     public void delete(@PathParam("id") final UUID id) {
         final var user = User.getFromSecurityContext(context);
         final var subscription = Subscription.<Subscription>findById(id);
@@ -45,8 +45,8 @@ public final class SubscriptionsEndpoint {
     @GET
     @Path("unread")
     @Authenticated
-    @APIResponse(responseCode = "200")
-    @APIResponse(responseCode = "400")
+    @APIResponse(responseCode = "200", description = "OK")
+    @APIResponse(responseCode = "400", description = "Bad Request")
     public Iterable<Subscription> listUnread(@QueryParam("page") @PositiveOrZero final int page) {
         final var user = User.getFromSecurityContext(context);
 
@@ -62,7 +62,7 @@ public final class SubscriptionsEndpoint {
     @Path("unread")
     @Authenticated
     @Transactional
-    @APIResponse(responseCode = "204")
+    @APIResponse(responseCode = "204", description = "No Content")
     public void clearUnread() {
         Subscription.markAsRead(User.getFromSecurityContext(context));
     }

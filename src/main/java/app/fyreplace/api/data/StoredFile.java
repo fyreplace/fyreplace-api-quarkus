@@ -17,6 +17,7 @@ import jakarta.persistence.Transient;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 @Entity
 @Table(name = "stored_files")
@@ -28,6 +29,7 @@ public class StoredFile extends EntityBase {
     private MimeTypeService mimeTypeService;
 
     @Column(unique = true, nullable = false)
+    @Schema(required = true)
     public String path;
 
     @Transient

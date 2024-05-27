@@ -16,7 +16,7 @@ public final class ReportsEndpoint {
 
     @GET
     @RolesAllowed("MODERATOR")
-    @APIResponse(responseCode = "200")
+    @APIResponse(responseCode = "200", description = "OK")
     public Iterable<Report> list(@QueryParam("page") @PositiveOrZero final int page) {
         return Report.findAll(Report.sorting()).page(page, pagingSize).list();
     }

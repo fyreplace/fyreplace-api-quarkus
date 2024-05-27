@@ -8,6 +8,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Index;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -22,6 +23,7 @@ public class Comment extends AuthoredEntityBase implements Comparable<Comment>, 
     public Post post;
 
     @Column(length = 1500, nullable = false)
+    @Schema(required = true)
     public String text;
 
     @Override

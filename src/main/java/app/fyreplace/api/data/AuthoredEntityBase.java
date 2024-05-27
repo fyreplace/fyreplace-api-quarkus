@@ -7,6 +7,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.Transient;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -18,6 +19,7 @@ public abstract class AuthoredEntityBase extends SoftDeletableEntityBase {
     public User author;
 
     @Column(nullable = false)
+    @Schema(required = true)
     public boolean anonymous = false;
 
     @Transient

@@ -29,9 +29,9 @@ public final class StoredFilesEndpoint {
 
     @GET
     @Path("{path:.*}")
-    @APIResponse(responseCode = "200")
-    @APIResponse(responseCode = "303")
-    @APIResponse(responseCode = "404")
+    @APIResponse(responseCode = "200", description = "OK")
+    @APIResponse(responseCode = "303", description = "See Other")
+    @APIResponse(responseCode = "404", description = "Not Found")
     public Response retrieve(@PathParam("path") final String path) throws URISyntaxException {
         final var appUri = new URI(appUrl);
         final var requestUri = storageService.getUri(path);

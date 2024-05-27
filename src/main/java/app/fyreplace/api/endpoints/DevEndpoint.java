@@ -24,8 +24,9 @@ public final class DevEndpoint {
     @Path("users/{username}/token")
     @APIResponse(
             responseCode = "200",
+            description = "OK",
             content = @Content(mediaType = MediaType.TEXT_PLAIN, schema = @Schema(implementation = String.class)))
-    @APIResponse(responseCode = "404")
+    @APIResponse(responseCode = "404", description = "Not Found")
     @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
     public String retrieveToken(@PathParam("username") final String username) {
         final var user = User.findByUsername(username);
@@ -41,8 +42,9 @@ public final class DevEndpoint {
     @Path("passwords/{password}/hash")
     @APIResponse(
             responseCode = "200",
+            description = "OK",
             content = @Content(mediaType = MediaType.TEXT_PLAIN, schema = @Schema(implementation = String.class)))
-    @APIResponse(responseCode = "404")
+    @APIResponse(responseCode = "404", description = "Not Found")
     public String retrievePasswordHash(@PathParam("password") final String password) {
         return BcryptUtil.bcryptHash(password);
     }

@@ -6,6 +6,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import java.util.UUID;
 import lombok.Getter;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.hibernate.annotations.UuidGenerator;
 
 @Getter
@@ -14,6 +15,7 @@ public abstract class EntityBase extends PanacheEntityBase {
     @Id
     @GeneratedValue
     @UuidGenerator(style = UuidGenerator.Style.RANDOM)
+    @Schema(required = true)
     public UUID id;
 
     public void refresh() {

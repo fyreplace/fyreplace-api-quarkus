@@ -54,9 +54,10 @@ public final class ChaptersEndpoint {
     @Transactional
     @APIResponse(
             responseCode = "201",
+            description = "Created",
             content =
                     @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = Chapter.class)))
-    @APIResponse(responseCode = "404")
+    @APIResponse(responseCode = "404", description = "Not found")
     @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
     public Response createChapter(@PathParam("id") final UUID id) {
         final var user = User.getFromSecurityContext(context);
@@ -80,8 +81,8 @@ public final class ChaptersEndpoint {
     @Path("{position}")
     @Authenticated
     @Transactional
-    @APIResponse(responseCode = "204")
-    @APIResponse(responseCode = "404")
+    @APIResponse(responseCode = "204", description = "No content")
+    @APIResponse(responseCode = "404", description = "Not found")
     @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
     public Response deleteChapter(@PathParam("id") final UUID id, @PathParam("position") final int position) {
         final var user = User.getFromSecurityContext(context);
@@ -98,9 +99,10 @@ public final class ChaptersEndpoint {
     @Consumes(MediaType.TEXT_PLAIN)
     @APIResponse(
             responseCode = "200",
+            description = "OK",
             content = @Content(mediaType = MediaType.TEXT_PLAIN, schema = @Schema(implementation = Integer.class)))
-    @APIResponse(responseCode = "400")
-    @APIResponse(responseCode = "404")
+    @APIResponse(responseCode = "400", description = "Bad request")
+    @APIResponse(responseCode = "404", description = "Not found")
     public int updateChapterPosition(
             @PathParam("id") final UUID id, @PathParam("position") final int position, @NotNull final Integer input) {
         final var user = User.getFromSecurityContext(context);
@@ -133,9 +135,10 @@ public final class ChaptersEndpoint {
     @Consumes(MediaType.TEXT_PLAIN)
     @APIResponse(
             responseCode = "200",
+            description = "OK",
             content = @Content(mediaType = MediaType.TEXT_PLAIN, schema = @Schema(implementation = String.class)))
-    @APIResponse(responseCode = "400")
-    @APIResponse(responseCode = "404")
+    @APIResponse(responseCode = "400", description = "Bad request")
+    @APIResponse(responseCode = "404", description = "Not found")
     public String updateChapterText(
             @PathParam("id") final UUID id,
             @PathParam("position") final int position,
@@ -161,9 +164,10 @@ public final class ChaptersEndpoint {
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
     @APIResponse(
             responseCode = "200",
+            description = "OK",
             content = @Content(mediaType = MediaType.TEXT_PLAIN, schema = @Schema(implementation = String.class)))
-    @APIResponse(responseCode = "400")
-    @APIResponse(responseCode = "404")
+    @APIResponse(responseCode = "400", description = "Bad request")
+    @APIResponse(responseCode = "404", description = "Not found")
     public String updateChapterImage(
             @PathParam("id") final UUID id, @PathParam("position") final int position, final byte[] input)
             throws IOException {

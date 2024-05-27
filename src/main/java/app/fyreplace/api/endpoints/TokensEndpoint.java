@@ -44,9 +44,10 @@ public final class TokensEndpoint {
     @Transactional
     @APIResponse(
             responseCode = "201",
+            description = "Created",
             content = @Content(mediaType = MediaType.TEXT_PLAIN, schema = @Schema(implementation = String.class)))
-    @APIResponse(responseCode = "400")
-    @APIResponse(responseCode = "404")
+    @APIResponse(responseCode = "400", description = "Bad Request")
+    @APIResponse(responseCode = "404", description = "Not Found")
     @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
     public Response create(@Valid @NotNull final TokenCreation input) {
         final var email = getEmail(input.identifier());
@@ -75,6 +76,7 @@ public final class TokensEndpoint {
     @Authenticated
     @APIResponse(
             responseCode = "200",
+            description = "OK",
             content = @Content(mediaType = MediaType.TEXT_PLAIN, schema = @Schema(implementation = String.class)))
     public String retrieveNew() {
         return jwtService.makeJwt(User.getFromSecurityContext(context));
@@ -83,9 +85,9 @@ public final class TokensEndpoint {
     @POST
     @Path("new")
     @Transactional
-    @APIResponse(responseCode = "200")
-    @APIResponse(responseCode = "400")
-    @APIResponse(responseCode = "404")
+    @APIResponse(responseCode = "200", description = "OK")
+    @APIResponse(responseCode = "400", description = "Bad Request")
+    @APIResponse(responseCode = "404", description = "Not Found")
     @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
     public Response createNew(@NotNull @Valid final NewTokenCreation input) {
         final var email = getEmail(input.identifier());

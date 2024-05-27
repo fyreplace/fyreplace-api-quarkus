@@ -12,11 +12,14 @@ import jakarta.ws.rs.NotFoundException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.hibernate.annotations.Formula;
 
 @Entity
 @Table(name = "posts")
 public class Post extends AuthoredEntityBase implements Reportable {
+    @Column(nullable = false)
+    @Schema(required = true)
     public boolean published = false;
 
     @Column(nullable = false)
@@ -25,10 +28,12 @@ public class Post extends AuthoredEntityBase implements Reportable {
 
     @SuppressWarnings("unused")
     @Formula("(select count(*) from comments where comments.post_id = id)")
+    @Schema(required = true)
     public long commentCount;
 
     @SuppressWarnings("unused")
     @Formula("(select count(*) from votes where votes.post_id = id)")
+    @Schema(required = true)
     public long voteCount;
 
     public static final Duration shelfLife = Duration.ofDays(7);

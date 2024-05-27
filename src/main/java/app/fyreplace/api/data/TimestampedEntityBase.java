@@ -4,6 +4,7 @@ import io.quarkus.panache.common.Sort;
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 import java.time.Instant;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.SourceType;
 
@@ -11,6 +12,7 @@ import org.hibernate.annotations.SourceType;
 public abstract class TimestampedEntityBase extends EntityBase {
     @Column(nullable = false)
     @CreationTimestamp(source = SourceType.DB)
+    @Schema(required = true)
     public Instant dateCreated;
 
     public static Sort sorting() {
