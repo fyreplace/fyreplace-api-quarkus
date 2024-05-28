@@ -21,6 +21,7 @@ import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.QueryParam;
@@ -97,13 +98,13 @@ public final class EmailsEndpoint {
         return Response.noContent().build();
     }
 
-    @POST
+    @PUT
     @Path("{id}/main")
     @Authenticated
     @Transactional
     @APIResponse(responseCode = "200")
     @APIResponse(responseCode = "404")
-    public Response setMain(@PathParam("id") final UUID id) {
+    public Response updateMain(@PathParam("id") final UUID id) {
         final var user = User.getFromSecurityContext(context);
         final var email = Email.<Email>find("user = ?1 and id = ?2", user, id).firstResult();
 

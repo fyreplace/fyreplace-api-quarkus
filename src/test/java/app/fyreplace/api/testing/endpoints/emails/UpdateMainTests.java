@@ -19,50 +19,50 @@ import org.junit.jupiter.api.Test;
 
 @QuarkusTest
 @TestHTTPEndpoint(EmailsEndpoint.class)
-public final class SetMainTests extends UserTestsBase {
+public final class UpdateMainTests extends UserTestsBase {
     private Email secondaryEmail;
 
     @Test
     @TestSecurity(user = "user_0")
-    public void setMain() {
+    public void updateMain() {
         assertFalse(secondaryEmail.isMain());
-        given().post(secondaryEmail.id + "/main").then().statusCode(200);
+        given().put(secondaryEmail.id + "/main").then().statusCode(200);
         secondaryEmail = Email.findById(secondaryEmail.id);
         assertTrue(secondaryEmail.isMain());
     }
 
     @Test
     @TestSecurity(user = "user_0")
-    public void setMainTwice() {
+    public void updateMainTwice() {
         assertFalse(secondaryEmail.isMain());
-        given().post(secondaryEmail.id + "/main").then().statusCode(200);
-        given().post(secondaryEmail.id + "/main").then().statusCode(200);
+        given().put(secondaryEmail.id + "/main").then().statusCode(200);
+        given().put(secondaryEmail.id + "/main").then().statusCode(200);
         secondaryEmail = Email.findById(secondaryEmail.id);
         assertTrue(secondaryEmail.isMain());
     }
 
     @Test
     @TestSecurity(user = "user_0")
-    public void setMainWithUnverifiedEmail() {
+    public void updateMainWithUnverifiedEmail() {
         QuarkusTransaction.requiringNew().run(() -> Email.update("verified = false where id = ?1", secondaryEmail.id));
-        given().post(secondaryEmail.id + "/main").then().statusCode(403);
+        given().put(secondaryEmail.id + "/main").then().statusCode(403);
         secondaryEmail = Email.findById(secondaryEmail.id);
         assertFalse(secondaryEmail.isMain());
     }
 
     @Test
     @TestSecurity(user = "user_0")
-    public void setMainWithOtherEmail() {
+    public void updateMainWithOtherEmail() {
         final var otherUser = requireNonNull(User.findByUsername("user_1"));
-        given().post(otherUser.mainEmail.id + "/main").then().statusCode(404);
+        given().put(otherUser.mainEmail.id + "/main").then().statusCode(404);
         secondaryEmail = Email.findById(secondaryEmail.id);
         assertFalse(secondaryEmail.isMain());
     }
 
     @Test
     @TestSecurity(user = "user_0")
-    public void setMainWithNonExistentEmail() {
-        given().post(fakeId + "/main").then().statusCode(404);
+    public void updateMainWithNonExistentEmail() {
+        given().put(fakeId + "/main").then().statusCode(404);
         secondaryEmail = Email.findById(secondaryEmail.id);
         assertFalse(secondaryEmail.isMain());
     }
