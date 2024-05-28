@@ -2,19 +2,25 @@ package app.fyreplace.api.endpoints;
 
 import app.fyreplace.api.services.MimeTypeService;
 import app.fyreplace.api.services.StorageService;
-import io.quarkus.arc.properties.UnlessBuildProperty;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.RedirectionException;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 
 @Path("stored-files")
-@UnlessBuildProperty(name = "app.storage.type", stringValue = "s3")
 public final class StoredFilesEndpoint {
+    @ConfigProperty(name = "app.url")
+    String appUrl;
+
     @Inject
     StorageService storageService;
 
@@ -24,8 +30,16 @@ public final class StoredFilesEndpoint {
     @GET
     @Path("{path:.*}")
     @APIResponse(responseCode = "200")
+    @APIResponse(responseCode = "303")
     @APIResponse(responseCode = "404")
-    public Response retrieve(@PathParam("path") final String path) {
+    public Response retrieve(@PathParam("path") final String path) throws URISyntaxException {
+        final var appUri = new URI(appUrl);
+        final var requestUri = storageService.getUri(path);
+
+        if (!appUri.getHost().equals(requestUri.getHost())) {
+            throw new RedirectionException(Status.SEE_OTHER, requestUri);
+        }
+
         try {
             final byte[] data;
             data = storageService.fetch(path);
