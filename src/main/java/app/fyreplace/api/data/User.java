@@ -14,12 +14,14 @@ import jakarta.persistence.PostRemove;
 import jakarta.persistence.Table;
 import jakarta.ws.rs.NotAuthorizedException;
 import jakarta.ws.rs.core.SecurityContext;
+import java.awt.Color;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.zip.CRC32;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -126,7 +128,18 @@ public class User extends SoftDeletableEntityBase implements Reportable {
 
     @JsonIgnore
     public Profile getProfile() {
-        return new Profile(id, username, avatar != null ? avatar.toString() : null);
+        return new Profile(id, username, avatar != null ? avatar.toString() : null, getTint());
+    }
+
+    public String getTint() {
+        final var crc = new CRC32();
+        crc.update(username.getBytes());
+        final var hue = (float) (crc.getValue() / Math.pow(2, 32));
+        final var h = hue * 6;
+        final var variance = (h - (float) Math.floor(h)) * 0.25f;
+        final var brightness = (int) h % 2 == 0 ? 1f - variance : 0.75f + variance;
+        final var color = Color.HSBtoRGB(hue, 0.5f, brightness);
+        return "#%02X%02X%02X".formatted((color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF);
     }
 
     @Override
@@ -236,5 +249,5 @@ public class User extends SoftDeletableEntityBase implements Reportable {
         ONE_TOO_MANY
     }
 
-    public record Profile(UUID id, String username, String avatar) {}
+    public record Profile(UUID id, String username, String avatar, String tint) {}
 }
