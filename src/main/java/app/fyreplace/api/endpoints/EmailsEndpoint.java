@@ -30,7 +30,6 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 import jakarta.ws.rs.core.SecurityContext;
-import java.util.List;
 import java.util.UUID;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
@@ -51,7 +50,7 @@ public final class EmailsEndpoint {
     @GET
     @Authenticated
     @APIResponse(responseCode = "200")
-    public List<Email> list(@QueryParam("page") @PositiveOrZero final int page) {
+    public Iterable<Email> list(@QueryParam("page") @PositiveOrZero final int page) {
         final var user = User.getFromSecurityContext(context);
         return Email.find("user", Sort.by("email"), user).page(page, pagingSize).list();
     }

@@ -43,7 +43,7 @@ public final class DevEndpoint {
             responseCode = "200",
             content = @Content(mediaType = MediaType.TEXT_PLAIN, schema = @Schema(implementation = String.class)))
     @APIResponse(responseCode = "404")
-    public String retrievePassword(@PathParam("password") final String password) {
+    public String retrievePasswordHash(@PathParam("password") final String password) {
         return BcryptUtil.bcryptHash(password);
     }
 }
