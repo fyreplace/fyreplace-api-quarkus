@@ -46,7 +46,8 @@ public final class CommentsEndpoint {
     @Authenticated
     @APIResponse(responseCode = "200", description = "OK")
     @APIResponse(responseCode = "404", description = "Not Found")
-    public Iterable<Comment> list(@PathParam("id") final UUID id, @QueryParam("page") @PositiveOrZero final int page) {
+    public Iterable<Comment> listComments(
+            @PathParam("id") final UUID id, @QueryParam("page") @PositiveOrZero final int page) {
         final var user = User.getFromSecurityContext(context);
         final var post = Post.<Post>findById(id);
         Post.validateAccess(post, user, true, null);
@@ -67,7 +68,7 @@ public final class CommentsEndpoint {
                     @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = Comment.class)))
     @APIResponse(responseCode = "404", description = "Not Found")
     @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
-    public Response create(@PathParam("id") final UUID id, @Valid @NotNull final CommentCreation input) {
+    public Response createComment(@PathParam("id") final UUID id, @Valid @NotNull final CommentCreation input) {
         final var user = User.getFromSecurityContext(context);
         final var post = Post.<Post>findById(id);
         Post.validateAccess(post, user, true, null);
@@ -93,7 +94,8 @@ public final class CommentsEndpoint {
     @APIResponse(responseCode = "204", description = "No Content")
     @APIResponse(responseCode = "404", description = "Not Found")
     @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
-    public Response delete(@PathParam("id") final UUID id, @PathParam("position") @PositiveOrZero final int position) {
+    public Response deleteComment(
+            @PathParam("id") final UUID id, @PathParam("position") @PositiveOrZero final int position) {
         final var user = User.getFromSecurityContext(context);
         final var post = Post.<Post>findById(id);
         Post.validateAccess(post, user, true, null);
@@ -113,7 +115,7 @@ public final class CommentsEndpoint {
     @Transactional
     @APIResponse(responseCode = "200", description = "OK")
     @APIResponse(responseCode = "404", description = "Not Found")
-    public Response updateReported(
+    public Response setCommentReported(
             @PathParam("id") final UUID id,
             @PathParam("position") @PositiveOrZero final int position,
             @NotNull @Valid final ReportUpdate input) {
@@ -141,7 +143,7 @@ public final class CommentsEndpoint {
     @Transactional
     @APIResponse(responseCode = "200", description = "OK")
     @APIResponse(responseCode = "404", description = "Not Found")
-    public Response acknowledge(
+    public Response acknowledgeComment(
             @PathParam("id") final UUID id, @PathParam("position") @PositiveOrZero final int position) {
         final var user = User.getFromSecurityContext(context);
         final var post = Post.<Post>findById(id);
@@ -167,7 +169,7 @@ public final class CommentsEndpoint {
     @Authenticated
     @APIResponse(responseCode = "200", description = "OK")
     @APIResponse(responseCode = "404", description = "Not Found")
-    public long count(@PathParam("id") final UUID id, @QueryParam("read") @Nullable final Boolean read) {
+    public long countComments(@PathParam("id") final UUID id, @QueryParam("read") @Nullable final Boolean read) {
         final var user = User.getFromSecurityContext(context);
         final var post = Post.<Post>findById(id);
         Post.validateAccess(post, user, true, null);

@@ -54,7 +54,7 @@ public final class PostsEndpoint {
     @Authenticated
     @APIResponse(responseCode = "200", description = "OK")
     @APIResponse(responseCode = "400", description = "Bad Request")
-    public Iterable<Post> list(
+    public Iterable<Post> listPosts(
             @QueryParam("page") @PositiveOrZero final int page,
             @QueryParam("ascending") final boolean ascending,
             @QueryParam("type") @NotNull final PostListingType type) {
@@ -83,7 +83,7 @@ public final class PostsEndpoint {
             content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = Post.class)))
     @APIResponse(responseCode = "400", description = "Bad Request")
     @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
-    public Response create() {
+    public Response createPost() {
         final var user = User.getFromSecurityContext(context);
         final var post = new Post();
         post.author = user;
@@ -96,7 +96,7 @@ public final class PostsEndpoint {
     @Path("{id}")
     @APIResponse(responseCode = "200", description = "OK")
     @APIResponse(responseCode = "404", description = "Not Found")
-    public Post retrieve(@PathParam("id") final UUID id) {
+    public Post getPost(@PathParam("id") final UUID id) {
         final var user = User.getFromSecurityContext(context, null, false);
         final var post = Post.<Post>findById(id);
         Post.validateAccess(post, user, null, null);
@@ -110,7 +110,7 @@ public final class PostsEndpoint {
     @APIResponse(responseCode = "204", description = "No Content")
     @APIResponse(responseCode = "404", description = "Not Found")
     @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
-    public Response delete(@PathParam("id") final UUID id) {
+    public Response deletePost(@PathParam("id") final UUID id) {
         final var user = User.getFromSecurityContext(context);
         final var post = Post.<Post>findById(id);
         Post.validateAccess(post, user, null, true);
@@ -131,7 +131,7 @@ public final class PostsEndpoint {
     @APIResponse(responseCode = "200", description = "OK")
     @APIResponse(responseCode = "400", description = "Bad Request")
     @APIResponse(responseCode = "404", description = "Not Found")
-    public Response updateSubscribed(@PathParam("id") final UUID id, @Valid @NotNull final SubscriptionUpdate input) {
+    public Response setPostSubscribed(@PathParam("id") final UUID id, @Valid @NotNull final SubscriptionUpdate input) {
         final var user = User.getFromSecurityContext(context);
         final var post = Post.<Post>findById(id);
         Post.validateAccess(post, user, true, null);
@@ -151,7 +151,7 @@ public final class PostsEndpoint {
     @Transactional
     @APIResponse(responseCode = "200", description = "OK")
     @APIResponse(responseCode = "404", description = "Not Found")
-    public Response updateReported(@PathParam("id") final UUID id, @NotNull @Valid final ReportUpdate input) {
+    public Response setPostReported(@PathParam("id") final UUID id, @NotNull @Valid final ReportUpdate input) {
         final var user = User.getFromSecurityContext(context);
         final var post = Post.<Post>findById(id);
         Post.validateAccess(post, user, true, false);
@@ -173,7 +173,7 @@ public final class PostsEndpoint {
     @APIResponse(responseCode = "400", description = "Bad Request")
     @APIResponse(responseCode = "404", description = "Not Found")
     @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
-    public Response publish(@PathParam("id") final UUID id, @Valid @NotNull final PostPublication input) {
+    public Response publishPost(@PathParam("id") final UUID id, @Valid @NotNull final PostPublication input) {
         final var user = User.getFromSecurityContext(context);
         final var post = Post.<Post>findById(id);
         Post.validateAccess(post, user, false, true);
@@ -194,7 +194,7 @@ public final class PostsEndpoint {
     @APIResponse(responseCode = "400", description = "Bad Request")
     @APIResponse(responseCode = "404", description = "Not Found")
     @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
-    public Response vote(@PathParam("id") final UUID id, @Valid @NotNull final VoteCreation input) {
+    public Response votePost(@PathParam("id") final UUID id, @Valid @NotNull final VoteCreation input) {
         final var user = User.getFromSecurityContext(context);
         final var post = Post.<Post>findById(id, LockModeType.PESSIMISTIC_WRITE);
         Post.validateAccess(post, user, true, false);
@@ -220,7 +220,7 @@ public final class PostsEndpoint {
     @Authenticated
     @APIResponse(responseCode = "200", description = "OK")
     @APIResponse(responseCode = "400", description = "Bad Request")
-    public long count(@QueryParam("type") @NotNull final PostListingType type) {
+    public long countPosts(@QueryParam("type") @NotNull final PostListingType type) {
         final var user = User.getFromSecurityContext(context);
         return switch (type) {
             case SUBSCRIBED_TO -> Subscription.count("user = ?1 and post.deleted = false", user);
@@ -233,7 +233,7 @@ public final class PostsEndpoint {
     @Path("feed")
     @Authenticated
     @APIResponse(responseCode = "200", description = "OK")
-    public Iterable<Post> listFeed() {
+    public Iterable<Post> listPostsFeed() {
         final var user = User.getFromSecurityContext(context);
 
         try (final var stream = Post.<Post>find(

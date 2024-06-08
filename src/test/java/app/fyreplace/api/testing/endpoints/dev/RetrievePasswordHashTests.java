@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 public final class RetrievePasswordHashTests extends UserTestsBase {
     @Test
     @TestSecurity(user = "user_0")
-    public void retrieveToken() {
+    public void getPasswordHash() {
         given().get("passwords/hello/hash").then().statusCode(403);
     }
 }

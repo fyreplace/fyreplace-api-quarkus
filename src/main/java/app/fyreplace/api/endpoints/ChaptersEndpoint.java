@@ -103,7 +103,7 @@ public final class ChaptersEndpoint {
             content = @Content(mediaType = MediaType.TEXT_PLAIN, schema = @Schema(implementation = Integer.class)))
     @APIResponse(responseCode = "400", description = "Bad request")
     @APIResponse(responseCode = "404", description = "Not found")
-    public int updateChapterPosition(
+    public int setChapterPosition(
             @PathParam("id") final UUID id, @PathParam("position") final int position, @NotNull final Integer input) {
         final var user = User.getFromSecurityContext(context);
         final var post = Post.<Post>findById(id);
@@ -139,7 +139,7 @@ public final class ChaptersEndpoint {
             content = @Content(mediaType = MediaType.TEXT_PLAIN, schema = @Schema(implementation = String.class)))
     @APIResponse(responseCode = "400", description = "Bad request")
     @APIResponse(responseCode = "404", description = "Not found")
-    public String updateChapterText(
+    public String setChapterText(
             @PathParam("id") final UUID id,
             @PathParam("position") final int position,
             @NotNull @Length(max = 500) String input) {
@@ -168,7 +168,7 @@ public final class ChaptersEndpoint {
             content = @Content(mediaType = MediaType.TEXT_PLAIN, schema = @Schema(implementation = String.class)))
     @APIResponse(responseCode = "400", description = "Bad request")
     @APIResponse(responseCode = "404", description = "Not found")
-    public String updateChapterImage(
+    public String setChapterImage(
             @PathParam("id") final UUID id, @PathParam("position") final int position, final byte[] input)
             throws IOException {
         mimeTypeService.validate(input, KnownMimeTypes.IMAGE);

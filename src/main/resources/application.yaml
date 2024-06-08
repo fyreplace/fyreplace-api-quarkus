@@ -24,14 +24,20 @@ quarkus:
       enabled: true
   mailer:
     port: 587
-    start-tls: "REQUIRED"
+    start-tls: "required"
   s3:
     devservices:
       enabled: false
+  smallrye-openapi:
+    info-title: "${app.name} API"
 mp:
   jwt:
     verify:
       issuer: "${app.url}"
+  openapi:
+    extensions:
+      smallrye:
+        operationIdStrategy: "method"
 app:
   url: ""
   name: "Fyreplace"

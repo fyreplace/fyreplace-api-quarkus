@@ -10,10 +10,7 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.core.MediaType;
-import org.eclipse.microprofile.openapi.annotations.media.Content;
-import org.eclipse.microprofile.openapi.annotations.media.Schema;
-import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
+import org.eclipse.microprofile.openapi.annotations.Operation;
 
 @Path("dev")
 public final class DevEndpoint {
@@ -22,13 +19,9 @@ public final class DevEndpoint {
 
     @GET
     @Path("users/{username}/token")
-    @APIResponse(
-            responseCode = "200",
-            description = "OK",
-            content = @Content(mediaType = MediaType.TEXT_PLAIN, schema = @Schema(implementation = String.class)))
-    @APIResponse(responseCode = "404", description = "Not Found")
+    @Operation(hidden = true)
     @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
-    public String retrieveToken(@PathParam("username") final String username) {
+    public String getUserToken(@PathParam("username") final String username) {
         final var user = User.findByUsername(username);
 
         if (user == null) {
@@ -40,12 +33,8 @@ public final class DevEndpoint {
 
     @GET
     @Path("passwords/{password}/hash")
-    @APIResponse(
-            responseCode = "200",
-            description = "OK",
-            content = @Content(mediaType = MediaType.TEXT_PLAIN, schema = @Schema(implementation = String.class)))
-    @APIResponse(responseCode = "404", description = "Not Found")
-    public String retrievePasswordHash(@PathParam("password") final String password) {
+    @Operation(hidden = true)
+    public String getPasswordHash(@PathParam("password") final String password) {
         return BcryptUtil.bcryptHash(password);
     }
 }

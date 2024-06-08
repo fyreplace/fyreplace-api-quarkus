@@ -89,14 +89,14 @@ public final class CreateChapterTests extends PostTestsBase {
     }
 
     @Test
-    public void createChapterInPostUnauthenticated() {
+    public void createChapterInPostWhileUnauthenticated() {
         final var chapterCount = post.getChapters().size();
         given().pathParam("id", post.id).post().then().statusCode(401);
         assertEquals(chapterCount, Chapter.count("post", post));
     }
 
     @Test
-    public void createChapterInDraftUnauthenticated() {
+    public void createChapterInDraftWhileUnauthenticated() {
         final var chapterCount = draft.getChapters().size();
         given().pathParam("id", draft.id).post().then().statusCode(401);
         assertEquals(chapterCount, Chapter.count("post", draft));

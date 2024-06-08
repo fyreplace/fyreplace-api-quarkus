@@ -24,7 +24,7 @@ public final class UpdateMainTests extends UserTestsBase {
 
     @Test
     @TestSecurity(user = "user_0")
-    public void updateMain() {
+    public void setMain() {
         assertFalse(secondaryEmail.isMain());
         given().put(secondaryEmail.id + "/main").then().statusCode(200);
         secondaryEmail = Email.findById(secondaryEmail.id);
@@ -33,7 +33,7 @@ public final class UpdateMainTests extends UserTestsBase {
 
     @Test
     @TestSecurity(user = "user_0")
-    public void updateMainTwice() {
+    public void setMainTwice() {
         assertFalse(secondaryEmail.isMain());
         given().put(secondaryEmail.id + "/main").then().statusCode(200);
         given().put(secondaryEmail.id + "/main").then().statusCode(200);
@@ -43,7 +43,7 @@ public final class UpdateMainTests extends UserTestsBase {
 
     @Test
     @TestSecurity(user = "user_0")
-    public void updateMainWithUnverifiedEmail() {
+    public void setMainWithUnverifiedEmail() {
         QuarkusTransaction.requiringNew().run(() -> Email.update("verified = false where id = ?1", secondaryEmail.id));
         given().put(secondaryEmail.id + "/main").then().statusCode(403);
         secondaryEmail = Email.findById(secondaryEmail.id);
@@ -52,7 +52,7 @@ public final class UpdateMainTests extends UserTestsBase {
 
     @Test
     @TestSecurity(user = "user_0")
-    public void updateMainWithOtherEmail() {
+    public void setMainWithOtherEmail() {
         final var otherUser = requireNonNull(User.findByUsername("user_1"));
         given().put(otherUser.mainEmail.id + "/main").then().statusCode(404);
         secondaryEmail = Email.findById(secondaryEmail.id);
@@ -61,7 +61,7 @@ public final class UpdateMainTests extends UserTestsBase {
 
     @Test
     @TestSecurity(user = "user_0")
-    public void updateMainWithNonExistentEmail() {
+    public void setMainWithNonExistentEmail() {
         given().put(fakeId + "/main").then().statusCode(404);
         secondaryEmail = Email.findById(secondaryEmail.id);
         assertFalse(secondaryEmail.isMain());

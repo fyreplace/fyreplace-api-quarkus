@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 public final class RetrieveUserTokenTests extends UserTestsBase {
     @Test
     @TestSecurity(user = "user_0")
-    public void retrieveToken() {
+    public void getUserToken() {
         given().get("user_0/token").then().statusCode(403);
     }
 }

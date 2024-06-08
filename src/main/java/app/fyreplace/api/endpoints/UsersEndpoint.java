@@ -73,7 +73,7 @@ public final class UsersEndpoint {
     @APIResponse(responseCode = "403", description = "Not Allowed")
     @APIResponse(responseCode = "409", description = "Conflict")
     @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
-    public Response create(@Valid @NotNull final UserCreation input) {
+    public Response createUser(@Valid @NotNull final UserCreation input) {
         if (User.forbiddenUsernames.contains(input.username())) {
             throw new ForbiddenException("username_forbidden");
         } else if (User.count("username", input.username()) > 0) {
@@ -101,7 +101,7 @@ public final class UsersEndpoint {
     @Path("{id}")
     @APIResponse(responseCode = "200", description = "OK")
     @APIResponse(responseCode = "404", description = "Not Found")
-    public User retrieve(@PathParam("id") final UUID id) {
+    public User getUser(@PathParam("id") final UUID id) {
         final var user = User.<User>findById(id);
         validateUser(user);
         return user;
@@ -114,7 +114,7 @@ public final class UsersEndpoint {
     @APIResponse(responseCode = "200", description = "OK")
     @APIResponse(responseCode = "400", description = "Bad Request")
     @APIResponse(responseCode = "404", description = "Not Found")
-    public Response updateBlocked(@PathParam("id") final UUID id, @Valid @NotNull final BlockUpdate input) {
+    public Response setUserBlocked(@PathParam("id") final UUID id, @Valid @NotNull final BlockUpdate input) {
         final var source = User.getFromSecurityContext(context);
         final var target = User.<User>findById(id);
         validateUser(target);
@@ -136,7 +136,7 @@ public final class UsersEndpoint {
     @Transactional
     @APIResponse(responseCode = "200", description = "OK")
     @APIResponse(responseCode = "404", description = "Not Found")
-    public Response updateBanned(@PathParam("id") final UUID id) {
+    public Response setUserBanned(@PathParam("id") final UUID id) {
         final var user = User.<User>findById(id, LockModeType.PESSIMISTIC_WRITE);
         validateUser(user);
 
@@ -161,7 +161,7 @@ public final class UsersEndpoint {
     @Transactional
     @APIResponse(responseCode = "200", description = "OK")
     @APIResponse(responseCode = "404", description = "Not Found")
-    public Response updateReported(@PathParam("id") final UUID id, @NotNull @Valid final ReportUpdate input) {
+    public Response setUserReported(@PathParam("id") final UUID id, @NotNull @Valid final ReportUpdate input) {
         final var source = User.getFromSecurityContext(context);
         final var target = User.<User>findById(id);
         validateUser(target);
@@ -178,15 +178,15 @@ public final class UsersEndpoint {
     }
 
     @GET
-    @Path("me")
+    @Path("current")
     @Authenticated
     @APIResponse(responseCode = "200", description = "OK")
-    public User retrieveMe() {
-        return retrieve(User.getFromSecurityContext(context).id);
+    public User getCurrentUser() {
+        return getUser(User.getFromSecurityContext(context).id);
     }
 
     @PUT
-    @Path("me/bio")
+    @Path("current/bio")
     @Authenticated
     @Transactional
     @Consumes(MediaType.TEXT_PLAIN)
@@ -195,7 +195,7 @@ public final class UsersEndpoint {
             description = "OK",
             content = @Content(mediaType = MediaType.TEXT_PLAIN, schema = @Schema(implementation = String.class)))
     @APIResponse(responseCode = "400", description = "Bad Request")
-    public String updateMeBio(@NotNull @Length(max = 3000) final String input) {
+    public String setCurrentUserBio(@NotNull @Length(max = 3000) final String input) {
         final var user = User.getFromSecurityContext(context, LockModeType.PESSIMISTIC_READ);
         user.bio = input;
         user.persist();
@@ -203,7 +203,7 @@ public final class UsersEndpoint {
     }
 
     @PUT
-    @Path("me/avatar")
+    @Path("current/avatar")
     @Authenticated
     @Transactional
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
@@ -213,7 +213,7 @@ public final class UsersEndpoint {
             content = @Content(mediaType = MediaType.TEXT_PLAIN, schema = @Schema(implementation = String.class)))
     @APIResponse(responseCode = "413", description = "Payload Too Large")
     @APIResponse(responseCode = "415", description = "Unsupported Media Type")
-    public String updateMeAvatar(final byte[] input) throws IOException {
+    public String setCurrentUserAvatar(final byte[] input) throws IOException {
         mimeTypeService.validate(input, KnownMimeTypes.IMAGE);
         final var user = User.getFromSecurityContext(context, LockModeType.PESSIMISTIC_WRITE);
 
@@ -228,11 +228,11 @@ public final class UsersEndpoint {
     }
 
     @DELETE
-    @Path("me/avatar")
+    @Path("current/avatar")
     @Authenticated
     @Transactional
     @APIResponse(responseCode = "204", description = "No Content")
-    public void deleteMeAvatar() {
+    public void deleteCurrentUserAvatar() {
         final var user = User.getFromSecurityContext(context, LockModeType.PESSIMISTIC_WRITE);
 
         if (user.avatar != null) {
@@ -243,12 +243,12 @@ public final class UsersEndpoint {
     }
 
     @DELETE
-    @Path("me")
+    @Path("current")
     @Authenticated
     @Transactional
     @APIResponse(responseCode = "204", description = "No Content")
     @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
-    public Response deleteMe() {
+    public Response deleteCurrentUser() {
         User.getFromSecurityContext(context).softDelete();
         return Response.noContent().build();
     }
@@ -257,7 +257,7 @@ public final class UsersEndpoint {
     @Path("blocked")
     @Authenticated
     @APIResponse(responseCode = "200", description = "OK")
-    public Iterable<User.Profile> listBlocked(@QueryParam("page") @PositiveOrZero final int page) {
+    public Iterable<User.Profile> listBlockedUsers(@QueryParam("page") @PositiveOrZero final int page) {
         final var user = User.getFromSecurityContext(context);
         final var blocks = Block.<Block>find("source", Sort.by("id"), user);
 
@@ -270,7 +270,7 @@ public final class UsersEndpoint {
     @Path("blocked/count")
     @Authenticated
     @APIResponse(responseCode = "200", description = "OK")
-    public long countBlocked() {
+    public long countBlockedUsers() {
         return Block.count("source", User.getFromSecurityContext(context));
     }
 

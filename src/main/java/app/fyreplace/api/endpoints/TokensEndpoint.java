@@ -49,7 +49,7 @@ public final class TokensEndpoint {
     @APIResponse(responseCode = "400", description = "Bad Request")
     @APIResponse(responseCode = "404", description = "Not Found")
     @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
-    public Response create(@Valid @NotNull final TokenCreation input) {
+    public Response createToken(@Valid @NotNull final TokenCreation input) {
         final var email = getEmail(input.identifier());
         final var randomCode = RandomCode.<RandomCode>find("email = ?1 and code = ?2", email, input.secret())
                 .firstResult();
@@ -78,7 +78,7 @@ public final class TokensEndpoint {
             responseCode = "200",
             description = "OK",
             content = @Content(mediaType = MediaType.TEXT_PLAIN, schema = @Schema(implementation = String.class)))
-    public String retrieveNew() {
+    public String getNewToken() {
         return jwtService.makeJwt(User.getFromSecurityContext(context));
     }
 
@@ -89,7 +89,7 @@ public final class TokensEndpoint {
     @APIResponse(responseCode = "400", description = "Bad Request")
     @APIResponse(responseCode = "404", description = "Not Found")
     @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
-    public Response createNew(@NotNull @Valid final NewTokenCreation input) {
+    public Response createNewToken(@NotNull @Valid final NewTokenCreation input) {
         final var email = getEmail(input.identifier());
         userConnectionEmail.sendTo(email);
         return Response.ok().build();
