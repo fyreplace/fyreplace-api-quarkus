@@ -19,6 +19,6 @@ public class SubscriptionTestsBase extends PostTestsBase {
             stream.forEach(post -> dataSeeder.createComment(otherUser, post, "Comment", false));
         }
 
-        QuarkusTransaction.requiringNew().run(() -> dataSeeder.createComment(otherUser, post, "Comment", false));
+        dataSeeder.createComment(otherUser, post, "Comment", false);
     }
 }

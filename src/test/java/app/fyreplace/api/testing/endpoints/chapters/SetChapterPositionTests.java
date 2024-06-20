@@ -112,7 +112,7 @@ public final class SetChapterPositionTests extends PostTestsBase {
     @ParameterizedTest
     @ValueSource(ints = {0, 1, 2})
     @Transactional
-    public void setChapterPositionInPostUnauthenticated(final int to) {
+    public void setChapterPositionInPostWhileUnauthenticated(final int to) {
         final var from = 1;
         final var chapter = post.getChapters().get(from);
         final var oldPosition = chapter.position;
@@ -124,7 +124,7 @@ public final class SetChapterPositionTests extends PostTestsBase {
     @ParameterizedTest
     @ValueSource(ints = {0, 1, 2})
     @Transactional
-    public void setChapterPositionInDraftUnauthenticated(final int to) {
+    public void setChapterPositionInDraftWhileUnauthenticated(final int to) {
         final var from = 1;
         final var chapter = draft.getChapters().get(from);
         final var oldPosition = chapter.position;

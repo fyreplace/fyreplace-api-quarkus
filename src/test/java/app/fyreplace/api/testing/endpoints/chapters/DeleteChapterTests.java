@@ -80,7 +80,7 @@ public final class DeleteChapterTests extends PostTestsBase {
 
     @ParameterizedTest
     @ValueSource(ints = {0, 1, 2})
-    public void deleteChapterInPostUnauthenticated(final int position) {
+    public void deleteChapterInPostWhileUnauthenticated(final int position) {
         final var chapterCount = Chapter.count("post", post);
         final var chapterId = post.getChapters().get(position).id;
         given().pathParam("id", post.id).delete(String.valueOf(position)).then().statusCode(401);
@@ -90,7 +90,7 @@ public final class DeleteChapterTests extends PostTestsBase {
 
     @ParameterizedTest
     @ValueSource(ints = {0, 1, 2})
-    public void deleteChapterInDraftUnauthenticated(final int position) {
+    public void deleteChapterInDraftWhileUnauthenticated(final int position) {
         final var chapterCount = Chapter.count("post", draft);
         final var chapterId = draft.getChapters().get(position).id;
         given().pathParam("id", draft.id)

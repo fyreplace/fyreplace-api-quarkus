@@ -82,9 +82,7 @@ public final class ListPostsFeedTests extends PostTestsBase {
         final var user = requireNonNull(User.findByUsername("user_0"));
         final var otherUser = requireNonNull(User.findByUsername("user_1"));
         QuarkusTransaction.requiringNew().run(() -> user.block(otherUser));
-        QuarkusTransaction.requiringNew()
-                .run(() -> range(0, 5).forEach(i -> dataSeeder.createPost(otherUser, "Post " + i, true, false)));
-
+        range(0, 5).forEach(i -> dataSeeder.createPost(otherUser, "Post " + i, true, false));
         given().get("feed").then().statusCode(200).body("size()", equalTo(0));
     }
 
@@ -94,9 +92,7 @@ public final class ListPostsFeedTests extends PostTestsBase {
         final var user = requireNonNull(User.findByUsername("user_0"));
         final var otherUser = requireNonNull(User.findByUsername("user_1"));
         QuarkusTransaction.requiringNew().run(() -> user.block(otherUser));
-        QuarkusTransaction.requiringNew()
-                .run(() -> range(0, 5).forEach(i -> dataSeeder.createPost(otherUser, "Post " + i, true, false)));
-
+        range(0, 5).forEach(i -> dataSeeder.createPost(otherUser, "Post " + i, true, false));
         given().get("feed").then().statusCode(200).body("size()", equalTo(0));
     }
 
