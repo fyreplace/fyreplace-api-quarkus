@@ -2,7 +2,6 @@ package app.fyreplace.api.testing;
 
 import app.fyreplace.api.data.Post;
 import app.fyreplace.api.data.User;
-import io.quarkus.narayana.jta.QuarkusTransaction;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 
