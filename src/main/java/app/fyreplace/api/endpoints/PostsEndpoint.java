@@ -33,6 +33,8 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 import jakarta.ws.rs.core.SecurityContext;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
@@ -231,27 +233,27 @@ public final class PostsEndpoint {
 
     @GET
     @Path("feed")
-    @Authenticated
     @APIResponse(responseCode = "200", description = "OK")
     public Iterable<Post> listPostsFeed() {
-        final var user = User.getFromSecurityContext(context);
+        final var user = User.getFromSecurityContext(context, null, false);
+        final var conditions = new ArrayList<>(List.of("dateCreated > ?1", "published = true", "life > 0"));
+        final var sorting = Sort.by("life", "dateCreated", "id");
+        final var deadline = Instant.now().minus(Post.shelfLife);
 
-        try (final var stream = Post.<Post>find(
-                """
-                author != ?1
-                and dateCreated > ?2
-                and published = true
-                and life > 0
-                and id not in (select post.id from Vote where user = ?1)
-                and author.id not in (select target.id from Block where source = ?1)
-                and author.id not in (select source.id from Block where target = ?1)
-                """,
-                Sort.by("life", "dateCreated", "id"),
-                user,
-                Instant.now().minus(Post.shelfLife))
-                .filter("existing")
-                .range(0, 2)
-                .stream()) {
+        if (user != null) {
+            conditions.addAll(List.of(
+                    "author != ?2",
+                    "id not in (select post.id from Vote where user = ?2)",
+                    "author.id not in (select target.id from Block where source = ?2)",
+                    "author.id not in (select source.id from Block where target = ?2)"));
+        }
+
+        final var conditionsString = String.join(" and ", conditions);
+        final var posts = user != null
+                ? Post.find(conditionsString, sorting, deadline, user)
+                : Post.find(conditionsString, sorting, deadline);
+
+        try (final var stream = posts.<Post>filter("existing").range(0, 2).stream()) {
             return stream.peek(p -> p.setCurrentUser(user)).toList();
         }
     }

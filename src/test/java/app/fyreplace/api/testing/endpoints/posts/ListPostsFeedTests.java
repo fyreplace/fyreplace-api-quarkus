@@ -96,6 +96,14 @@ public final class ListPostsFeedTests extends PostTestsBase {
         given().get("feed").then().statusCode(200).body("size()", equalTo(0));
     }
 
+    @Test
+    public void listPostsFeedWhileUnauthenticated() {
+        final var user = requireNonNull(User.findByUsername("user_1"));
+        range(0, 5).forEach(i -> dataSeeder.createPost(user, "Post " + i, true, false));
+        final var response = given().get("feed").then().statusCode(200).body("size()", equalTo(3));
+        range(0, 3).forEach(i -> response.body("[" + i + "].author.id", equalTo(user.id.toString())));
+    }
+
     @BeforeEach
     @Transactional
     @Override
