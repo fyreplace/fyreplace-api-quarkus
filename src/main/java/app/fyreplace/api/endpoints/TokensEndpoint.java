@@ -74,10 +74,7 @@ public final class TokensEndpoint {
     @GET
     @Path("new")
     @Authenticated
-    @APIResponse(
-            responseCode = "200",
-            description = "OK",
-            content = @Content(mediaType = MediaType.TEXT_PLAIN, schema = @Schema(implementation = String.class)))
+    @APIResponse(responseCode = "200", description = "OK")
     public String getNewToken() {
         return jwtService.makeJwt(User.getFromSecurityContext(context));
     }

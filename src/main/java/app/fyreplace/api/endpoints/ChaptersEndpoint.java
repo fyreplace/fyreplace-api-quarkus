@@ -96,11 +96,12 @@ public final class ChaptersEndpoint {
     @Path("{position}/position")
     @Authenticated
     @Transactional
-    @Consumes(MediaType.TEXT_PLAIN)
+    @Consumes(MediaType.APPLICATION_JSON)
     @APIResponse(
             responseCode = "200",
             description = "OK",
-            content = @Content(mediaType = MediaType.TEXT_PLAIN, schema = @Schema(implementation = Integer.class)))
+            content =
+                    @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = Integer.class)))
     @APIResponse(responseCode = "400", description = "Bad request")
     @APIResponse(responseCode = "404", description = "Not found")
     public int setChapterPosition(
@@ -132,11 +133,7 @@ public final class ChaptersEndpoint {
     @Path("{position}/text")
     @Authenticated
     @Transactional
-    @Consumes(MediaType.TEXT_PLAIN)
-    @APIResponse(
-            responseCode = "200",
-            description = "OK",
-            content = @Content(mediaType = MediaType.TEXT_PLAIN, schema = @Schema(implementation = String.class)))
+    @APIResponse(responseCode = "200", description = "OK")
     @APIResponse(responseCode = "400", description = "Bad request")
     @APIResponse(responseCode = "404", description = "Not found")
     public String setChapterText(
@@ -161,11 +158,7 @@ public final class ChaptersEndpoint {
     @Path("{position}/image")
     @Authenticated
     @Transactional
-    @Consumes(MediaType.APPLICATION_OCTET_STREAM)
-    @APIResponse(
-            responseCode = "200",
-            description = "OK",
-            content = @Content(mediaType = MediaType.TEXT_PLAIN, schema = @Schema(implementation = String.class)))
+    @APIResponse(responseCode = "200", description = "OK")
     @APIResponse(responseCode = "400", description = "Bad request")
     @APIResponse(responseCode = "404", description = "Not found")
     public String setChapterImage(

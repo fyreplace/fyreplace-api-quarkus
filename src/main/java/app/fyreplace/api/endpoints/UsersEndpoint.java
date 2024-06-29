@@ -25,7 +25,6 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
-import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.NotFoundException;
@@ -189,11 +188,7 @@ public final class UsersEndpoint {
     @Path("current/bio")
     @Authenticated
     @Transactional
-    @Consumes(MediaType.TEXT_PLAIN)
-    @APIResponse(
-            responseCode = "200",
-            description = "OK",
-            content = @Content(mediaType = MediaType.TEXT_PLAIN, schema = @Schema(implementation = String.class)))
+    @APIResponse(responseCode = "200", description = "OK")
     @APIResponse(responseCode = "400", description = "Bad Request")
     public String setCurrentUserBio(@NotNull @Length(max = 3000) final String input) {
         final var user = User.getFromSecurityContext(context, LockModeType.PESSIMISTIC_READ);
@@ -206,11 +201,7 @@ public final class UsersEndpoint {
     @Path("current/avatar")
     @Authenticated
     @Transactional
-    @Consumes(MediaType.APPLICATION_OCTET_STREAM)
-    @APIResponse(
-            responseCode = "200",
-            description = "OK",
-            content = @Content(mediaType = MediaType.TEXT_PLAIN, schema = @Schema(implementation = String.class)))
+    @APIResponse(responseCode = "200", description = "OK")
     @APIResponse(responseCode = "413", description = "Payload Too Large")
     @APIResponse(responseCode = "415", description = "Unsupported Media Type")
     public String setCurrentUserAvatar(final byte[] input) throws IOException {
