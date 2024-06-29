@@ -4,6 +4,7 @@ import static java.util.Objects.requireNonNullElse;
 
 import app.fyreplace.api.cache.DuplicateRequestKeyGenerator;
 import app.fyreplace.api.data.Chapter;
+import app.fyreplace.api.data.ChapterPositionUpdate;
 import app.fyreplace.api.data.Post;
 import app.fyreplace.api.data.StoredFile;
 import app.fyreplace.api.data.User;
@@ -16,7 +17,6 @@ import io.quarkus.security.Authenticated;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
-import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.POST;
@@ -96,34 +96,31 @@ public final class ChaptersEndpoint {
     @Path("{position}/position")
     @Authenticated
     @Transactional
-    @Consumes(MediaType.APPLICATION_JSON)
-    @APIResponse(
-            responseCode = "200",
-            description = "OK",
-            content =
-                    @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = Integer.class)))
+    @APIResponse(responseCode = "200", description = "OK")
     @APIResponse(responseCode = "400", description = "Bad request")
     @APIResponse(responseCode = "404", description = "Not found")
-    public int setChapterPosition(
-            @PathParam("id") final UUID id, @PathParam("position") final int position, @NotNull final Integer input) {
+    public Response setChapterPosition(
+            @PathParam("id") final UUID id,
+            @PathParam("position") final int position,
+            @NotNull final ChapterPositionUpdate input) {
         final var user = User.getFromSecurityContext(context);
         final var post = Post.<Post>findById(id);
         Post.validateAccess(post, user, false, true);
 
-        if (position == input) {
-            return input;
+        if (position == input.position()) {
+            return Response.ok().build();
         }
 
         try {
             final var chapters = post.getChapters();
             final var chapter = chapters.get(position);
-            final var before = input > position ? input : input - 1;
-            final var after = input > position ? input + 1 : input;
+            final var before = input.position() > position ? input.position() : input.position() - 1;
+            final var after = input.position() > position ? input.position() + 1 : input.position();
             final var beforePosition = before >= 0 ? chapters.get(before).position : null;
             final var afterPosition = after < chapters.size() ? chapters.get(after).position : null;
             chapter.position = Chapter.positionBetween(beforePosition, afterPosition);
             chapter.persist();
-            return input;
+            return Response.ok().build();
         } catch (final IndexOutOfBoundsException e) {
             throw new NotFoundException();
         }
