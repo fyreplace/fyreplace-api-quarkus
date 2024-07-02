@@ -71,7 +71,7 @@ public class User extends SoftDeletableEntityBase implements Reportable {
             "void",
             "voids"));
 
-    @Column(length = 100, unique = true)
+    @Column(length = 50, unique = true)
     @Schema(required = true)
     public String username;
 

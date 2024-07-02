@@ -86,7 +86,7 @@ databaseChangeLog:
             type: "UUID"
         - column:
             name: "username"
-            type: "VARCHAR(100)"
+            type: "VARCHAR(50)"
         - column:
             constraints:
               nullable: false
