@@ -1,7 +1,7 @@
-{res.getString("codeDescription")}
-{code}
+{d.res.getString("codeDescription")}
+{d.code.code}
 
-{res.getString("linkDescription")}
-{link}
+{d.res.getString("linkDescription")}
+{d.link}
 
-{res.getString("linkEndNotice")}
+{d.res.getString("linkEndNotice")}

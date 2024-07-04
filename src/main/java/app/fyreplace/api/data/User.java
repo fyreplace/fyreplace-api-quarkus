@@ -15,6 +15,7 @@ import jakarta.persistence.Table;
 import jakarta.ws.rs.NotAuthorizedException;
 import jakarta.ws.rs.core.SecurityContext;
 import java.awt.Color;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -70,6 +71,8 @@ public class User extends SoftDeletableEntityBase implements Reportable {
             "users",
             "void",
             "voids"));
+
+    public static Duration lifetime = Duration.ofDays(1);
 
     @Column(length = 50, unique = true)
     @Schema(required = true)

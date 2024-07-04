@@ -1,9 +1,9 @@
-{res.getString("title").replace("$1", appName)}
+{d.res.getString("title").replace("$1", d.appName)}
 
-{res.getString("codeDescription")}
-{code}
+{d.res.getString("codeDescription")}
+{d.code.code}
 
-{res.getString("linkDescription")}
-{link}
+{d.res.getString("linkDescription")}
+{d.link}
 
-{res.getString("linkEndNotice")}
+{d.res.getString("linkEndNotice")}

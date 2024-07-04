@@ -44,6 +44,8 @@ app:
   use-example-data: false
   front:
     url: ""
+  website:
+    url: ""
   paging:
     size: 12
   storage:

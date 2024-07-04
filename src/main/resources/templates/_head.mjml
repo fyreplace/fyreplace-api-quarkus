@@ -1,0 +1,33 @@
+<mj-head>
+    <mj-attributes>
+        <mj-class name="text" font-family="sans-serif" font-size="16px" align="center"/>
+        <mj-button border-radius="8px" background-color="#FF8243" color="white"/>
+    </mj-attributes>
+    <mj-raw>
+        <script type="application/ld+json">
+            [
+                {
+                    "@context": "https://schema.org",
+                    "@type": "Organization",
+                    "url": "{d.websiteUrl}",
+                    "logo": "{d.appUrl}/images/logo-maskable.png",
+                    "name": "{d.appName}"
+                },
+                {
+                    "@context": "http://schema.org",
+                    "@type": "EmailMessage",
+                    "expires": "{d.expiration}",
+                    "potentialAction": {
+                        "@type": "ConfirmAction",
+                        "name": "{d.res.getString('button')}",
+                        "target": "{d.link}",
+                        "handler": {
+                            "@type": "HttpActionHandler",
+                            "url": "{d.link}"
+                        }
+                    }
+                }
+            ]
+        </script>
+    </mj-raw>
+</mj-head>

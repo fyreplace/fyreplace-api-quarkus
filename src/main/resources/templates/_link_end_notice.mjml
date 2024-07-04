@@ -1,1 +1,1 @@
-<mj-text mj-class="text" padding-bottom="40px">{res.getString("linkEndNotice")}</mj-text>
+<mj-text mj-class="text" padding-bottom="40px">{d.res.getString("linkEndNotice")}</mj-text>

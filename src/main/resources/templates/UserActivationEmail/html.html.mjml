@@ -1,17 +1,17 @@
 <mjml>
-    <mj-include path="../_attributes.mjml"/>
+    <mj-include path="../_head.mjml"/>
     <mj-body>
         <mj-section padding="0">
             <mj-column padding="0">
                 <mj-include path="../_logo.mjml"/>
-                <mj-text mj-class="text" font-size="24px" padding-bottom="20px">{res.getString("title").replace("$1",
-                    appName)}
+                <mj-text mj-class="text" font-size="24px" padding-bottom="20px">{d.res.getString("title").replace("$1",
+                    d.appName)}
                 </mj-text>
-                <mj-text mj-class="text" padding-bottom="20px">{res.getString("codeDescription")}</mj-text>
-                <mj-text mj-class="text" font-size="36px" font-weight="bold" padding-bottom="20px">{code}</mj-text>
-                <mj-text mj-class="text" padding-bottom="20px">{res.getString("linkDescription")}</mj-text>
-                <mj-button mj-class="text" href="{link}" rel="noopener noreferrer" padding-bottom="20px">
-                    {res.getString("button")}
+                <mj-text mj-class="text" padding-bottom="20px">{d.res.getString("codeDescription")}</mj-text>
+                <mj-text mj-class="text" font-size="36px" font-weight="bold" padding-bottom="20px">{d.code.code}</mj-text>
+                <mj-text mj-class="text" padding-bottom="20px">{d.res.getString("linkDescription")}</mj-text>
+                <mj-button mj-class="text" href="{d.link}" rel="noopener noreferrer" padding-bottom="20px">
+                    {d.res.getString("button")}
                 </mj-button>
                 <mj-include path="../_link_end_notice.mjml"/>
             </mj-column>

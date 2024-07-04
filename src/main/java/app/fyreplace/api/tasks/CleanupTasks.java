@@ -7,7 +7,6 @@ import app.fyreplace.api.data.User;
 import io.quarkus.scheduler.Scheduled;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
-import java.time.Duration;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -35,17 +34,13 @@ public final class CleanupTasks {
     @Scheduled(cron = "0 5 * * * ?")
     @Transactional
     public void removeOldInactiveUsers() {
-        User.delete("active = false and dateCreated < ?1", oneDayAgo());
+        User.delete("active = false and dateCreated < ?1", Instant.now().minus(User.lifetime));
     }
 
     @Scheduled(cron = "0 10 * * * ?")
     @Transactional
     public void removeOldRandomCodes() {
-        RandomCode.delete("dateCreated < ?1", oneDayAgo());
-    }
-
-    private Instant oneDayAgo() {
-        return Instant.now().minus(Duration.ofDays(1));
+        RandomCode.delete("dateCreated < ?1", Instant.now().minus(RandomCode.lifetime));
     }
 
     private String scrubConditions(final String... fields) {
