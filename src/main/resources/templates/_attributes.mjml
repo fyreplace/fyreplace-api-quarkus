@@ -1,6 +1,19 @@
 <mj-head>
-  <mj-attributes>
-    <mj-class name="text" font-family="sans-serif" font-size="16px" align="center" />
-    <mj-button border-radius="8px" background-color="#FF8243" color="white" />
-  </mj-attributes>
+    <mj-attributes>
+        <mj-class name="text" font-family="sans-serif" font-size="16px" align="center"/>
+        <mj-button border-radius="8px" background-color="#FF8243" color="white"/>
+    </mj-attributes>
+    <mj-raw>
+        <script type="application/ld+json">
+            {
+                "@context": "http://schema.org",
+                "@type": "EmailMessage",
+                "potentialAction": {
+                    "@type": "ConfirmAction",
+                    "name": "{res.getString('button')}",
+                    "target": "{link}"
+                }
+            }
+        </script>
+    </mj-raw>
 </mj-head>
