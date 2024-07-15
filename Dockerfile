@@ -33,4 +33,4 @@ COPY --from=build-code --chown=nobody /app/build/quarkus-app/quarkus/ /deploymen
 
 EXPOSE 8080
 USER nobody
-CMD java -jar /deployments/quarkus-run.jar
+CMD ["java", "-jar", "/deployments/quarkus-run.jar"]
