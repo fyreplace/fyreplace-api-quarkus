@@ -84,5 +84,3 @@ spotless {
         target "**/src/*/resources/**/*.yaml"
     }
 }
-
-compileJava.dependsOn "spotlessApply"

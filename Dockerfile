@@ -7,30 +7,24 @@ COPY . ./
 RUN make emails
 
 
-FROM eclipse-temurin:21-jdk AS build-code
+FROM ghcr.io/graalvm/native-image-community:21-muslib AS build-code
 
 ARG APP_STORAGE_TYPE
 ENV APP_STORAGE_TYPE=$APP_STORAGE_TYPE
 
-RUN apt-get update && apt-get install -y git
+RUN microdnf install -y git findutils
 WORKDIR /app
 
 COPY --from=build-emails /app/ /app
 RUN git fetch --unshallow || echo "Nothing to do"
-RUN ./gradlew --no-daemon --exclude-task test build
+RUN ./gradlew --no-daemon --exclude-task test build -Dquarkus.package.jar.enabled=false -Dquarkus.native.enabled=true -Dquarkus.native.additional-build-args=--static,--libc=musl
 
 
-FROM eclipse-temurin:21-jre AS run
+FROM scratch AS run
 
 ENV LANGUAGE="en_US:en"
-ENV JAVA_OPTS="$JAVA_OPTS -Dquarkus.http.host=0.0.0.0"
-ENV JAVA_OPTS="$JAVA_OPTS -Djava.util.logging.manager=org.jboss.logmanager.LogManager"
 
-COPY --from=build-code --chown=nobody /app/build/quarkus-app/lib/ /deployments/lib
-COPY --from=build-code --chown=nobody /app/build/quarkus-app/*.jar /deployments/
-COPY --from=build-code --chown=nobody /app/build/quarkus-app/app/ /deployments/app
-COPY --from=build-code --chown=nobody /app/build/quarkus-app/quarkus/ /deployments/quarkus
+COPY --from=build-code /app/build/*-runner /application
 
 EXPOSE 8080
-USER nobody
-CMD ["java", "-jar", "/deployments/quarkus-run.jar"]
+CMD ["/application", "-Dquarkus.http.host=0.0.0.0", "-Djava.util.logging.manager=org.jboss.logmanager.LogManager"]
