@@ -1,0 +1,806 @@
+---
+databaseChangeLog:
+- changeSet:
+    id: "stored_files-0001"
+    author: "generated"
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: "stored_files_pkey"
+            name: "id"
+            type: "UUID"
+        - column:
+            constraints:
+              nullable: false
+            name: "path"
+            type: "VARCHAR(255)"
+        tableName: "stored_files"
+- changeSet:
+    id: "stored_files-0002"
+    author: "generated"
+    changes:
+    - addUniqueConstraint:
+        columnNames: "path"
+        constraintName: "stored_files_path_key"
+        tableName: "stored_files"
+- changeSet:
+    id: "users-0001"
+    author: "generated"
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+            name: "active"
+            type: "BOOLEAN"
+        - column:
+            constraints:
+              nullable: false
+            name: "ban_count"
+            type: "SMALLINT"
+        - column:
+            constraints:
+              nullable: false
+            name: "banned"
+            type: "BOOLEAN"
+        - column:
+            constraints:
+              nullable: false
+            name: "deleted"
+            type: "BOOLEAN"
+        - column:
+            constraints:
+              nullable: false
+            name: "rank"
+            type: "SMALLINT"
+        - column:
+            constraints:
+              nullable: false
+            name: "scrubbed"
+            type: "BOOLEAN"
+        - column:
+            name: "date_ban_end"
+            type: "TIMESTAMP WITH TIME ZONE"
+        - column:
+            constraints:
+              nullable: false
+            name: "date_created"
+            type: "TIMESTAMP WITH TIME ZONE"
+        - column:
+            name: "avatar_id"
+            type: "UUID"
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: "users_pkey"
+            name: "id"
+            type: "UUID"
+        - column:
+            name: "main_email_id"
+            type: "UUID"
+        - column:
+            name: "username"
+            type: "VARCHAR(50)"
+        - column:
+            constraints:
+              nullable: false
+            name: "bio"
+            type: "VARCHAR(3000)"
+        tableName: "users"
+- changeSet:
+    id: "users-0002"
+    author: "generated"
+    changes:
+    - addUniqueConstraint:
+        columnNames: "avatar_id"
+        constraintName: "users_avatar_id_key"
+        tableName: "users"
+- changeSet:
+    id: "users-0003"
+    author: "generated"
+    changes:
+    - addUniqueConstraint:
+        columnNames: "username"
+        constraintName: "users_username_key"
+        tableName: "users"
+- changeSet:
+    id: "users-0004"
+    author: "generated"
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: "avatar_id"
+        baseTableName: "users"
+        constraintName: "fk3yu3huc4hacx6fgh0v6qim7e4"
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: "SET NULL"
+        onUpdate: "NO ACTION"
+        referencedColumnNames: "id"
+        referencedTableName: "stored_files"
+        validate: true
+- changeSet:
+    id: "passwords-0001"
+    author: "generated"
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: "passwords_pkey"
+            name: "id"
+            type: "UUID"
+        - column:
+            constraints:
+              nullable: false
+            name: "user_id"
+            type: "UUID"
+        - column:
+            constraints:
+              nullable: false
+            name: "password"
+            type: "VARCHAR(255)"
+        tableName: "passwords"
+- changeSet:
+    id: "passwords-0002"
+    author: "generated"
+    changes:
+    - addUniqueConstraint:
+        columnNames: "user_id"
+        constraintName: "passwords_user_id_key"
+        tableName: "passwords"
+- changeSet:
+    id: "passwords-0003"
+    author: "generated"
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: "user_id"
+        baseTableName: "passwords"
+        constraintName: "fkqiupw3oqiukdfyc45xvoky044"
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: "CASCADE"
+        onUpdate: "NO ACTION"
+        referencedColumnNames: "id"
+        referencedTableName: "users"
+        validate: true
+- changeSet:
+    id: "emails-0001"
+    author: "generated"
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+            name: "verified"
+            type: "BOOLEAN"
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: "emails_pkey"
+            name: "id"
+            type: "UUID"
+        - column:
+            constraints:
+              nullable: false
+            name: "user_id"
+            type: "UUID"
+        - column:
+            constraints:
+              nullable: false
+            name: "email"
+            type: "VARCHAR(254)"
+        tableName: "emails"
+- changeSet:
+    id: "users-0005"
+    author: "generated"
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: "main_email_id"
+        baseTableName: "users"
+        constraintName: "fkh69m5hbvj9ehf1bgouu5ovhq8"
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: "SET NULL"
+        onUpdate: "NO ACTION"
+        referencedColumnNames: "id"
+        referencedTableName: "emails"
+        validate: true
+- changeSet:
+    id: "emails-0002"
+    author: "generated"
+    changes:
+    - addUniqueConstraint:
+        columnNames: "email"
+        constraintName: "emails_email_key"
+        tableName: "emails"
+- changeSet:
+    id: "emails-003"
+    author: "generated"
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: "user_id"
+        baseTableName: "emails"
+        constraintName: "fk41wb6kvdemvj1602iltrfr1uo"
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: "CASCADE"
+        onUpdate: "NO ACTION"
+        referencedColumnNames: "id"
+        referencedTableName: "users"
+        validate: true
+- changeSet:
+    id: "random_codes-0001"
+    author: "generated"
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+            name: "date_created"
+            type: "TIMESTAMP WITH TIME ZONE"
+        - column:
+            constraints:
+              nullable: false
+            name: "email_id"
+            type: "UUID"
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: "random_codes_pkey"
+            name: "id"
+            type: "UUID"
+        - column:
+            constraints:
+              nullable: false
+            name: "code"
+            type: "VARCHAR(255)"
+        tableName: "random_codes"
+- changeSet:
+    id: "random_codes-0002"
+    author: "generated"
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: "email_id"
+        baseTableName: "random_codes"
+        constraintName: "fk7in6mdb1ax6jdd2v8p4cd4o3g"
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: "CASCADE"
+        onUpdate: "NO ACTION"
+        referencedColumnNames: "id"
+        referencedTableName: "emails"
+        validate: true
+- changeSet:
+    id: "blocks-0001"
+    author: "generated"
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: "blocks_pkey"
+            name: "id"
+            type: "UUID"
+        - column:
+            constraints:
+              nullable: false
+            name: "source_id"
+            type: "UUID"
+        - column:
+            constraints:
+              nullable: false
+            name: "target_id"
+            type: "UUID"
+        tableName: "blocks"
+- changeSet:
+    id: "blocks-0002"
+    author: "generated"
+    changes:
+    - addUniqueConstraint:
+        columnNames: "source_id, target_id"
+        constraintName: "ukou6l1m15jrlhofu7hn5ueytw"
+        tableName: "blocks"
+- changeSet:
+    id: "blocks-0003"
+    author: "generated"
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: "source_id"
+        baseTableName: "blocks"
+        constraintName: "fk9wmpvu0ydl4ay1qynekibi9q4"
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: "CASCADE"
+        onUpdate: "NO ACTION"
+        referencedColumnNames: "id"
+        referencedTableName: "users"
+        validate: true
+- changeSet:
+    id: "blocks-0004"
+    author: "generated"
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: "target_id"
+        baseTableName: "blocks"
+        constraintName: "fk4xwbx7o70g208mb0rpskdwnct"
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: "CASCADE"
+        onUpdate: "NO ACTION"
+        referencedColumnNames: "id"
+        referencedTableName: "users"
+        validate: true
+- changeSet:
+    id: "reports-0001"
+    author: "generated"
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+            name: "date_created"
+            type: "TIMESTAMP WITH TIME ZONE"
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: "reports_pkey"
+            name: "id"
+            type: "UUID"
+        - column:
+            constraints:
+              nullable: false
+            name: "source_id"
+            type: "UUID"
+        - column:
+            constraints:
+              nullable: false
+            name: "target_id"
+            type: "UUID"
+        - column:
+            constraints:
+              nullable: false
+            name: "target_model"
+            type: "VARCHAR(255)"
+        tableName: "reports"
+- changeSet:
+    id: "reports-0002"
+    author: "generated"
+    changes:
+    - addUniqueConstraint:
+        columnNames: "source_id, target_model, target_id"
+        constraintName: "uka65rlbm4g84192wjr0gidyos1"
+        tableName: "reports"
+- changeSet:
+    id: "reports-0003"
+    author: "generated"
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: "source_id"
+        baseTableName: "reports"
+        constraintName: "fkmscflduaciisepdvojksfy53e"
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: "CASCADE"
+        onUpdate: "NO ACTION"
+        referencedColumnNames: "id"
+        referencedTableName: "users"
+        validate: true
+- changeSet:
+    id: "posts-0001"
+    author: "generated"
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+            name: "anonymous"
+            type: "BOOLEAN"
+        - column:
+            constraints:
+              nullable: false
+            name: "deleted"
+            type: "BOOLEAN"
+        - column:
+            constraints:
+              nullable: false
+            name: "life"
+            type: "INTEGER"
+        - column:
+            constraints:
+              nullable: false
+            name: "published"
+            type: "BOOLEAN"
+        - column:
+            constraints:
+              nullable: false
+            name: "scrubbed"
+            type: "BOOLEAN"
+        - column:
+            constraints:
+              nullable: false
+            name: "date_created"
+            type: "TIMESTAMP WITH TIME ZONE"
+        - column:
+            constraints:
+              nullable: false
+            name: "author_id"
+            type: "UUID"
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: "posts_pkey"
+            name: "id"
+            type: "UUID"
+        tableName: "posts"
+- changeSet:
+    id: "posts-0002"
+    author: "generated"
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: "author_id"
+        baseTableName: "posts"
+        constraintName: "fk6xvn0811tkyo3nfjk2xvqx6ns"
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: "CASCADE"
+        onUpdate: "NO ACTION"
+        referencedColumnNames: "id"
+        referencedTableName: "users"
+        validate: true
+- changeSet:
+    id: "chapters-0001"
+    author: "generated"
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+            name: "height"
+            type: "INTEGER"
+        - column:
+            constraints:
+              nullable: false
+            name: "width"
+            type: "INTEGER"
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: "chapters_pkey"
+            name: "id"
+            type: "UUID"
+        - column:
+            name: "image_id"
+            type: "UUID"
+        - column:
+            constraints:
+              nullable: false
+            name: "post_id"
+            type: "UUID"
+        - column:
+            constraints:
+              nullable: false
+            name: "position"
+            type: "VARCHAR(50)"
+        - column:
+            constraints:
+              nullable: false
+            name: "text"
+            type: "VARCHAR(500)"
+        tableName: "chapters"
+- changeSet:
+    id: "chapters-0002"
+    author: "generated"
+    changes:
+    - addUniqueConstraint:
+        columnNames: "image_id"
+        constraintName: "chapters_image_id_key"
+        tableName: "chapters"
+- changeSet:
+    id: "chapters-0003"
+    author: "generated"
+    changes:
+    - addUniqueConstraint:
+        columnNames: "post_id, position"
+        constraintName: "ukqj1py5nfact1vlvjgtflawowy"
+        tableName: "chapters"
+- changeSet:
+    id: "chapters-0004"
+    author: "generated"
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: "image_id"
+        baseTableName: "chapters"
+        constraintName: "fkl426htf69f75849igwddqmpar"
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: "SET NULL"
+        onUpdate: "NO ACTION"
+        referencedColumnNames: "id"
+        referencedTableName: "stored_files"
+        validate: true
+- changeSet:
+    id: "chapters-0005"
+    author: "generated"
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: "post_id"
+        baseTableName: "chapters"
+        constraintName: "fkgelawcoy6fpvefbjkxf42503d"
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: "CASCADE"
+        onUpdate: "NO ACTION"
+        referencedColumnNames: "id"
+        referencedTableName: "posts"
+        validate: true
+- changeSet:
+    id: "comments-0001"
+    author: "generated"
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+            name: "anonymous"
+            type: "BOOLEAN"
+        - column:
+            constraints:
+              nullable: false
+            name: "deleted"
+            type: "BOOLEAN"
+        - column:
+            constraints:
+              nullable: false
+            name: "scrubbed"
+            type: "BOOLEAN"
+        - column:
+            constraints:
+              nullable: false
+            name: "date_created"
+            type: "TIMESTAMP WITH TIME ZONE"
+        - column:
+            constraints:
+              nullable: false
+            name: "author_id"
+            type: "UUID"
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: "comments_pkey"
+            name: "id"
+            type: "UUID"
+        - column:
+            constraints:
+              nullable: false
+            name: "post_id"
+            type: "UUID"
+        - column:
+            constraints:
+              nullable: false
+            name: "text"
+            type: "VARCHAR(1500)"
+        tableName: "comments"
+- changeSet:
+    id: "comments-0002"
+    author: "generated"
+    changes:
+    - createIndex:
+        columns:
+        - column:
+            name: "post_id"
+        indexName: "idx2ocgo3lfadb3wq0tx8wyt7sj2"
+        tableName: "comments"
+- changeSet:
+    id: "comments-0003"
+    author: "generated"
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: "author_id"
+        baseTableName: "comments"
+        constraintName: "fkn2na60ukhs76ibtpt9burkm27"
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: "CASCADE"
+        onUpdate: "NO ACTION"
+        referencedColumnNames: "id"
+        referencedTableName: "users"
+        validate: true
+- changeSet:
+    id: "comments-0004"
+    author: "generated"
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: "post_id"
+        baseTableName: "comments"
+        constraintName: "fkh4c7lvsc298whoyd4w9ta25cr"
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: "CASCADE"
+        onUpdate: "NO ACTION"
+        referencedColumnNames: "id"
+        referencedTableName: "posts"
+        validate: true
+- changeSet:
+    id: "subscriptions-0001"
+    author: "generated"
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+            name: "date_updated"
+            type: "TIMESTAMP WITH TIME ZONE"
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: "subscriptions_pkey"
+            name: "id"
+            type: "UUID"
+        - column:
+            name: "last_comment_seen_id"
+            type: "UUID"
+        - column:
+            constraints:
+              nullable: false
+            name: "post_id"
+            type: "UUID"
+        - column:
+            constraints:
+              nullable: false
+            name: "user_id"
+            type: "UUID"
+        tableName: "subscriptions"
+- changeSet:
+    id: "subscriptions-0002"
+    author: "generated"
+    changes:
+    - addUniqueConstraint:
+        columnNames: "user_id, post_id"
+        constraintName: "ukjvj9d1ro9lw17oe2pyl9bonm4"
+        tableName: "subscriptions"
+- changeSet:
+    id: "subscriptions-0003"
+    author: "generated"
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: "last_comment_seen_id"
+        baseTableName: "subscriptions"
+        constraintName: "fk283jtphhwtlrrj52uv6v63wb"
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: "CASCADE"
+        onUpdate: "NO ACTION"
+        referencedColumnNames: "id"
+        referencedTableName: "comments"
+        validate: true
+- changeSet:
+    id: "subscriptions-0004"
+    author: "generated"
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: "post_id"
+        baseTableName: "subscriptions"
+        constraintName: "fkahxduy73eys83pydr9d9jdt34"
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: "CASCADE"
+        onUpdate: "NO ACTION"
+        referencedColumnNames: "id"
+        referencedTableName: "posts"
+        validate: true
+- changeSet:
+    id: "subscriptions-0005"
+    author: "generated"
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: "user_id"
+        baseTableName: "subscriptions"
+        constraintName: "fkhro52ohfqfbay9774bev0qinr"
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: "CASCADE"
+        onUpdate: "NO ACTION"
+        referencedColumnNames: "id"
+        referencedTableName: "users"
+        validate: true
+- changeSet:
+    id: "votes-0001"
+    author: "generated"
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+            name: "spread"
+            type: "BOOLEAN"
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: "votes_pkey"
+            name: "id"
+            type: "UUID"
+        - column:
+            constraints:
+              nullable: false
+            name: "post_id"
+            type: "UUID"
+        - column:
+            constraints:
+              nullable: false
+            name: "user_id"
+            type: "UUID"
+        tableName: "votes"
+- changeSet:
+    id: "votes-0002"
+    author: "generated"
+    changes:
+    - createIndex:
+        columns:
+        - column:
+            name: "post_id"
+        indexName: "idxsnowcffjecrw34fxm6h5fyah4"
+        tableName: "votes"
+- changeSet:
+    id: "votes-0003"
+    author: "generated"
+    changes:
+    - addUniqueConstraint:
+        columnNames: "user_id, post_id"
+        constraintName: "ukpa0qu72klq223r3f3mpgf9ele"
+        tableName: "votes"
+- changeSet:
+    id: "votes-0004"
+    author: "generated"
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: "post_id"
+        baseTableName: "votes"
+        constraintName: "fk1m2jqtro85c13ya5kv0kvkc97"
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: "CASCADE"
+        onUpdate: "NO ACTION"
+        referencedColumnNames: "id"
+        referencedTableName: "posts"
+        validate: true
+- changeSet:
+    id: "votes-0005"
+    author: "generated"
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: "user_id"
+        baseTableName: "votes"
+        constraintName: "fkli4uj3ic2vypf5pialchj925e"
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: "CASCADE"
+        onUpdate: "NO ACTION"
+        referencedColumnNames: "id"
+        referencedTableName: "users"
+        validate: true

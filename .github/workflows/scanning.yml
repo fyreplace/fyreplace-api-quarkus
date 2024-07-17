@@ -1,0 +1,26 @@
+name: Scanning
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  scan:
+    name: Run CodeQL
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up CodeQL
+        uses: github/codeql-action/init@v3
+
+      - name: Run autobuild
+        uses: github/codeql-action/autobuild@v3
+
+      - name: Run analysis
+        uses: github/codeql-action/analyze@v3

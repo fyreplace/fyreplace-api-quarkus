@@ -1,0 +1,93 @@
+---
+quarkus:
+  datasource:
+    db-kind: "postgresql"
+  hibernate-orm:
+    physical-naming-strategy: "org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy"
+  liquibase:
+    change-log: "db/changeLog.yaml"
+    migrate-at-start: true
+  qute:
+    content-types:
+      mjml: "text/plain"
+  http:
+    auth:
+      permission:
+        dev:
+          paths: "/dev/*"
+          policy: "deny"
+    cors: true
+    limits:
+      max-body-size: "1M"
+  otel:
+    security-events:
+      enabled: true
+  mailer:
+    port: 587
+    start-tls: "required"
+  s3:
+    devservices:
+      enabled: false
+  smallrye-openapi:
+    info-title: "${app.name} API"
+mp:
+  jwt:
+    verify:
+      issuer: "${app.url}"
+  openapi:
+    extensions:
+      smallrye:
+        operationIdStrategy: "method"
+app:
+  url: ""
+  name: "Fyreplace"
+  use-example-data: false
+  front:
+    url: ""
+  website:
+    url: ""
+  paging:
+    size: 12
+  storage:
+    type: "file"
+    file:
+      path: ""
+    s3:
+      bucket: ""
+      custom-endpoint: ""
+  posts:
+    max-chapter-count: 10
+    starting-life: 4
+'%dev':
+  quarkus:
+    hibernate-orm:
+      database:
+        generation: "drop-and-create"
+    liquibase:
+      enabled: false
+    http:
+      auth:
+        permission:
+          dev:
+            paths: "/dev/*"
+            policy: "permit"
+  app:
+    use-example-data: true
+    storage:
+      type: "memory"
+'%test':
+  quarkus:
+    datasource:
+      db-kind: "h2"
+      jdbc:
+        user: "h2"
+        password: "h2"
+        url: "jdbc:h2:mem:fyreplace"
+    http:
+      cors:
+        origins: "/.*/"
+    scheduler:
+      enabled: false
+  app:
+    storage:
+      type: "memory"

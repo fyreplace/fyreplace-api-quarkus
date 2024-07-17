@@ -1,0 +1,7 @@
+{d.res.getString("codeDescription")}
+{d.code.code}
+
+{d.res.getString("linkDescription")}
+{d.link}
+
+{d.res.getString("linkEndNotice")}

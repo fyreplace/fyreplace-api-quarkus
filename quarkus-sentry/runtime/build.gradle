@@ -1,0 +1,19 @@
+plugins {
+    id "io.quarkus.extension"
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation("io.quarkus:quarkus-arc")
+    implementation("io.quarkus:quarkus-core")
+    implementation("io.quarkus:quarkus-resteasy-reactive")
+    implementation("io.sentry:sentry-jul")
+    implementation("io.opentelemetry.instrumentation:opentelemetry-jdbc")
+}
+
+quarkusExtension {
+    deploymentModule = ":quarkus-sentry:deployment"
+}

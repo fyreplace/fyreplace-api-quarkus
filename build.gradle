@@ -1,0 +1,86 @@
+plugins {
+    id "java"
+    id "io.quarkus"
+    id "com.palantir.git-version" version "${gitPluginVersion}"
+    id "com.diffplug.spotless" version "${spotlessPluginVersion}"
+    id "io.freefair.lombok" version "${lombokPluginVersion}"
+}
+
+group = "app.fyreplace"
+version = gitVersion()
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+dependencies {
+    implementation(enforcedPlatform("io.quarkus.platform:quarkus-bom:${quarkusPlatformVersion}"))
+    implementation(enforcedPlatform("io.quarkus.platform:quarkus-amazon-services-bom:${quarkusPlatformVersion}"))
+    implementation(enforcedPlatform("io.sentry:sentry-bom:${sentryVersion}"))
+    implementation(enforcedPlatform("org.apache.tika:tika-bom:${tikaVersion}"))
+    implementation("io.quarkus:quarkus-arc")
+    implementation("io.quarkus:quarkus-cache")
+    implementation("io.quarkus:quarkus-config-yaml")
+    implementation("io.quarkus:quarkus-elytron-security-jdbc")
+    implementation("io.quarkus:quarkus-hibernate-orm-panache")
+    implementation("io.quarkus:quarkus-hibernate-validator")
+    implementation("io.quarkus:quarkus-jdbc-h2")
+    implementation("io.quarkus:quarkus-jdbc-postgresql")
+    implementation("io.quarkus:quarkus-liquibase")
+    implementation("io.quarkus:quarkus-mailer")
+    implementation("io.quarkus:quarkus-rest")
+    implementation("io.quarkus:quarkus-rest-jackson")
+    implementation("io.quarkus:quarkus-rest-qute")
+    implementation("io.quarkus:quarkus-scheduler")
+    implementation("io.quarkus:quarkus-security")
+    implementation("io.quarkus:quarkus-smallrye-health")
+    implementation("io.quarkus:quarkus-smallrye-jwt")
+    implementation("io.quarkus:quarkus-smallrye-jwt-build")
+    implementation("io.quarkus:quarkus-smallrye-openapi")
+    implementation("io.quarkiverse.amazonservices:quarkus-amazon-s3")
+    implementation("io.sentry:sentry-jul")
+    implementation("org.apache.tika:tika-core")
+    implementation("org.apache.tika:tika-parsers-standard-package")
+    implementation("software.amazon.awssdk:url-connection-client")
+    implementation("software.amazon.awssdk.crt:aws-crt")
+    implementation(project(":quarkus-sentry:deployment"))
+    implementation(project(":quarkus-sentry:runtime"))
+    testImplementation("io.quarkus:quarkus-junit5")
+    testImplementation("io.quarkus:quarkus-test-h2")
+    testImplementation("io.quarkus:quarkus-test-security")
+    testImplementation("io.rest-assured:rest-assured")
+    testImplementation("org.apiguardian:apiguardian-api:+")
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+test {
+    systemProperty "java.util.logging.manager", "org.jboss.logmanager.LogManager"
+}
+
+compileJava {
+    options.encoding = "UTF-8"
+    options.compilerArgs << "-parameters"
+}
+
+compileTestJava {
+    options.encoding = "UTF-8"
+}
+
+spotless {
+    java {
+        importOrder()
+        removeUnusedImports()
+        palantirJavaFormat()
+        target "**/src/*/java/**/*.java"
+    }
+
+    yaml {
+        jackson()
+        target "**/src/*/resources/**/*.yaml"
+    }
+}
