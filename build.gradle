@@ -1,9 +1,17 @@
 plugins {
     id "java"
     id "io.quarkus"
-    id "com.palantir.git-version" version "${gitPluginVersion}"
     id "com.diffplug.spotless" version "${spotlessPluginVersion}"
     id "io.freefair.lombok" version "${lombokPluginVersion}"
+}
+
+def gitVersion() {
+    def stdout = new ByteArrayOutputStream()
+    exec {
+        commandLine "git", "describe", "--tags", "--always", "--dirty"
+        standardOutput = stdout
+    }
+    return stdout.toString().trim()
 }
 
 group = "app.fyreplace"
