@@ -34,7 +34,7 @@ public final class CreatePostTests extends PostTestsBase {
     }
 
     @Test
-    public void createPostWhileWhileUnauthenticated() {
+    public void createPostWhileUnauthenticated() {
         final var postCount = Post.count("author.username = 'user_0'");
         given().post().then().statusCode(401);
         assertEquals(postCount, Post.count());

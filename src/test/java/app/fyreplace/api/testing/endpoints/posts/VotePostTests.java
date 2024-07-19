@@ -179,7 +179,7 @@ public final class VotePostTests extends PostTestsBase {
     }
 
     @Test
-    public void votePostWhileWhileUnauthenticated() {
+    public void votePostWhileUnauthenticated() {
         final var voteCount = Vote.count();
         given().contentType(ContentType.JSON)
                 .body(new VoteCreation(false))

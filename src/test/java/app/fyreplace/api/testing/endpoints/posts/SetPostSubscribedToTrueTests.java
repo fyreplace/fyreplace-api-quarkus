@@ -137,7 +137,7 @@ public final class SetPostSubscribedToTrueTests extends CommentTestsBase {
     }
 
     @Test
-    public void setPostSubscribedWhileWhileUnauthenticated() {
+    public void setPostSubscribedWhileUnauthenticated() {
         final var subscriptionCount = Subscription.count();
         given().contentType(ContentType.JSON)
                 .body(new SubscriptionUpdate(true))
@@ -148,7 +148,7 @@ public final class SetPostSubscribedToTrueTests extends CommentTestsBase {
     }
 
     @Test
-    public void setDraftSubscribedWhileWhileUnauthenticated() {
+    public void setDraftSubscribedWhileUnauthenticated() {
         final var subscriptionCount = Subscription.count();
         given().contentType(ContentType.JSON)
                 .body(new SubscriptionUpdate(true))

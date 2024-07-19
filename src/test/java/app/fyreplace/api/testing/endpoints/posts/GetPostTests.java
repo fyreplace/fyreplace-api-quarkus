@@ -124,7 +124,7 @@ public final class GetPostTests extends PostTestsBase {
     }
 
     @Test
-    public void getPostWhileWhileUnauthenticated() {
+    public void getPostWhileUnauthenticated() {
         given().get(post.id.toString())
                 .then()
                 .statusCode(200)
@@ -138,7 +138,7 @@ public final class GetPostTests extends PostTestsBase {
     }
 
     @Test
-    public void getAnonymousPostWhileWhileUnauthenticated() {
+    public void getAnonymousPostWhileUnauthenticated() {
         given().get(anonymousPost.id.toString())
                 .then()
                 .statusCode(200)
@@ -152,7 +152,7 @@ public final class GetPostTests extends PostTestsBase {
     }
 
     @Test
-    public void getDraftWhileWhileUnauthenticated() {
+    public void getDraftWhileUnauthenticated() {
         given().get(draft.id.toString()).then().statusCode(404);
     }
 

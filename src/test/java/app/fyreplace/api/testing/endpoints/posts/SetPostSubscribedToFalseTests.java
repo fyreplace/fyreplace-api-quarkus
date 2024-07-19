@@ -126,7 +126,7 @@ public final class SetPostSubscribedToFalseTests extends PostTestsBase {
     }
 
     @Test
-    public void setPostSubscribedWhileWhileUnauthenticated() {
+    public void setPostSubscribedWhileUnauthenticated() {
         final var subscriptionCount = Subscription.count();
         given().contentType(ContentType.JSON)
                 .body(new SubscriptionUpdate(false))
@@ -137,7 +137,7 @@ public final class SetPostSubscribedToFalseTests extends PostTestsBase {
     }
 
     @Test
-    public void setDraftSubscribedWhileWhileUnauthenticated() {
+    public void setDraftSubscribedWhileUnauthenticated() {
         final var subscriptionCount = Subscription.count();
         given().contentType(ContentType.JSON)
                 .body(new SubscriptionUpdate(false))
