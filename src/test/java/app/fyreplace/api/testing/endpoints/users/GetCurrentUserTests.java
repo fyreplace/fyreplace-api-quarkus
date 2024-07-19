@@ -32,7 +32,8 @@ public final class GetCurrentUserTests extends UserTestsBase {
                 .body("rank", equalTo(User.Rank.CITIZEN.name()))
                 .body("avatar", nullValue())
                 .body("bio", equalTo(""))
-                .body("banned", equalTo(false));
+                .body("banned", equalTo(false))
+                .body("blocked", equalTo(false));
     }
 
     @Test

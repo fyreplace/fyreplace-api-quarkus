@@ -181,7 +181,7 @@ public final class UsersEndpoint {
     @Authenticated
     @APIResponse(responseCode = "200", description = "OK")
     public User getCurrentUser() {
-        return getUser(User.getFromSecurityContext(context).id);
+        return User.getFromSecurityContext(context);
     }
 
     @PUT
@@ -265,11 +265,13 @@ public final class UsersEndpoint {
         return Block.count("source", User.getFromSecurityContext(context));
     }
 
-    private void validateUser(@Nullable User user) {
+    private void validateUser(@Nullable final User user) {
         if (user == null || !user.active) {
             throw new NotFoundException();
         } else if (user.deleted) {
             throw new GoneException();
         }
+
+        user.setCurrentUser(User.getFromSecurityContext(context, null, false));
     }
 }
