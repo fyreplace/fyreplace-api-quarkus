@@ -69,6 +69,8 @@ public class User extends UserDependentEntityBase implements Reportable {
             "systemsadministrators",
             "user",
             "users",
+            "username",
+            "usernames",
             "void",
             "voids"));
 
