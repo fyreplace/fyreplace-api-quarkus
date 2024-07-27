@@ -9,7 +9,7 @@ public final class ForbiddenException extends jakarta.ws.rs.ForbiddenException i
     }
 
     @Override
-    public Object getExplanationValue() {
+    public String getExplanationValue() {
         return explanation;
     }
 }
