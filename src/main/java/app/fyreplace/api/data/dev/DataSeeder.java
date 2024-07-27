@@ -14,10 +14,8 @@ import app.fyreplace.api.data.StoredFile;
 import app.fyreplace.api.data.Subscription;
 import app.fyreplace.api.data.User;
 import app.fyreplace.api.data.Vote;
-import io.quarkus.runtime.LaunchMode;
 import io.quarkus.runtime.ShutdownEvent;
 import io.quarkus.runtime.StartupEvent;
-import io.quarkus.runtime.configuration.ProfileManager;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
 import jakarta.transaction.Transactional;
@@ -25,7 +23,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 @SuppressWarnings({"UnusedReturnValue", "unused"})
 @ApplicationScoped
-public class DataSeeder {
+public final class DataSeeder {
     @ConfigProperty(name = "app.use-example-data")
     boolean useExampleData;
 
@@ -33,13 +31,13 @@ public class DataSeeder {
     int postsStartingLife;
 
     public void onStartup(@Observes final StartupEvent event) {
-        if (shouldUseExampleData()) {
+        if (useExampleData) {
             insertData();
         }
     }
 
     public void onShutdown(@Observes final ShutdownEvent event) {
-        if (shouldUseExampleData()) {
+        if (useExampleData) {
             deleteData();
         }
     }
@@ -125,9 +123,5 @@ public class DataSeeder {
         comment.text = text;
         comment.persist();
         return comment;
-    }
-
-    private boolean shouldUseExampleData() {
-        return useExampleData && ProfileManager.getLaunchMode() == LaunchMode.DEVELOPMENT;
     }
 }
