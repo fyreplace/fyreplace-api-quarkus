@@ -35,6 +35,7 @@ import org.apache.tika.metadata.Property;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.hibernate.validator.constraints.Length;
 
@@ -96,6 +97,7 @@ public final class ChaptersEndpoint {
     @Path("{position}/position")
     @Authenticated
     @Transactional
+    @RequestBody(required = true)
     @APIResponse(responseCode = "200", description = "OK")
     @APIResponse(responseCode = "400", description = "Bad request")
     @APIResponse(responseCode = "404", description = "Not found")
@@ -155,6 +157,7 @@ public final class ChaptersEndpoint {
     @Path("{position}/image")
     @Authenticated
     @Transactional
+    @RequestBody(required = true, content = @Content(mediaType = MediaType.APPLICATION_OCTET_STREAM))
     @APIResponse(responseCode = "200", description = "OK")
     @APIResponse(responseCode = "400", description = "Bad request")
     @APIResponse(responseCode = "404", description = "Not found")

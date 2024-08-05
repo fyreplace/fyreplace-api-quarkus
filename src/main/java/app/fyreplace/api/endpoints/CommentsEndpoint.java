@@ -32,6 +32,7 @@ import java.util.UUID;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 
 @Path("posts/{id}/comments")
@@ -61,6 +62,7 @@ public final class CommentsEndpoint {
     @POST
     @Authenticated
     @Transactional
+    @RequestBody(required = true)
     @APIResponse(
             responseCode = "201",
             description = "Created",
@@ -68,7 +70,7 @@ public final class CommentsEndpoint {
                     @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = Comment.class)))
     @APIResponse(responseCode = "404", description = "Not Found")
     @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
-    public Response createComment(@PathParam("id") final UUID id, @Valid @NotNull final CommentCreation input) {
+    public Response createComment(@PathParam("id") final UUID id, @NotNull @Valid final CommentCreation input) {
         final var user = User.getFromSecurityContext(context);
         final var post = Post.<Post>findById(id);
         Post.validateAccess(post, user, true, null);
@@ -113,6 +115,7 @@ public final class CommentsEndpoint {
     @Path("{position}/reported")
     @Authenticated
     @Transactional
+    @RequestBody(required = true)
     @APIResponse(responseCode = "200", description = "OK")
     @APIResponse(responseCode = "404", description = "Not Found")
     public Response setCommentReported(

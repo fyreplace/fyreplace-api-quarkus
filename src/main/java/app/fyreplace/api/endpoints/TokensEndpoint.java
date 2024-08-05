@@ -27,6 +27,7 @@ import jakarta.ws.rs.core.Response.Status;
 import jakarta.ws.rs.core.SecurityContext;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 
 @Path("tokens")
@@ -42,6 +43,7 @@ public final class TokensEndpoint {
 
     @POST
     @Transactional
+    @RequestBody(required = true)
     @APIResponse(
             responseCode = "201",
             description = "Created",
@@ -49,7 +51,7 @@ public final class TokensEndpoint {
     @APIResponse(responseCode = "400", description = "Bad Request")
     @APIResponse(responseCode = "404", description = "Not Found")
     @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
-    public Response createToken(@Valid @NotNull final TokenCreation input) {
+    public Response createToken(@NotNull @Valid final TokenCreation input) {
         final var email = getEmail(input.identifier());
         final var randomCode = RandomCode.<RandomCode>find("email = ?1 and code = ?2", email, input.secret())
                 .firstResult();
@@ -82,6 +84,7 @@ public final class TokensEndpoint {
     @POST
     @Path("new")
     @Transactional
+    @RequestBody(required = true)
     @APIResponse(responseCode = "200", description = "OK")
     @APIResponse(responseCode = "400", description = "Bad Request")
     @APIResponse(responseCode = "404", description = "Not Found")

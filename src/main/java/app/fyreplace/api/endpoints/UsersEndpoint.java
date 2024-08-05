@@ -45,6 +45,7 @@ import java.util.UUID;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.hibernate.validator.constraints.Length;
 
@@ -64,6 +65,7 @@ public final class UsersEndpoint {
 
     @POST
     @Transactional
+    @RequestBody(required = true)
     @APIResponse(
             responseCode = "201",
             description = "Created",
@@ -72,7 +74,7 @@ public final class UsersEndpoint {
     @APIResponse(responseCode = "403", description = "Not Allowed")
     @APIResponse(responseCode = "409", description = "Conflict")
     @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
-    public Response createUser(@Valid @NotNull final UserCreation input) {
+    public Response createUser(@NotNull @Valid final UserCreation input) {
         if (User.forbiddenUsernames.contains(input.username())) {
             throw new ForbiddenException("username_forbidden");
         } else if (User.count("username", input.username()) > 0) {
@@ -110,10 +112,11 @@ public final class UsersEndpoint {
     @Path("{id}/blocked")
     @Authenticated
     @Transactional
+    @RequestBody(required = true)
     @APIResponse(responseCode = "200", description = "OK")
     @APIResponse(responseCode = "400", description = "Bad Request")
     @APIResponse(responseCode = "404", description = "Not Found")
-    public Response setUserBlocked(@PathParam("id") final UUID id, @Valid @NotNull final BlockUpdate input) {
+    public Response setUserBlocked(@PathParam("id") final UUID id, @NotNull @Valid final BlockUpdate input) {
         final var source = User.getFromSecurityContext(context);
         final var target = User.<User>findById(id);
         validateUser(target);
@@ -158,6 +161,7 @@ public final class UsersEndpoint {
     @Path("{id}/reported")
     @Authenticated
     @Transactional
+    @RequestBody(required = true)
     @APIResponse(responseCode = "200", description = "OK")
     @APIResponse(responseCode = "404", description = "Not Found")
     public Response setUserReported(@PathParam("id") final UUID id, @NotNull @Valid final ReportUpdate input) {
@@ -188,6 +192,7 @@ public final class UsersEndpoint {
     @Path("current/bio")
     @Authenticated
     @Transactional
+    @RequestBody(required = true, content = @Content(mediaType = MediaType.TEXT_PLAIN))
     @APIResponse(responseCode = "200", description = "OK")
     @APIResponse(responseCode = "400", description = "Bad Request")
     public String setCurrentUserBio(@NotNull @Length(max = 3000) final String input) {
@@ -201,6 +206,7 @@ public final class UsersEndpoint {
     @Path("current/avatar")
     @Authenticated
     @Transactional
+    @RequestBody(required = true, content = @Content(mediaType = MediaType.APPLICATION_OCTET_STREAM))
     @APIResponse(responseCode = "200", description = "OK")
     @APIResponse(responseCode = "413", description = "Payload Too Large")
     @APIResponse(responseCode = "415", description = "Unsupported Media Type")
