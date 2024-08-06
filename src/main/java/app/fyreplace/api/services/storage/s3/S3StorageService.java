@@ -10,7 +10,6 @@ import io.quarkus.runtime.StartupEvent;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.NotFoundException;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -55,7 +54,7 @@ public final class S3StorageService implements StorageService {
         try {
             return client.getObject(b -> b.bucket(config.bucket()).key(path)).readAllBytes();
         } catch (final NoSuchKeyException e) {
-            throw new NotFoundException();
+            throw new IOException();
         }
     }
 

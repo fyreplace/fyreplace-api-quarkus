@@ -5,7 +5,6 @@ import io.quarkus.arc.Unremovable;
 import io.quarkus.arc.properties.IfBuildProperty;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.NotFoundException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -25,7 +24,7 @@ public final class FileStorageService extends LocalStorageServiceBase {
         try (final var reader = new FileInputStream(getFile(path))) {
             return reader.readAllBytes();
         } catch (final FileNotFoundException e) {
-            throw new NotFoundException();
+            throw new IOException();
         }
     }
 
@@ -42,15 +41,15 @@ public final class FileStorageService extends LocalStorageServiceBase {
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override
-    public void remove(final String path) {
+    public void remove(final String path) throws IOException {
         getFile(path).delete();
     }
 
-    private File getFile(final String path) {
+    private File getFile(final String path) throws IOException {
         final var file = config.path().resolve(path).toFile();
 
         if (!file.toPath().normalize().startsWith(config.path().normalize())) {
-            throw new NotFoundException();
+            throw new IOException();
         }
 
         return file;

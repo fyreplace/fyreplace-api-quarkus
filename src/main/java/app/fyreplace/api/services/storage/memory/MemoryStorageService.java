@@ -4,6 +4,7 @@ import app.fyreplace.api.services.storage.LocalStorageServiceBase;
 import io.quarkus.arc.Unremovable;
 import io.quarkus.arc.properties.IfBuildProperty;
 import jakarta.enterprise.context.ApplicationScoped;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,7 +16,11 @@ public final class MemoryStorageService extends LocalStorageServiceBase {
     private final Map<String, byte[]> storage = new HashMap<>();
 
     @Override
-    public byte[] fetch(final String path) {
+    public byte[] fetch(final String path) throws IOException {
+        if (!storage.containsKey(path)) {
+            throw new IOException();
+        }
+
         return storage.get(path);
     }
 
