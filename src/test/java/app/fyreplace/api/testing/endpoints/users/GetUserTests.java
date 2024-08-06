@@ -27,8 +27,8 @@ public final class GetUserTests extends UserTestsBase {
         final var user = requireNonNull(User.findByUsername(username));
         given().get(user.id.toString())
                 .then()
-                .contentType(ContentType.JSON)
                 .statusCode(200)
+                .contentType(ContentType.JSON)
                 .body("id", equalTo(user.id.toString()))
                 .body("dateCreated", notNullValue())
                 .body("username", equalTo(user.username))
@@ -45,8 +45,8 @@ public final class GetUserTests extends UserTestsBase {
         final var user = requireNonNull(User.findByUsername("user_1"));
         given().get(user.id.toString())
                 .then()
-                .contentType(ContentType.JSON)
                 .statusCode(200)
+                .contentType(ContentType.JSON)
                 .body("id", equalTo(user.id.toString()))
                 .body("dateCreated", notNullValue())
                 .body("username", equalTo(user.username))
@@ -65,8 +65,8 @@ public final class GetUserTests extends UserTestsBase {
                 .run(() -> requireNonNull(User.findByUsername("user_0")).block(user));
         given().get(user.id.toString())
                 .then()
-                .contentType(ContentType.JSON)
                 .statusCode(200)
+                .contentType(ContentType.JSON)
                 .body("id", equalTo(user.id.toString()))
                 .body("dateCreated", notNullValue())
                 .body("username", equalTo(user.username))

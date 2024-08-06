@@ -28,8 +28,8 @@ public final class CreateEmailTests extends UserTestsBase {
                 .body(new EmailCreation(email))
                 .post()
                 .then()
-                .contentType(ContentType.JSON)
                 .statusCode(201)
+                .contentType(ContentType.JSON)
                 .body("email", equalTo(email))
                 .body("verified", equalTo(false))
                 .body("main", equalTo(false));
@@ -44,8 +44,8 @@ public final class CreateEmailTests extends UserTestsBase {
                 .body(new EmailCreation("invalid"))
                 .post()
                 .then()
-                .contentType(ContentType.JSON)
-                .statusCode(400);
+                .statusCode(400)
+                .contentType(ContentType.JSON);
         assertEquals(emailCount, Email.count());
     }
 
@@ -57,8 +57,8 @@ public final class CreateEmailTests extends UserTestsBase {
                 .body(new EmailCreation(""))
                 .post()
                 .then()
-                .contentType(ContentType.JSON)
-                .statusCode(400);
+                .statusCode(400)
+                .contentType(ContentType.JSON);
         assertEquals(emailCount, Email.count());
     }
 
@@ -71,8 +71,8 @@ public final class CreateEmailTests extends UserTestsBase {
                 .body(new EmailCreation(existingUser.mainEmail.email))
                 .post()
                 .then()
-                .contentType(ContentType.JSON)
-                .statusCode(409);
+                .statusCode(409)
+                .contentType(ContentType.JSON);
         assertEquals(emailCount, Email.count());
     }
 
@@ -80,11 +80,7 @@ public final class CreateEmailTests extends UserTestsBase {
     @TestSecurity(user = "user_0")
     public void createEmailWithEmptyInput() {
         final var emailCount = Email.count();
-        given().contentType(ContentType.JSON)
-                .post()
-                .then()
-                .contentType(ContentType.JSON)
-                .statusCode(400);
+        given().contentType(ContentType.JSON).post().then().statusCode(400).contentType(ContentType.JSON);
         assertEquals(emailCount, Email.count());
     }
 }

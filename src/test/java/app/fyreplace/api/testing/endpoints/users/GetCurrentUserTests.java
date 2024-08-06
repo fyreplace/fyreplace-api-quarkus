@@ -24,8 +24,8 @@ public final class GetCurrentUserTests extends UserTestsBase {
         final var user = requireNonNull(User.findByUsername("user_2"));
         given().get("/current")
                 .then()
-                .contentType(ContentType.JSON)
                 .statusCode(200)
+                .contentType(ContentType.JSON)
                 .body("id", equalTo(user.id.toString()))
                 .body("dateCreated", notNullValue())
                 .body("username", equalTo(user.username))
