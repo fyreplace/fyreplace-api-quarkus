@@ -24,7 +24,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 @SuppressWarnings({"UnusedReturnValue", "unused"})
 @ApplicationScoped
 public final class DataSeeder {
-    @ConfigProperty(name = "app.use-example-data")
+    @ConfigProperty(name = "app.local-dev")
     boolean useExampleData;
 
     @ConfigProperty(name = "app.posts.starting-life")

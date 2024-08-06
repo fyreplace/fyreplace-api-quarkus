@@ -42,7 +42,7 @@ mp:
 app:
   url: ""
   name: "Fyreplace"
-  use-example-data: false
+  local-dev: false
   front:
     url: ""
   website:
@@ -73,7 +73,7 @@ app:
             paths: "/dev/*"
             policy: "permit"
   app:
-    use-example-data: true
+    local-dev: true
     storage:
       type: "memory"
 '%test':
