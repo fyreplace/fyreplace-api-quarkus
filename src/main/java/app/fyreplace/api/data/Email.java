@@ -13,13 +13,16 @@ import org.hibernate.annotations.OnDeleteAction;
 @Entity
 @Table(name = "emails")
 public class Email extends EntityBase {
+    public static final int EMAIL_MIN_LENGTH = 3;
+    public static final int EMAIL_MAX_LENGTH = 254;
+
     @ManyToOne(optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
     public User user;
 
-    @Column(length = 254, unique = true, nullable = false)
-    @Schema(required = true)
+    @Column(length = EMAIL_MAX_LENGTH, unique = true, nullable = false)
+    @Schema(required = true, minLength = EMAIL_MIN_LENGTH, maxLength = EMAIL_MAX_LENGTH)
     public String email;
 
     @Column(nullable = false)

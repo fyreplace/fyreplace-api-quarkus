@@ -59,7 +59,7 @@ public class Subscription extends EntityBase {
                 )
             )
             """)
-    @Schema(required = true)
+    @Schema(required = true, minimum = "0")
     public long unreadCommentCount;
 
     public void markAsRead() {

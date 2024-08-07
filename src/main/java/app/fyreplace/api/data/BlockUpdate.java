@@ -1,3 +1,5 @@
 package app.fyreplace.api.data;
 
-public record BlockUpdate(boolean blocked) {}
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+
+public record BlockUpdate(@Schema(required = true) boolean blocked) {}

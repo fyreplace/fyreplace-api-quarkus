@@ -29,6 +29,7 @@ quarkus:
     devservices:
       enabled: false
   smallrye-openapi:
+    path: "/openapi"
     info-title: "${app.name} API"
 mp:
   jwt:

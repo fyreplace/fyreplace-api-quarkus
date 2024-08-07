@@ -18,6 +18,8 @@ import org.hibernate.annotations.OnDeleteAction;
 @Entity
 @Table(name = "chapters", uniqueConstraints = @UniqueConstraint(columnNames = {"post_id", "position"}))
 public class Chapter extends EntityBase implements Comparable<Chapter> {
+    public static final int TEXT_MAX_LENGTH = 500;
+
     @ManyToOne(optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
@@ -27,7 +29,8 @@ public class Chapter extends EntityBase implements Comparable<Chapter> {
     @JsonIgnore
     public String position;
 
-    @Column(length = 500, nullable = false)
+    @Column(length = TEXT_MAX_LENGTH, nullable = false)
+    @Schema(maxLength = TEXT_MAX_LENGTH)
     public String text = "";
 
     @OneToOne(cascade = CascadeType.PERSIST)
@@ -37,9 +40,11 @@ public class Chapter extends EntityBase implements Comparable<Chapter> {
     public StoredFile image;
 
     @Column(nullable = false)
+    @Schema(minimum = "0")
     public int width = 0;
 
     @Column(nullable = false)
+    @Schema(minimum = "0")
     public int height = 0;
 
     @Override

@@ -194,7 +194,7 @@ public final class UsersEndpoint {
     @RequestBody(required = true, content = @Content(mediaType = MediaType.TEXT_PLAIN))
     @APIResponse(responseCode = "200", description = "OK")
     @APIResponse(responseCode = "400", description = "Bad Request")
-    public String setCurrentUserBio(@NotNull @Length(max = 3000) final String input) {
+    public String setCurrentUserBio(@NotNull @Length(max = User.BIO_MAX_LENGTH) final String input) {
         final var user = User.getFromSecurityContext(context, LockModeType.PESSIMISTIC_READ);
         user.bio = input;
         user.persist();

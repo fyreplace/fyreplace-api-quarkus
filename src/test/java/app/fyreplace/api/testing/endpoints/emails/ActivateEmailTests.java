@@ -48,7 +48,7 @@ public final class ActivateEmailTests extends UserTestsBase {
                 .body(new EmailActivation("invalid", randomCode.code))
                 .post("activate")
                 .then()
-                .statusCode(404);
+                .statusCode(400);
         assertEquals(1, RandomCode.count("id", randomCode.id));
     }
 
