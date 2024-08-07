@@ -105,7 +105,7 @@ public final class SetPostReportedToTrueTests extends PostTestsBase {
     }
 
     @Test
-    public void setPostReportedWhileWhileUnauthenticated() {
+    public void setPostReportedWhileUnauthenticated() {
         final var reportCount = Report.count();
         given().contentType(ContentType.JSON)
                 .body(new ReportUpdate(true))

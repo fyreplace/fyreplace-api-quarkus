@@ -4,7 +4,7 @@ import app.fyreplace.api.data.Email;
 import app.fyreplace.api.data.dev.DataSeeder;
 import io.quarkus.mailer.Mail;
 import io.quarkus.mailer.MockMailbox;
-import io.quarkus.test.common.QuarkusTestResource;
+import io.quarkus.test.common.WithTestResource;
 import io.quarkus.test.common.http.TestHTTPResource;
 import jakarta.inject.Inject;
 import java.io.IOException;
@@ -14,7 +14,7 @@ import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
-@QuarkusTestResource(DatabaseTestResource.class)
+@WithTestResource(value = DatabaseTestResource.class, restrictToAnnotatedClass = false)
 public abstract class TransactionalTestsBase {
     @Inject
     public DataSeeder dataSeeder;

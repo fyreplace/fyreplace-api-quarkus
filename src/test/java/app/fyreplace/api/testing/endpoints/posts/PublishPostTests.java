@@ -91,7 +91,7 @@ public final class PublishPostTests extends PostTestsBase {
     }
 
     @Test
-    public void publishPostWhileWhileUnauthenticated() {
+    public void publishPostWhileUnauthenticated() {
         given().contentType(ContentType.JSON)
                 .body(new PostPublication(false))
                 .post(post.id + "/publish")
@@ -100,7 +100,7 @@ public final class PublishPostTests extends PostTestsBase {
     }
 
     @Test
-    public void publishDraftWhileWhileUnauthenticated() {
+    public void publishDraftWhileUnauthenticated() {
         given().contentType(ContentType.JSON)
                 .body(new PostPublication(false))
                 .post(draft.id + "/publish")

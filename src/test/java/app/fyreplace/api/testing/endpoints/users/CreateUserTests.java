@@ -31,8 +31,8 @@ public final class CreateUserTests extends UserTestsBase {
                 .body(new UserCreation("new@example.org", "new_user"))
                 .post()
                 .then()
-                .contentType(ContentType.JSON)
                 .statusCode(201)
+                .contentType(ContentType.JSON)
                 .body("dateCreated", notNullValue())
                 .body("username", equalTo("new_user"))
                 .body("rank", equalTo(User.Rank.CITIZEN.name()))
@@ -57,8 +57,8 @@ public final class CreateUserTests extends UserTestsBase {
                 .body(new UserCreation("new@example.org", "no spaces allowed"))
                 .post()
                 .then()
-                .contentType(ContentType.JSON)
-                .statusCode(400);
+                .statusCode(400)
+                .contentType(ContentType.JSON);
         assertEquals(userCount, User.count());
     }
 

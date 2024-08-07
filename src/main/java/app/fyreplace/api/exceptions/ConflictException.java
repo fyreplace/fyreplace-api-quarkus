@@ -12,7 +12,7 @@ public final class ConflictException extends ClientErrorException implements Exp
     }
 
     @Override
-    public Object getExplanationValue() {
+    public String getExplanationValue() {
         return explanationValue;
     }
 }

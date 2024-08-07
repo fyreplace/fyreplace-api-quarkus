@@ -34,6 +34,7 @@ import java.util.UUID;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 
 @Path("emails")
@@ -58,13 +59,14 @@ public final class EmailsEndpoint {
     @POST
     @Authenticated
     @Transactional
+    @RequestBody(required = true)
     @APIResponse(
             responseCode = "201",
             description = "Created",
             content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = Email.class)))
     @APIResponse(responseCode = "409", description = "Conflict")
     @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
-    public Response createEmail(@Valid @NotNull final EmailCreation input) {
+    public Response createEmail(@NotNull @Valid final EmailCreation input) {
         if (Email.count("email", input.email()) > 0) {
             throw new ConflictException("email_taken");
         }
@@ -131,6 +133,7 @@ public final class EmailsEndpoint {
     @Path("activate")
     @Authenticated
     @Transactional
+    @RequestBody(required = true)
     @APIResponse(responseCode = "200", description = "OK")
     @APIResponse(responseCode = "400", description = "Bad Request")
     @APIResponse(responseCode = "404", description = "Not Found")

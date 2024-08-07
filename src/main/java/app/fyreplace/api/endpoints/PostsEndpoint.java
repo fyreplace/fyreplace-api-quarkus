@@ -39,6 +39,7 @@ import java.util.UUID;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 
 @Path("posts")
@@ -130,10 +131,11 @@ public final class PostsEndpoint {
     @Path("{id}/subscribed")
     @Authenticated
     @Transactional
+    @RequestBody(required = true)
     @APIResponse(responseCode = "200", description = "OK")
     @APIResponse(responseCode = "400", description = "Bad Request")
     @APIResponse(responseCode = "404", description = "Not Found")
-    public Response setPostSubscribed(@PathParam("id") final UUID id, @Valid @NotNull final SubscriptionUpdate input) {
+    public Response setPostSubscribed(@PathParam("id") final UUID id, @NotNull @Valid final SubscriptionUpdate input) {
         final var user = User.getFromSecurityContext(context);
         final var post = Post.<Post>findById(id);
         Post.validateAccess(post, user, true, null);
@@ -151,6 +153,7 @@ public final class PostsEndpoint {
     @Path("{id}/reported")
     @Authenticated
     @Transactional
+    @RequestBody(required = true)
     @APIResponse(responseCode = "200", description = "OK")
     @APIResponse(responseCode = "404", description = "Not Found")
     public Response setPostReported(@PathParam("id") final UUID id, @NotNull @Valid final ReportUpdate input) {
@@ -171,11 +174,12 @@ public final class PostsEndpoint {
     @Path("{id}/publish")
     @Authenticated
     @Transactional
+    @RequestBody(required = true)
     @APIResponse(responseCode = "200", description = "OK")
     @APIResponse(responseCode = "400", description = "Bad Request")
     @APIResponse(responseCode = "404", description = "Not Found")
     @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
-    public Response publishPost(@PathParam("id") final UUID id, @Valid @NotNull final PostPublication input) {
+    public Response publishPost(@PathParam("id") final UUID id, @NotNull @Valid final PostPublication input) {
         final var user = User.getFromSecurityContext(context);
         final var post = Post.<Post>findById(id);
         Post.validateAccess(post, user, false, true);
@@ -192,11 +196,12 @@ public final class PostsEndpoint {
     @Path("{id}/vote")
     @Authenticated
     @Transactional
+    @RequestBody(required = true)
     @APIResponse(responseCode = "200", description = "OK")
     @APIResponse(responseCode = "400", description = "Bad Request")
     @APIResponse(responseCode = "404", description = "Not Found")
     @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
-    public Response votePost(@PathParam("id") final UUID id, @Valid @NotNull final VoteCreation input) {
+    public Response votePost(@PathParam("id") final UUID id, @NotNull @Valid final VoteCreation input) {
         final var user = User.getFromSecurityContext(context);
         final var post = Post.<Post>findById(id, LockModeType.PESSIMISTIC_WRITE);
         Post.validateAccess(post, user, true, false);

@@ -34,8 +34,8 @@ public final class SetCurrentUserAvatarTests extends UserTestsBase {
                     .body(stream.readAllBytes())
                     .put("current/avatar")
                     .then()
-                    .contentType(ContentType.TEXT)
                     .statusCode(200)
+                    .contentType(ContentType.TEXT)
                     .body(isA(String.class));
         }
 

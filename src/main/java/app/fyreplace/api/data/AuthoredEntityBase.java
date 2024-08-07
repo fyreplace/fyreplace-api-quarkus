@@ -6,13 +6,12 @@ import jakarta.annotation.Nullable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MappedSuperclass;
-import jakarta.persistence.Transient;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 @MappedSuperclass
-public abstract class AuthoredEntityBase extends SoftDeletableEntityBase {
+public abstract class AuthoredEntityBase extends UserDependentEntityBase {
     @ManyToOne(optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
@@ -21,11 +20,6 @@ public abstract class AuthoredEntityBase extends SoftDeletableEntityBase {
     @Column(nullable = false)
     @Schema(required = true)
     public boolean anonymous = false;
-
-    @Transient
-    @JsonIgnore
-    @Nullable
-    public User currentUser;
 
     @SuppressWarnings("unused")
     @JsonProperty("author")
@@ -36,9 +30,5 @@ public abstract class AuthoredEntityBase extends SoftDeletableEntityBase {
         }
 
         return author.getProfile();
-    }
-
-    public void setCurrentUser(@Nullable final User user) {
-        currentUser = user;
     }
 }

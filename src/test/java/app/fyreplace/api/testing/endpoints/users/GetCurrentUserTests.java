@@ -24,15 +24,16 @@ public final class GetCurrentUserTests extends UserTestsBase {
         final var user = requireNonNull(User.findByUsername("user_2"));
         given().get("/current")
                 .then()
-                .contentType(ContentType.JSON)
                 .statusCode(200)
+                .contentType(ContentType.JSON)
                 .body("id", equalTo(user.id.toString()))
                 .body("dateCreated", notNullValue())
                 .body("username", equalTo(user.username))
                 .body("rank", equalTo(User.Rank.CITIZEN.name()))
                 .body("avatar", nullValue())
                 .body("bio", equalTo(""))
-                .body("banned", equalTo(false));
+                .body("banned", equalTo(false))
+                .body("blocked", equalTo(false));
     }
 
     @Test

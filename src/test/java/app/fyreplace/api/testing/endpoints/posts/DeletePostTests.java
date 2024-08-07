@@ -45,13 +45,13 @@ public final class DeletePostTests extends PostTestsBase {
     }
 
     @Test
-    public void deletePostWhileWhileUnauthenticated() {
+    public void deletePostWhileUnauthenticated() {
         given().delete(post.id.toString()).then().statusCode(401);
         assertEquals(1, Post.count("id", post.id));
     }
 
     @Test
-    public void deleteDraftWhileWhileUnauthenticated() {
+    public void deleteDraftWhileUnauthenticated() {
         given().delete(draft.id.toString()).then().statusCode(401);
         assertEquals(1, Post.count("id", draft.id));
     }

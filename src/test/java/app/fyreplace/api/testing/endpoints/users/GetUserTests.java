@@ -12,8 +12,8 @@ import app.fyreplace.api.testing.UserTestsBase;
 import io.quarkus.narayana.jta.QuarkusTransaction;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.security.TestSecurity;
 import io.restassured.http.ContentType;
-import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -23,19 +23,58 @@ import org.junit.jupiter.params.provider.ValueSource;
 public final class GetUserTests extends UserTestsBase {
     @ParameterizedTest
     @ValueSource(strings = {"user_0", "user_1", "user_2"})
-    public void getUser(final String username) {
+    public void getUserWhileUnauthenticated(final String username) {
         final var user = requireNonNull(User.findByUsername(username));
         given().get(user.id.toString())
                 .then()
-                .contentType(ContentType.JSON)
                 .statusCode(200)
+                .contentType(ContentType.JSON)
                 .body("id", equalTo(user.id.toString()))
                 .body("dateCreated", notNullValue())
                 .body("username", equalTo(user.username))
                 .body("rank", equalTo(User.Rank.CITIZEN.name()))
                 .body("avatar", nullValue())
                 .body("bio", equalTo(""))
-                .body("banned", equalTo(false));
+                .body("banned", equalTo(false))
+                .body("blocked", equalTo(false));
+    }
+
+    @Test
+    @TestSecurity(user = "user_0")
+    public void getUser() {
+        final var user = requireNonNull(User.findByUsername("user_1"));
+        given().get(user.id.toString())
+                .then()
+                .statusCode(200)
+                .contentType(ContentType.JSON)
+                .body("id", equalTo(user.id.toString()))
+                .body("dateCreated", notNullValue())
+                .body("username", equalTo(user.username))
+                .body("rank", equalTo(User.Rank.CITIZEN.name()))
+                .body("avatar", nullValue())
+                .body("bio", equalTo(""))
+                .body("banned", equalTo(false))
+                .body("blocked", equalTo(false));
+    }
+
+    @Test
+    @TestSecurity(user = "user_0")
+    public void getBlockedUser() {
+        final var user = requireNonNull(User.findByUsername("user_1"));
+        QuarkusTransaction.requiringNew()
+                .run(() -> requireNonNull(User.findByUsername("user_0")).block(user));
+        given().get(user.id.toString())
+                .then()
+                .statusCode(200)
+                .contentType(ContentType.JSON)
+                .body("id", equalTo(user.id.toString()))
+                .body("dateCreated", notNullValue())
+                .body("username", equalTo(user.username))
+                .body("rank", equalTo(User.Rank.CITIZEN.name()))
+                .body("avatar", nullValue())
+                .body("bio", equalTo(""))
+                .body("banned", equalTo(false))
+                .body("blocked", equalTo(true));
     }
 
     @ParameterizedTest
@@ -46,7 +85,6 @@ public final class GetUserTests extends UserTestsBase {
     }
 
     @Test
-    @Transactional
     public void getDeletedUser() {
         final var user = requireNonNull(User.findByUsername("user_0"));
         QuarkusTransaction.requiringNew().run(() -> User.<User>findById(user.id).softDelete());
