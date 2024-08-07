@@ -59,10 +59,9 @@ public final class S3StorageService implements StorageService {
     }
 
     @Override
-    public void store(final String path, final byte[] data) {
-        client.putObject(
-                b -> b.bucket(config.bucket()).key(path).contentType(mimeTypeService.getMimeType(data)),
-                RequestBody.fromBytes(data));
+    public void store(final String path, final byte[] data) throws IOException {
+        final var mime = mimeTypeService.getMimeType(data);
+        client.putObject(b -> b.bucket(config.bucket()).key(path).contentType(mime), RequestBody.fromBytes(data));
     }
 
     @Override

@@ -44,7 +44,7 @@ public class StoredFile extends EntityBase {
 
     public StoredFile(final String directory, final String name, @Nullable final byte[] data) {
         initServices();
-        this.path = Paths.get(directory, name) + mimeTypeService.getExtension(data);
+        this.path = Paths.get(directory, name) + "." + mimeTypeService.getExtension(data);
         this.data = data;
     }
 

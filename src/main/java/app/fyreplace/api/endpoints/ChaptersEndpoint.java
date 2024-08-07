@@ -1,7 +1,5 @@
 package app.fyreplace.api.endpoints;
 
-import static java.util.Objects.requireNonNullElse;
-
 import app.fyreplace.api.cache.DuplicateRequestKeyGenerator;
 import app.fyreplace.api.data.Chapter;
 import app.fyreplace.api.data.ChapterPositionUpdate;
@@ -10,13 +8,13 @@ import app.fyreplace.api.data.StoredFile;
 import app.fyreplace.api.data.User;
 import app.fyreplace.api.exceptions.ForbiddenException;
 import app.fyreplace.api.services.MimeTypeService;
-import app.fyreplace.api.services.mimetype.KnownMimeTypes;
 import io.quarkus.cache.CacheResult;
 import io.quarkus.panache.common.Sort;
 import io.quarkus.security.Authenticated;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
+import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.POST;
@@ -28,10 +26,10 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 import jakarta.ws.rs.core.SecurityContext;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.UUID;
-import org.apache.tika.metadata.Metadata;
-import org.apache.tika.metadata.Property;
+import javax.imageio.ImageIO;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
@@ -162,18 +160,17 @@ public final class ChaptersEndpoint {
     @APIResponse(responseCode = "400", description = "Bad request")
     @APIResponse(responseCode = "404", description = "Not found")
     public String setChapterImage(
-            @PathParam("id") final UUID id, @PathParam("position") final int position, final byte[] input)
-            throws IOException {
-        mimeTypeService.validate(input, KnownMimeTypes.IMAGE);
+            @PathParam("id") final UUID id, @PathParam("position") final int position, final byte[] input) {
+        mimeTypeService.validate(input);
         final var user = User.getFromSecurityContext(context);
         final var post = Post.<Post>findById(id);
         Post.validateAccess(post, user, false, true);
 
         try {
             final var chapter = getChapter(post, position);
-            final var metadata = mimeTypeService.getMetadata(input);
-            final var width = metadata.getInt(Metadata.IMAGE_WIDTH);
-            final var height = metadata.getInt(Metadata.IMAGE_LENGTH);
+            final var image = ImageIO.read(new ByteArrayInputStream(input));
+            chapter.width = image.getWidth();
+            chapter.height = image.getHeight();
 
             if (chapter.image == null) {
                 chapter.image = new StoredFile("chapters", chapter.id.toString(), input);
@@ -181,12 +178,12 @@ public final class ChaptersEndpoint {
                 chapter.image.store(input);
             }
 
-            chapter.width = requireNonNullElse(width, metadata.getInt(Property.internalInteger("Image Width")));
-            chapter.height = requireNonNullElse(height, metadata.getInt(Property.internalInteger("Image Height")));
             chapter.persist();
             return chapter.image.toString();
         } catch (final IndexOutOfBoundsException e) {
             throw new NotFoundException();
+        } catch (final IOException e) {
+            throw new BadRequestException(e);
         }
     }
 

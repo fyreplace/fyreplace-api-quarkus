@@ -13,7 +13,6 @@ import app.fyreplace.api.exceptions.ConflictException;
 import app.fyreplace.api.exceptions.ForbiddenException;
 import app.fyreplace.api.exceptions.GoneException;
 import app.fyreplace.api.services.MimeTypeService;
-import app.fyreplace.api.services.mimetype.KnownMimeTypes;
 import io.quarkus.cache.CacheResult;
 import io.quarkus.panache.common.Sort;
 import io.quarkus.security.Authenticated;
@@ -211,7 +210,7 @@ public final class UsersEndpoint {
     @APIResponse(responseCode = "413", description = "Payload Too Large")
     @APIResponse(responseCode = "415", description = "Unsupported Media Type")
     public String setCurrentUserAvatar(final byte[] input) throws IOException {
-        mimeTypeService.validate(input, KnownMimeTypes.IMAGE);
+        mimeTypeService.validate(input);
         final var user = User.getFromSecurityContext(context, LockModeType.PESSIMISTIC_WRITE);
 
         if (user.avatar == null) {
