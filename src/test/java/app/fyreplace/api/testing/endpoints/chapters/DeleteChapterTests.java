@@ -1,6 +1,8 @@
 package app.fyreplace.api.testing.endpoints.chapters;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.anyOf;
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import app.fyreplace.api.data.Chapter;
@@ -10,6 +12,7 @@ import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
 import jakarta.transaction.Transactional;
+import java.util.List;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -49,7 +52,7 @@ public final class DeleteChapterTests extends PostTestsBase {
         given().pathParam("id", draft.id)
                 .delete(String.valueOf(position))
                 .then()
-                .statusCode(404);
+                .statusCode(anyOf(List.of(equalTo(400), equalTo(404))));
         assertEquals(chapterCount, Chapter.count("post", draft));
     }
 

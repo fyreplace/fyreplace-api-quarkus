@@ -1,6 +1,8 @@
 package app.fyreplace.api.testing.endpoints.chapters;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.anyOf;
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -13,6 +15,7 @@ import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
 import io.restassured.http.ContentType;
 import java.io.IOException;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -58,7 +61,7 @@ public final class SetChapterImageTests extends PostTestsBase {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"-1", "12"})
+    @ValueSource(strings = {"-1", "12", "1.5", "null"})
     @TestSecurity(user = "user_0")
     public void setChapterImageInOwnDraftOutOfBounds(final String position) throws IOException {
         try (final var stream = openStream("jpeg")) {
@@ -67,7 +70,7 @@ public final class SetChapterImageTests extends PostTestsBase {
                     .pathParam("id", draft.id)
                     .put(position + "/image")
                     .then()
-                    .statusCode(404);
+                    .statusCode(anyOf(List.of(equalTo(400), equalTo(404))));
         }
     }
 

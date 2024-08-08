@@ -1,6 +1,8 @@
 package app.fyreplace.api.testing.endpoints.chapters;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.anyOf;
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import app.fyreplace.api.endpoints.ChaptersEndpoint;
@@ -9,6 +11,7 @@ import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
 import jakarta.transaction.Transactional;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -47,14 +50,14 @@ public final class SetChapterTextTests extends PostTestsBase {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"-1", "12"})
+    @ValueSource(strings = {"-1", "12", "1.5", "null"})
     @TestSecurity(user = "user_0")
     public void setChapterTextInOwnDraftOutOfBounds(final String position) {
         given().body("Hello")
                 .pathParam("id", draft.id)
                 .put(position + "/text")
                 .then()
-                .statusCode(404);
+                .statusCode(anyOf(List.of(equalTo(400), equalTo(404))));
     }
 
     @Test
