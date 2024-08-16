@@ -1,7 +1,7 @@
 package app.fyreplace.api.services;
 
 import jakarta.annotation.Nullable;
-import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.HttpHeaders;
 import java.util.Locale;
@@ -9,7 +9,7 @@ import java.util.MissingResourceException;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
-@Dependent
+@RequestScoped
 public final class LocaleService {
     @Context
     HttpHeaders headers;
