@@ -124,14 +124,14 @@ public final class CreateTokenTests extends UserTestsBase {
                 .body(new TokenCreation(normalUserRandomCode.email.user.username, "bad"))
                 .post()
                 .then()
-                .statusCode(404);
+                .statusCode(400);
     }
 
     @Test
     public void createTokenTwice() {
         final var input = new TokenCreation(normalUserRandomCode.email.user.username, normalUserRandomCode.code);
         given().contentType(ContentType.JSON).body(input).post().then().statusCode(201);
-        given().contentType(ContentType.JSON).body(input).post().then().statusCode(404);
+        given().contentType(ContentType.JSON).body(input).post().then().statusCode(400);
     }
 
     @Test
@@ -140,7 +140,7 @@ public final class CreateTokenTests extends UserTestsBase {
                 .body(new TokenCreation(normalUserRandomCode.email.user.username, otherNormalUserRandomCode.code))
                 .post()
                 .then()
-                .statusCode(404);
+                .statusCode(400);
     }
 
     @Test
