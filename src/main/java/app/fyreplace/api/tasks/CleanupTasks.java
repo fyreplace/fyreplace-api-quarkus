@@ -34,7 +34,7 @@ public final class CleanupTasks {
     @Scheduled(cron = "0 5 * * * ?")
     @Transactional
     public void removeOldInactiveUsers() {
-        User.delete("active = false and dateCreated < ?1", Instant.now().minus(User.lifetime));
+        User.delete("active = false and dateCreated < ?1", Instant.now().minus(User.LIFETIME));
     }
 
     @Scheduled(cron = "0 10 * * * ?")

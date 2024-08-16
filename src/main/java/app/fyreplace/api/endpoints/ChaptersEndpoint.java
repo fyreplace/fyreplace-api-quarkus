@@ -14,6 +14,7 @@ import io.quarkus.security.Authenticated;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.NotFoundException;
@@ -83,7 +84,8 @@ public final class ChaptersEndpoint {
     @APIResponse(responseCode = "204", description = "No content")
     @APIResponse(responseCode = "404", description = "Not found")
     @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
-    public Response deleteChapter(@PathParam("id") final UUID id, @PathParam("position") final int position) {
+    public Response deleteChapter(
+            @PathParam("id") final UUID id, @PathParam("position") @PositiveOrZero final int position) {
         final var user = User.getFromSecurityContext(context);
         final var post = Post.<Post>findById(id);
         Post.validateAccess(post, user, false, true);
@@ -101,7 +103,7 @@ public final class ChaptersEndpoint {
     @APIResponse(responseCode = "404", description = "Not found")
     public Response setChapterPosition(
             @PathParam("id") final UUID id,
-            @PathParam("position") final int position,
+            @PathParam("position") @PositiveOrZero final int position,
             @NotNull final ChapterPositionUpdate input) {
         final var user = User.getFromSecurityContext(context);
         final var post = Post.<Post>findById(id);
@@ -135,8 +137,8 @@ public final class ChaptersEndpoint {
     @APIResponse(responseCode = "404", description = "Not found")
     public String setChapterText(
             @PathParam("id") final UUID id,
-            @PathParam("position") final int position,
-            @NotNull @Length(max = 500) String input) {
+            @PathParam("position") @PositiveOrZero final int position,
+            @NotNull @Length(max = Chapter.TEXT_MAX_LENGTH) @Schema(maxLength = Chapter.TEXT_MAX_LENGTH) String input) {
         final var user = User.getFromSecurityContext(context);
         final var post = Post.<Post>findById(id);
         Post.validateAccess(post, user, false, true);
@@ -160,7 +162,9 @@ public final class ChaptersEndpoint {
     @APIResponse(responseCode = "400", description = "Bad request")
     @APIResponse(responseCode = "404", description = "Not found")
     public String setChapterImage(
-            @PathParam("id") final UUID id, @PathParam("position") final int position, final byte[] input) {
+            @PathParam("id") final UUID id,
+            @PathParam("position") @PositiveOrZero final int position,
+            final byte[] input) {
         mimeTypeService.validate(input);
         final var user = User.getFromSecurityContext(context);
         final var post = Post.<Post>findById(id);

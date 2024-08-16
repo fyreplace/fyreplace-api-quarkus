@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
+import org.eclipse.microprofile.openapi.annotations.Operation;
 
 @Path("stored-files")
 public final class StoredFilesEndpoint {
@@ -29,9 +29,7 @@ public final class StoredFilesEndpoint {
 
     @GET
     @Path("{path:.*}")
-    @APIResponse(responseCode = "200", description = "OK")
-    @APIResponse(responseCode = "303", description = "See Other")
-    @APIResponse(responseCode = "404", description = "Not Found")
+    @Operation(hidden = true)
     public Response getStoredFile(@PathParam("path") final String path) throws URISyntaxException {
         final var appUri = new URI(appUrl);
         final var requestUri = storageService.getUri(path);

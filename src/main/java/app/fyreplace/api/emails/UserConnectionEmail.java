@@ -2,9 +2,9 @@ package app.fyreplace.api.emails;
 
 import io.quarkus.qute.CheckedTemplate;
 import io.quarkus.qute.TemplateInstance;
-import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.context.RequestScoped;
 
-@Dependent
+@RequestScoped
 public final class UserConnectionEmail extends EmailBase {
     @Override
     protected String action() {

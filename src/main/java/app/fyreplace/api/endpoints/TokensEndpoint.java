@@ -16,6 +16,7 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.POST;
@@ -63,7 +64,7 @@ public final class TokensEndpoint {
             email.verified = true;
             email.persist();
         } else {
-            throw new NotFoundException();
+            throw new BadRequestException();
         }
 
         email.user.active = true;

@@ -74,10 +74,18 @@ public class User extends UserDependentEntityBase implements Reportable {
             "void",
             "voids"));
 
-    public static Duration lifetime = Duration.ofDays(1);
+    public static final int USERNAME_MIN_LENGTH = 3;
+    public static final int USERNAME_MAX_LENGTH = 50;
+    public static final String USERNAME_PATTERN = "^[\\w.@+-]+$";
+    public static final int BIO_MAX_LENGTH = 3000;
+    public static Duration LIFETIME = Duration.ofDays(1);
 
-    @Column(length = 50, unique = true)
-    @Schema(required = true)
+    @Column(length = USERNAME_MAX_LENGTH, unique = true)
+    @Schema(
+            required = true,
+            minLength = USERNAME_MIN_LENGTH,
+            maxLength = USERNAME_MAX_LENGTH,
+            pattern = USERNAME_PATTERN)
     public String username;
 
     @ManyToOne
@@ -99,7 +107,7 @@ public class User extends UserDependentEntityBase implements Reportable {
     @Schema(required = true, implementation = String.class)
     public StoredFile avatar;
 
-    @Column(length = 3000, nullable = false)
+    @Column(length = BIO_MAX_LENGTH, nullable = false)
     @Schema(required = true)
     public String bio = "";
 
@@ -145,7 +153,7 @@ public class User extends UserDependentEntityBase implements Reportable {
         return Block.count("source = ?1 and target = ?2", currentUser, this) > 0;
     }
 
-    @Schema(required = true)
+    @Schema(required = true, pattern = "^#[A-F0-9]{6}$")
     public String getTint() {
         final var crc = new CRC32();
         crc.update(username.getBytes());

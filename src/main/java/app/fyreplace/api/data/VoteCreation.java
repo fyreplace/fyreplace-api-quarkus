@@ -1,3 +1,5 @@
 package app.fyreplace.api.data;
 
-public record VoteCreation(boolean spread) {}
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+
+public record VoteCreation(@Schema(required = true) boolean spread) {}

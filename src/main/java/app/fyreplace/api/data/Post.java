@@ -28,12 +28,12 @@ public class Post extends AuthoredEntityBase implements Reportable {
 
     @SuppressWarnings("unused")
     @Formula("(select count(*) from comments where comments.post_id = id)")
-    @Schema(required = true)
+    @Schema(required = true, minimum = "0")
     public long commentCount;
 
     @SuppressWarnings("unused")
     @Formula("(select count(*) from votes where votes.post_id = id)")
-    @Schema(required = true)
+    @Schema(required = true, minimum = "0")
     public long voteCount;
 
     public static final Duration shelfLife = Duration.ofDays(7);
