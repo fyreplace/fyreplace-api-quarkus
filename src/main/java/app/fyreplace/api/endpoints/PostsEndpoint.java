@@ -243,7 +243,7 @@ public final class PostsEndpoint {
         final var user = User.getFromSecurityContext(context, null, false);
         final var conditions = new ArrayList<>(List.of("dateCreated > ?1", "published = true", "life > 0"));
         final var sorting = Sort.by("life", "dateCreated", "id");
-        final var deadline = Instant.now().minus(Post.shelfLife);
+        final var deadline = Instant.now().minus(Post.SHELF_LIFE);
 
         if (user != null) {
             conditions.addAll(List.of(

@@ -17,7 +17,6 @@ import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
 import io.restassured.http.ContentType;
 import jakarta.transaction.Transactional;
-import java.time.Duration;
 import java.time.Instant;
 import org.junit.jupiter.api.Test;
 
@@ -65,9 +64,7 @@ public final class VotePostTests extends PostTestsBase {
     public void voteOldPost() {
         QuarkusTransaction.requiringNew()
                 .run(() -> Post.update(
-                        "dateCreated = ?1 where id = ?2",
-                        Instant.now().minus(Post.shelfLife.plus(Duration.ofDays(1))),
-                        post.id));
+                        "dateCreated = ?1 where id = ?2", Instant.now().minus(Post.SHELF_LIFE.plusDays(1)), post.id));
         final var voteCount = Vote.count();
         final var postLife = post.life;
         given().contentType(ContentType.JSON)
@@ -84,9 +81,7 @@ public final class VotePostTests extends PostTestsBase {
     public void voteOldDraft() {
         QuarkusTransaction.requiringNew()
                 .run(() -> Post.update(
-                        "dateCreated = ?1 where id = ?2",
-                        Instant.now().minus(Post.shelfLife.plus(Duration.ofDays(1))),
-                        draft.id));
+                        "dateCreated = ?1 where id = ?2", Instant.now().minus(Post.SHELF_LIFE.plusDays(1)), draft.id));
         final var voteCount = Vote.count();
         final var postLife = draft.life;
         given().contentType(ContentType.JSON)
@@ -162,7 +157,7 @@ public final class VotePostTests extends PostTestsBase {
         final var voteCount = Vote.count();
         given().contentType(ContentType.JSON)
                 .body(new VoteCreation(false))
-                .post(fakeId + "/vote")
+                .post(FAKE_ID + "/vote")
                 .then()
                 .statusCode(404);
         assertEquals(voteCount, Vote.count());
@@ -183,7 +178,7 @@ public final class VotePostTests extends PostTestsBase {
         final var voteCount = Vote.count();
         given().contentType(ContentType.JSON)
                 .body(new VoteCreation(false))
-                .post(fakeId + "/vote")
+                .post(FAKE_ID + "/vote")
                 .then()
                 .statusCode(401);
         assertEquals(voteCount, Vote.count());

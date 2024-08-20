@@ -42,7 +42,8 @@ public final class S3StorageService implements StorageService {
 
             try {
                 b.bucket(config.bucket())
-                        .policy(objectMapper.writeValueAsString(new Policy(Policy.currentVersion, List.of(statement))));
+                        .policy(objectMapper.writeValueAsString(
+                                new Policy(Policy.CURRENT_VERSION, List.of(statement))));
             } catch (final JsonProcessingException e) {
                 throw new RuntimeException(e);
             }

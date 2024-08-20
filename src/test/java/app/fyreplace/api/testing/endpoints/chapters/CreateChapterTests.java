@@ -106,7 +106,7 @@ public final class CreateChapterTests extends PostTestsBase {
     @TestSecurity(user = "user_0")
     public void createChapterInNonExistentPost() {
         final var chapterCount = Chapter.count();
-        given().pathParam("id", fakeId).post().then().statusCode(404);
+        given().pathParam("id", FAKE_ID).post().then().statusCode(404);
         assertEquals(chapterCount, Chapter.count());
     }
 }

@@ -49,7 +49,7 @@ public final class DeleteEmailTests extends UserTestsBase {
     @TestSecurity(user = "user_0")
     public void deleteNonExistentEmail() {
         final var emailCount = Email.count();
-        given().delete(fakeId).then().statusCode(404);
+        given().delete(FAKE_ID).then().statusCode(404);
         assertEquals(emailCount, Email.count());
     }
 

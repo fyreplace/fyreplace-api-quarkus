@@ -109,7 +109,7 @@ public final class DeleteChapterTests extends PostTestsBase {
     @TestSecurity(user = "user_0")
     public void deleteChapterInNonExistentPost(final int position) {
         final var chapterCount = Chapter.count();
-        given().pathParam("id", fakeId).delete(String.valueOf(position)).then().statusCode(404);
+        given().pathParam("id", FAKE_ID).delete(String.valueOf(position)).then().statusCode(404);
         assertEquals(chapterCount, Chapter.count());
     }
 

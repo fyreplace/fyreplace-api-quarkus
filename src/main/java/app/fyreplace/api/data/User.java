@@ -30,7 +30,7 @@ import org.hibernate.annotations.OnDeleteAction;
 @Entity
 @Table(name = "users")
 public class User extends UserDependentEntityBase implements Reportable {
-    public static final Set<String> forbiddenUsernames = new HashSet<>(Arrays.asList(
+    public static final Set<String> FORBIDDEN_USERNAMES = new HashSet<>(Arrays.asList(
             "admin",
             "admins",
             "administrator",
@@ -148,6 +148,7 @@ public class User extends UserDependentEntityBase implements Reportable {
         return new Profile(id, username, avatar != null ? avatar.toString() : null, getTint());
     }
 
+    @SuppressWarnings("unused")
     @Schema(required = true)
     public boolean getBlocked() {
         return Block.count("source = ?1 and target = ?2", currentUser, this) > 0;

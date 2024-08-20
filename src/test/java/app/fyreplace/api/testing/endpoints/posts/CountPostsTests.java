@@ -23,9 +23,9 @@ public final class CountPostsTests extends PostTestsBase {
     @Inject
     DataSeeder dataSeeder;
 
-    private static final int publishedPostCount = 10;
+    private static final int PUBLISHED_POST_COUNT = 10;
 
-    private static final int draftPostCount = 6;
+    private static final int DRAFT_POST_COUNT = 6;
 
     @Test
     @TestSecurity(user = "user_0")
@@ -34,7 +34,7 @@ public final class CountPostsTests extends PostTestsBase {
                 .get("count")
                 .then()
                 .statusCode(200)
-                .body(equalTo(String.valueOf(publishedPostCount)));
+                .body(equalTo(String.valueOf(PUBLISHED_POST_COUNT)));
     }
 
     @Test
@@ -44,7 +44,7 @@ public final class CountPostsTests extends PostTestsBase {
                 .get("count")
                 .then()
                 .statusCode(200)
-                .body(equalTo(String.valueOf(publishedPostCount)));
+                .body(equalTo(String.valueOf(PUBLISHED_POST_COUNT)));
     }
 
     @Test
@@ -54,7 +54,7 @@ public final class CountPostsTests extends PostTestsBase {
                 .get("count")
                 .then()
                 .statusCode(200)
-                .body(equalTo(String.valueOf(draftPostCount)));
+                .body(equalTo(String.valueOf(DRAFT_POST_COUNT)));
     }
 
     @BeforeEach
@@ -64,8 +64,8 @@ public final class CountPostsTests extends PostTestsBase {
         super.beforeEach();
         Post.deleteAll();
         final var user = User.findByUsername("user_0");
-        range(0, publishedPostCount).forEach(i -> dataSeeder.createPost(user, "Post " + i, true, false));
-        range(0, draftPostCount).forEach(i -> dataSeeder.createPost(user, "Post " + i, false, false));
+        range(0, PUBLISHED_POST_COUNT).forEach(i -> dataSeeder.createPost(user, "Post " + i, true, false));
+        range(0, DRAFT_POST_COUNT).forEach(i -> dataSeeder.createPost(user, "Post " + i, false, false));
         range(0, 10).forEach(i -> dataSeeder.createPost(User.findByUsername("user_1"), "Post " + i, false, false));
     }
 }

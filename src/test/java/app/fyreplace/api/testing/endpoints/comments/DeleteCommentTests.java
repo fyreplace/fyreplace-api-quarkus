@@ -100,7 +100,7 @@ public final class DeleteCommentTests extends CommentTestsBase {
     @TestSecurity(user = "user_0")
     public void deleteCommentOnNonExistentPost() {
         final var commentCount = Comment.count();
-        given().pathParam("id", fakeId).delete(String.valueOf(0)).then().statusCode(404);
+        given().pathParam("id", FAKE_ID).delete(String.valueOf(0)).then().statusCode(404);
         assertEquals(commentCount, Comment.count());
     }
 
