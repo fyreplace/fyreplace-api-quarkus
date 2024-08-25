@@ -4,4 +4,4 @@
 {d.res.getString("linkDescription")}
 {d.link}
 
-{d.res.getString("linkEndNotice")}
+{d.res.getString("codeEndNotice")}

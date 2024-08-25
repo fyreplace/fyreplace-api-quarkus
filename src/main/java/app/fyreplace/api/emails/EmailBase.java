@@ -69,7 +69,7 @@ public abstract class EmailBase extends Mail {
 
         final var randomCode = new RandomCode();
         randomCode.email = email;
-        randomCode.code = randomService.generateCode();
+        randomCode.code = randomService.generateCode(RandomCode.LENGTH);
         randomCode.persist();
         code = randomCode;
         return code;
@@ -98,7 +98,7 @@ public abstract class EmailBase extends Mail {
         public final URI websiteUrl;
         public final RandomCode code;
         public final String link;
-        public final Instant expiration = Instant.now().plus(RandomCode.lifetime);
+        public final Instant expiration = Instant.now().plus(RandomCode.LIFETIME);
 
         private TemplateCommonData(
                 ResourceBundle res, String appName, URI appUrl, URI websiteUrl, RandomCode code, String link) {

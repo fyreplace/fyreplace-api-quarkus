@@ -40,7 +40,7 @@ public final class CleanupTasks {
     @Scheduled(cron = "0 10 * * * ?")
     @Transactional
     public void removeOldRandomCodes() {
-        RandomCode.delete("dateCreated < ?1", Instant.now().minus(RandomCode.lifetime));
+        RandomCode.delete("dateCreated < ?1", Instant.now().minus(RandomCode.LIFETIME));
     }
 
     private String scrubConditions(final String... fields) {

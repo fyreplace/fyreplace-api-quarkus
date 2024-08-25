@@ -13,7 +13,7 @@
                 <mj-button mj-class="text" href="{d.link}" rel="noopener noreferrer" padding-bottom="20px">
                     {d.res.getString("button")}
                 </mj-button>
-                <mj-include path="../_link_end_notice.mjml"/>
+                <mj-include path="../_code_end_notice.mjml"/>
             </mj-column>
         </mj-section>
     </mj-body>

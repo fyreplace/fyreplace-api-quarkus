@@ -165,7 +165,7 @@ public final class CreateTokenTests extends UserTestsBase {
     private RandomCode makeRandomCode(final String username) {
         final var code = new RandomCode();
         code.email = requireNonNull(User.findByUsername(username)).mainEmail;
-        code.code = randomService.generateCode();
+        code.code = randomService.generateCode(RandomCode.LENGTH);
         code.persist();
         return code;
     }

@@ -93,7 +93,7 @@ public final class ActivateEmailTests extends UserTestsBase {
         newEmail.persist();
         randomCode = new RandomCode();
         randomCode.email = newEmail;
-        randomCode.code = randomService.generateCode();
+        randomCode.code = randomService.generateCode(RandomCode.LENGTH);
         randomCode.persist();
     }
 }
