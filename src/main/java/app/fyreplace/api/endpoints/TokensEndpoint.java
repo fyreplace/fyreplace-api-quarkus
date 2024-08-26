@@ -8,6 +8,7 @@ import app.fyreplace.api.data.RandomCode;
 import app.fyreplace.api.data.TokenCreation;
 import app.fyreplace.api.data.User;
 import app.fyreplace.api.emails.UserConnectionEmail;
+import app.fyreplace.api.exceptions.ForbiddenException;
 import app.fyreplace.api.services.JwtService;
 import io.quarkus.cache.CacheResult;
 import io.quarkus.elytron.security.common.BcryptUtil;
@@ -88,10 +89,17 @@ public final class TokensEndpoint {
     @RequestBody(required = true)
     @APIResponse(responseCode = "200", description = "OK")
     @APIResponse(responseCode = "400", description = "Bad Request")
+    @APIResponse(responseCode = "403", description = "Not Allowed")
     @APIResponse(responseCode = "404", description = "Not Found")
     @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
     public Response createNewToken(@NotNull @Valid final NewTokenCreation input) {
         final var email = getEmail(input.identifier());
+        final var hasPassword = Password.count("user", email.user) > 0;
+
+        if (hasPassword) {
+            throw new ForbiddenException("user_has_password");
+        }
+
         userConnectionEmail.sendTo(email);
         return Response.ok().build();
     }
