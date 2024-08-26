@@ -1,5 +1,5 @@
 {d.res.getString("codeDescription")}
-{d.code.code}
+{d.code}
 
 {d.res.getString("linkDescription")}
 {d.link}

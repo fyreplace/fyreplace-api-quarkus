@@ -4,6 +4,7 @@ import app.fyreplace.api.data.Email;
 import app.fyreplace.api.data.RandomCode;
 import app.fyreplace.api.services.LocaleService;
 import app.fyreplace.api.services.RandomService;
+import io.quarkus.elytron.security.common.BcryptUtil;
 import io.quarkus.mailer.Mail;
 import io.quarkus.mailer.Mailer;
 import io.quarkus.qute.TemplateInstance;
@@ -41,7 +42,7 @@ public abstract class EmailBase extends Mail {
     @Inject
     LocaleService localeService;
 
-    private RandomCode code;
+    private String randomCodeClearText;
 
     private Email email;
 
@@ -62,17 +63,17 @@ public abstract class EmailBase extends Mail {
                 .setTo(List.of(email.email)));
     }
 
-    protected RandomCode getRandomCode() {
-        if (code != null) {
-            return code;
+    protected String getRandomCode() {
+        if (randomCodeClearText != null) {
+            return randomCodeClearText;
         }
 
+        randomCodeClearText = randomService.generateCode(RandomCode.LENGTH);
         final var randomCode = new RandomCode();
         randomCode.email = email;
-        randomCode.code = randomService.generateCode(RandomCode.LENGTH);
+        randomCode.code = BcryptUtil.bcryptHash(randomCodeClearText);
         randomCode.persist();
-        code = randomCode;
-        return code;
+        return randomCodeClearText;
     }
 
     protected String getLink() {
@@ -96,12 +97,12 @@ public abstract class EmailBase extends Mail {
         public final String appName;
         public final URI appUrl;
         public final URI websiteUrl;
-        public final RandomCode code;
+        public final String code;
         public final String link;
         public final Instant expiration = Instant.now().plus(RandomCode.LIFETIME);
 
         private TemplateCommonData(
-                ResourceBundle res, String appName, URI appUrl, URI websiteUrl, RandomCode code, String link) {
+                ResourceBundle res, String appName, URI appUrl, URI websiteUrl, String code, String link) {
             this.res = res;
             this.appName = appName;
             this.appUrl = appUrl;

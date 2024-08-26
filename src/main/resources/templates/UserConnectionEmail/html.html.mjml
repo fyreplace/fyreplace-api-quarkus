@@ -5,7 +5,7 @@
             <mj-column padding="0">
                 <mj-include path="../_logo.mjml"/>
                 <mj-text mj-class="text" padding-bottom="20px">{d.res.getString("codeDescription")}</mj-text>
-                <mj-text mj-class="text" font-size="36px" font-weight="bold" padding-bottom="20px">{d.code.code}</mj-text>
+                <mj-text mj-class="text" font-size="36px" font-weight="bold" padding-bottom="20px">{d.code}</mj-text>
                 <mj-text mj-class="text" padding-bottom="20px">{d.res.getString("linkDescription")}</mj-text>
                 <mj-button mj-class="text" href="{d.link}" rel="noopener noreferrer" padding-bottom="20px">
                     {d.res.getString("button")}

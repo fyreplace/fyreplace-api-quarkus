@@ -10,6 +10,7 @@ import app.fyreplace.api.emails.EmailVerificationEmail;
 import app.fyreplace.api.exceptions.ConflictException;
 import app.fyreplace.api.exceptions.ForbiddenException;
 import io.quarkus.cache.CacheResult;
+import io.quarkus.elytron.security.common.BcryptUtil;
 import io.quarkus.panache.common.Sort;
 import io.quarkus.security.Authenticated;
 import jakarta.inject.Inject;
@@ -140,14 +141,17 @@ public final class EmailsEndpoint {
     @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
     public Response activateEmail(@NotNull @Valid final EmailActivation input) {
         final var email = Email.<Email>find("email", input.email()).firstResult();
-        final var randomCode = RandomCode.<RandomCode>find("email = ?1 and code = ?2", email, input.code())
-                .firstResult();
 
-        if (randomCode == null) {
-            throw new NotFoundException();
+        try (final var stream = RandomCode.<RandomCode>stream("email", email)) {
+            var randomCode = stream.filter(rc -> BcryptUtil.matches(input.code(), rc.code))
+                    .findFirst();
+
+            if (randomCode.isPresent()) {
+                randomCode.get().validateEmail();
+                return Response.ok().build();
+            }
         }
 
-        randomCode.validateEmail();
-        return Response.ok().build();
+        throw new NotFoundException();
     }
 }

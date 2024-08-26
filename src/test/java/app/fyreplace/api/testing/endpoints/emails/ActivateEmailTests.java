@@ -11,6 +11,7 @@ import app.fyreplace.api.data.User;
 import app.fyreplace.api.endpoints.EmailsEndpoint;
 import app.fyreplace.api.services.RandomService;
 import app.fyreplace.api.testing.UserTestsBase;
+import io.quarkus.elytron.security.common.BcryptUtil;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
@@ -27,14 +28,14 @@ public final class ActivateEmailTests extends UserTestsBase {
     RandomService randomService;
 
     private Email newEmail;
-
     private RandomCode randomCode;
+    private String randomCodeClearText;
 
     @Test
     @TestSecurity(user = "user_0")
     public void activateEmail() {
         given().contentType(ContentType.JSON)
-                .body(new EmailActivation(newEmail.email, randomCode.code))
+                .body(new EmailActivation(newEmail.email, randomCodeClearText))
                 .post("activate")
                 .then()
                 .statusCode(200);
@@ -45,7 +46,7 @@ public final class ActivateEmailTests extends UserTestsBase {
     @TestSecurity(user = "user_0")
     public void activateEmailWithInvalidEmail() {
         given().contentType(ContentType.JSON)
-                .body(new EmailActivation("invalid", randomCode.code))
+                .body(new EmailActivation("invalid", randomCodeClearText))
                 .post("activate")
                 .then()
                 .statusCode(400);
@@ -57,7 +58,7 @@ public final class ActivateEmailTests extends UserTestsBase {
     public void activateEmailWithOtherEmail() {
         final var otherUser = requireNonNull(User.findByUsername("user_1"));
         given().contentType(ContentType.JSON)
-                .body(new EmailActivation(otherUser.mainEmail.email, randomCode.code))
+                .body(new EmailActivation(otherUser.mainEmail.email, randomCodeClearText))
                 .post("activate")
                 .then()
                 .statusCode(404);
@@ -93,7 +94,8 @@ public final class ActivateEmailTests extends UserTestsBase {
         newEmail.persist();
         randomCode = new RandomCode();
         randomCode.email = newEmail;
-        randomCode.code = randomService.generateCode(RandomCode.LENGTH);
+        randomCodeClearText = randomService.generateCode(RandomCode.LENGTH);
+        randomCode.code = BcryptUtil.bcryptHash(randomCodeClearText);
         randomCode.persist();
     }
 }
