@@ -3,7 +3,6 @@ package app.fyreplace.api.testing.endpoints.chapters;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.isA;
-import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import app.fyreplace.api.data.Chapter;
@@ -41,7 +40,7 @@ public final class CreateChapterTests extends PostTestsBase {
                 .statusCode(201)
                 .body("id", isA(String.class))
                 .body("text", equalTo(""))
-                .body("image", nullValue())
+                .body("image", equalTo(""))
                 .body("width", equalTo(0))
                 .body("height", equalTo(0));
         assertEquals(chapterCount + 1, Chapter.count("post", draft));

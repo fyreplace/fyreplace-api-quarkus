@@ -4,7 +4,6 @@ import static io.restassured.RestAssured.given;
 import static java.util.Objects.requireNonNull;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
 
 import app.fyreplace.api.data.User;
 import app.fyreplace.api.endpoints.UsersEndpoint;
@@ -30,7 +29,7 @@ public final class GetCurrentUserTests extends UserTestsBase {
                 .body("dateCreated", notNullValue())
                 .body("username", equalTo(user.username))
                 .body("rank", equalTo(User.Rank.CITIZEN.name()))
-                .body("avatar", nullValue())
+                .body("avatar", equalTo(""))
                 .body("bio", equalTo(""))
                 .body("banned", equalTo(false))
                 .body("blocked", equalTo(false));
