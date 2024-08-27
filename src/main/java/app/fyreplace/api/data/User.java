@@ -103,7 +103,7 @@ public class User extends UserDependentEntityBase implements Reportable {
 
     @OneToOne(cascade = CascadeType.PERSIST)
     @OnDelete(action = OnDeleteAction.SET_NULL)
-    @JsonSerialize(using = StoredFile.Serializer.class)
+    @JsonSerialize(using = StoredFile.Serializer.class, nullsUsing = StoredFile.Serializer.class)
     @Schema(required = true, implementation = String.class)
     public StoredFile avatar;
 

@@ -90,9 +90,9 @@ public class StoredFile extends EntityBase {
     public static final class Serializer extends JsonSerializer<StoredFile> {
         @Override
         public void serialize(
-                final StoredFile value, final JsonGenerator generator, final SerializerProvider serializers)
+                @Nullable final StoredFile value, final JsonGenerator generator, final SerializerProvider serializers)
                 throws IOException {
-            generator.writeString(value.toString());
+            generator.writeString(value != null ? value.toString() : "");
         }
     }
 }
