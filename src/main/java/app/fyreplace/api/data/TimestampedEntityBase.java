@@ -12,7 +12,7 @@ import org.hibernate.annotations.SourceType;
 public abstract class TimestampedEntityBase extends EntityBase {
     @Column(nullable = false)
     @CreationTimestamp(source = SourceType.DB)
-    @Schema(required = true)
+    @Schema(required = true, implementation = Instant.class)
     public Instant dateCreated;
 
     public static Sort sorting() {
