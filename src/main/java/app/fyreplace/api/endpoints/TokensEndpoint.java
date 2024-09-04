@@ -8,6 +8,7 @@ import app.fyreplace.api.data.RandomCode;
 import app.fyreplace.api.data.TokenCreation;
 import app.fyreplace.api.data.User;
 import app.fyreplace.api.emails.UserConnectionEmail;
+import app.fyreplace.api.exceptions.ExplainedFailure;
 import app.fyreplace.api.exceptions.ForbiddenException;
 import app.fyreplace.api.services.JwtService;
 import io.quarkus.cache.CacheResult;
@@ -94,7 +95,13 @@ public final class TokensEndpoint {
     @RequestBody(required = true)
     @APIResponse(responseCode = "200", description = "OK")
     @APIResponse(responseCode = "400", description = "Bad Request")
-    @APIResponse(responseCode = "403", description = "Not Allowed")
+    @APIResponse(
+            responseCode = "403",
+            description = "Not Allowed",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON,
+                            schema = @Schema(implementation = ExplainedFailure.class)))
     @APIResponse(responseCode = "404", description = "Not Found")
     @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
     public Response createNewToken(@NotNull @Valid final NewTokenCreation input) {

@@ -6,6 +6,7 @@ import app.fyreplace.api.data.ChapterPositionUpdate;
 import app.fyreplace.api.data.Post;
 import app.fyreplace.api.data.StoredFile;
 import app.fyreplace.api.data.User;
+import app.fyreplace.api.exceptions.ExplainedFailure;
 import app.fyreplace.api.exceptions.ForbiddenException;
 import app.fyreplace.api.services.MimeTypeService;
 import io.quarkus.cache.CacheResult;
@@ -57,6 +58,13 @@ public final class ChaptersEndpoint {
             description = "Created",
             content =
                     @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = Chapter.class)))
+    @APIResponse(
+            responseCode = "403",
+            description = "Not Allowed",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON,
+                            schema = @Schema(implementation = ExplainedFailure.class)))
     @APIResponse(responseCode = "404", description = "Not found")
     @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
     public Response createChapter(@PathParam("id") final UUID id) {

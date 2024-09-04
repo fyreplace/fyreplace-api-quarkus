@@ -10,6 +10,7 @@ import app.fyreplace.api.data.SubscriptionUpdate;
 import app.fyreplace.api.data.User;
 import app.fyreplace.api.data.Vote;
 import app.fyreplace.api.data.VoteCreation;
+import app.fyreplace.api.exceptions.ExplainedFailure;
 import app.fyreplace.api.exceptions.ForbiddenException;
 import io.quarkus.cache.CacheResult;
 import io.quarkus.panache.common.Sort;
@@ -177,6 +178,13 @@ public final class PostsEndpoint {
     @RequestBody(required = true)
     @APIResponse(responseCode = "200", description = "OK")
     @APIResponse(responseCode = "400", description = "Bad Request")
+    @APIResponse(
+            responseCode = "403",
+            description = "Not Allowed",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON,
+                            schema = @Schema(implementation = ExplainedFailure.class)))
     @APIResponse(responseCode = "404", description = "Not Found")
     @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
     public Response publishPost(@PathParam("id") final UUID id, @NotNull @Valid final PostPublication input) {
@@ -199,6 +207,13 @@ public final class PostsEndpoint {
     @RequestBody(required = true)
     @APIResponse(responseCode = "200", description = "OK")
     @APIResponse(responseCode = "400", description = "Bad Request")
+    @APIResponse(
+            responseCode = "403",
+            description = "Not Allowed",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON,
+                            schema = @Schema(implementation = ExplainedFailure.class)))
     @APIResponse(responseCode = "404", description = "Not Found")
     @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
     public Response votePost(@PathParam("id") final UUID id, @NotNull @Valid final VoteCreation input) {

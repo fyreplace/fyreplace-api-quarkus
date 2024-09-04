@@ -7,6 +7,7 @@ import app.fyreplace.api.data.Post;
 import app.fyreplace.api.data.ReportUpdate;
 import app.fyreplace.api.data.Subscription;
 import app.fyreplace.api.data.User;
+import app.fyreplace.api.exceptions.ExplainedFailure;
 import app.fyreplace.api.exceptions.ForbiddenException;
 import io.quarkus.cache.CacheResult;
 import io.quarkus.security.Authenticated;
@@ -68,6 +69,13 @@ public final class CommentsEndpoint {
             description = "Created",
             content =
                     @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = Comment.class)))
+    @APIResponse(
+            responseCode = "403",
+            description = "Not Allowed",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON,
+                            schema = @Schema(implementation = ExplainedFailure.class)))
     @APIResponse(responseCode = "404", description = "Not Found")
     @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
     public Response createComment(@PathParam("id") final UUID id, @NotNull @Valid final CommentCreation input) {
@@ -94,6 +102,13 @@ public final class CommentsEndpoint {
     @Authenticated
     @Transactional
     @APIResponse(responseCode = "204", description = "No Content")
+    @APIResponse(
+            responseCode = "403",
+            description = "Not Allowed",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON,
+                            schema = @Schema(implementation = ExplainedFailure.class)))
     @APIResponse(responseCode = "404", description = "Not Found")
     @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
     public Response deleteComment(
@@ -117,6 +132,13 @@ public final class CommentsEndpoint {
     @Transactional
     @RequestBody(required = true)
     @APIResponse(responseCode = "200", description = "OK")
+    @APIResponse(
+            responseCode = "403",
+            description = "Not Allowed",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON,
+                            schema = @Schema(implementation = ExplainedFailure.class)))
     @APIResponse(responseCode = "404", description = "Not Found")
     public Response setCommentReported(
             @PathParam("id") final UUID id,
