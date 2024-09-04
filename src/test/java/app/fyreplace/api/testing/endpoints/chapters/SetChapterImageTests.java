@@ -180,7 +180,7 @@ public final class SetChapterImageTests extends PostTestsBase {
         try (final var stream = openStream("jpeg")) {
             given().contentType(ContentType.BINARY)
                     .body(stream.readAllBytes())
-                    .pathParam("id", fakeId)
+                    .pathParam("id", FAKE_ID)
                     .put(position + "/image")
                     .then()
                     .statusCode(404);

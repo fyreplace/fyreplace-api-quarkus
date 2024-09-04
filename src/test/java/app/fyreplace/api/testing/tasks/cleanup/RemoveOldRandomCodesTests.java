@@ -28,7 +28,7 @@ public final class RemoveOldRandomCodesTests extends UserTestsBase {
     public void removeOldRandomCodes() {
         final var randomCode = new RandomCode();
         randomCode.email = requireNonNull(User.findByUsername("user_0")).mainEmail;
-        randomCode.code = randomService.generateCode();
+        randomCode.code = randomService.generateCode(RandomCode.LENGTH);
         randomCode.persist();
         final var randomCodeCount = RandomCode.count();
         RandomCode.update("dateCreated", Instant.now().minus(Duration.ofDays(2)));

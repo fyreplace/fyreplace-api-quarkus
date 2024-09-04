@@ -4,11 +4,13 @@ import app.fyreplace.api.data.Email;
 import app.fyreplace.api.data.RandomCode;
 import app.fyreplace.api.services.LocaleService;
 import app.fyreplace.api.services.RandomService;
+import io.quarkus.elytron.security.common.BcryptUtil;
 import io.quarkus.mailer.Mail;
 import io.quarkus.mailer.Mailer;
 import io.quarkus.qute.TemplateInstance;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.core.UriBuilder;
+import java.net.URI;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -19,17 +21,17 @@ import java.util.ResourceBundle;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 public abstract class EmailBase extends Mail {
-    @ConfigProperty(name = "app.url")
-    String appUrl;
-
     @ConfigProperty(name = "app.name")
     String appName;
 
+    @ConfigProperty(name = "app.url")
+    URI appUrl;
+
     @ConfigProperty(name = "app.front.url")
-    String appFrontUrl;
+    URI appFrontUrl;
 
     @ConfigProperty(name = "app.website.url")
-    String appWebsiteUrl;
+    URI appWebsiteUrl;
 
     @Inject
     Mailer mailer;
@@ -40,7 +42,7 @@ public abstract class EmailBase extends Mail {
     @Inject
     LocaleService localeService;
 
-    private RandomCode code;
+    private String randomCodeClearText;
 
     private Email email;
 
@@ -61,21 +63,21 @@ public abstract class EmailBase extends Mail {
                 .setTo(List.of(email.email)));
     }
 
-    protected RandomCode getRandomCode() {
-        if (code != null) {
-            return code;
+    protected String getRandomCode() {
+        if (randomCodeClearText != null) {
+            return randomCodeClearText;
         }
 
+        randomCodeClearText = randomService.generateCode(RandomCode.LENGTH);
         final var randomCode = new RandomCode();
         randomCode.email = email;
-        randomCode.code = randomService.generateCode();
+        randomCode.code = BcryptUtil.bcryptHash(randomCodeClearText);
         randomCode.persist();
-        code = randomCode;
-        return code;
+        return randomCodeClearText;
     }
 
     protected String getLink() {
-        return UriBuilder.fromUri(appFrontUrl)
+        return UriBuilder.fromUri(appFrontUrl.toString())
                 .queryParam("action", action())
                 .fragment(email.email + ':' + getRandomCode())
                 .build()
@@ -87,23 +89,23 @@ public abstract class EmailBase extends Mail {
     }
 
     protected TemplateCommonData getTemplateCommonData() {
-        return new TemplateCommonData(getResourceBundle(), appUrl, appName, appWebsiteUrl, getRandomCode(), getLink());
+        return new TemplateCommonData(getResourceBundle(), appName, appUrl, appWebsiteUrl, getRandomCode(), getLink());
     }
 
     public static final class TemplateCommonData {
         public final ResourceBundle res;
-        public final String appUrl;
         public final String appName;
-        public final String websiteUrl;
-        public final RandomCode code;
+        public final URI appUrl;
+        public final URI websiteUrl;
+        public final String code;
         public final String link;
-        public final Instant expiration = Instant.now().plus(RandomCode.lifetime);
+        public final Instant expiration = Instant.now().plus(RandomCode.LIFETIME);
 
         private TemplateCommonData(
-                ResourceBundle res, String appUrl, String appName, String websiteUrl, RandomCode code, String link) {
+                ResourceBundle res, String appName, URI appUrl, URI websiteUrl, String code, String link) {
             this.res = res;
-            this.appUrl = appUrl;
             this.appName = appName;
+            this.appUrl = appUrl;
             this.websiteUrl = websiteUrl;
             this.code = code;
             this.link = link;

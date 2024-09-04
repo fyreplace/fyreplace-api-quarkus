@@ -31,15 +31,17 @@ public final class CreateTokenTests extends UserTestsBase {
     RandomService randomService;
 
     private RandomCode normalUserRandomCode;
-    private RandomCode otherNormalUserRandomCode;
+    private String normalUserRandomCodeClearText;
+    private String otherNormalUserRandomCodeClearText;
     private RandomCode newUserRandomCode;
+    private String newUserRandomCodeClearText;
     private Password password;
 
     @Test
     public void createTokenWithUsername() {
         final var randomCodeCount = RandomCode.count();
         given().contentType(ContentType.JSON)
-                .body(new TokenCreation(normalUserRandomCode.email.user.username, normalUserRandomCode.code))
+                .body(new TokenCreation(normalUserRandomCode.email.user.username, normalUserRandomCodeClearText))
                 .post()
                 .then()
                 .statusCode(201)
@@ -53,7 +55,7 @@ public final class CreateTokenTests extends UserTestsBase {
         final var randomCodeCount = RandomCode.count();
         assertFalse(newUserRandomCode.email.verified);
         given().contentType(ContentType.JSON)
-                .body(new TokenCreation(newUserRandomCode.email.user.username, newUserRandomCode.code))
+                .body(new TokenCreation(newUserRandomCode.email.user.username, newUserRandomCodeClearText))
                 .post()
                 .then()
                 .statusCode(201)
@@ -68,7 +70,7 @@ public final class CreateTokenTests extends UserTestsBase {
     public void createTokenWithEmail() {
         final var randomCodeCount = RandomCode.count();
         given().contentType(ContentType.JSON)
-                .body(new TokenCreation(normalUserRandomCode.email.email, normalUserRandomCode.code))
+                .body(new TokenCreation(normalUserRandomCode.email.email, normalUserRandomCodeClearText))
                 .post()
                 .then()
                 .statusCode(201)
@@ -82,7 +84,7 @@ public final class CreateTokenTests extends UserTestsBase {
         final var randomCodeCount = RandomCode.count();
         assertFalse(newUserRandomCode.email.verified);
         given().contentType(ContentType.JSON)
-                .body(new TokenCreation(newUserRandomCode.email.email, newUserRandomCode.code))
+                .body(new TokenCreation(newUserRandomCode.email.email, newUserRandomCodeClearText))
                 .post()
                 .then()
                 .statusCode(201)
@@ -112,7 +114,7 @@ public final class CreateTokenTests extends UserTestsBase {
     @Test
     public void createTokenWithInvalidUsername() {
         given().contentType(ContentType.JSON)
-                .body(new TokenCreation("bad", normalUserRandomCode.code))
+                .body(new TokenCreation("bad", normalUserRandomCodeClearText))
                 .post()
                 .then()
                 .statusCode(404);
@@ -129,7 +131,7 @@ public final class CreateTokenTests extends UserTestsBase {
 
     @Test
     public void createTokenTwice() {
-        final var input = new TokenCreation(normalUserRandomCode.email.user.username, normalUserRandomCode.code);
+        final var input = new TokenCreation(normalUserRandomCode.email.user.username, normalUserRandomCodeClearText);
         given().contentType(ContentType.JSON).body(input).post().then().statusCode(201);
         given().contentType(ContentType.JSON).body(input).post().then().statusCode(400);
     }
@@ -137,7 +139,7 @@ public final class CreateTokenTests extends UserTestsBase {
     @Test
     public void createTokenWithOtherCode() {
         given().contentType(ContentType.JSON)
-                .body(new TokenCreation(normalUserRandomCode.email.user.username, otherNormalUserRandomCode.code))
+                .body(new TokenCreation(normalUserRandomCode.email.user.username, otherNormalUserRandomCodeClearText))
                 .post()
                 .then()
                 .statusCode(400);
@@ -153,20 +155,27 @@ public final class CreateTokenTests extends UserTestsBase {
     @Override
     public void beforeEach() {
         super.beforeEach();
-        normalUserRandomCode = makeRandomCode("user_0");
-        otherNormalUserRandomCode = makeRandomCode("user_1");
-        newUserRandomCode = makeRandomCode("user_inactive_0");
+        normalUserRandomCodeClearText = generateCode();
+        normalUserRandomCode = makeRandomCode("user_0", normalUserRandomCodeClearText);
+        otherNormalUserRandomCodeClearText = generateCode();
+        makeRandomCode("user_1", otherNormalUserRandomCodeClearText);
+        newUserRandomCodeClearText = generateCode();
+        newUserRandomCode = makeRandomCode("user_inactive_0", newUserRandomCodeClearText);
         password = new Password();
         password.user = User.findByUsername("user_inactive_1");
         password.password = BcryptUtil.bcryptHash("password");
         password.persist();
     }
 
-    private RandomCode makeRandomCode(final String username) {
-        final var code = new RandomCode();
-        code.email = requireNonNull(User.findByUsername(username)).mainEmail;
-        code.code = randomService.generateCode();
-        code.persist();
-        return code;
+    private RandomCode makeRandomCode(final String username, final String code) {
+        final var randomCode = new RandomCode();
+        randomCode.email = requireNonNull(User.findByUsername(username)).mainEmail;
+        randomCode.code = BcryptUtil.bcryptHash(code);
+        randomCode.persist();
+        return randomCode;
+    }
+
+    private String generateCode() {
+        return randomService.generateCode(RandomCode.LENGTH);
     }
 }

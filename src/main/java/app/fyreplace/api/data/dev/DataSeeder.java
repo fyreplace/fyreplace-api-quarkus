@@ -25,19 +25,19 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 @ApplicationScoped
 public final class DataSeeder {
     @ConfigProperty(name = "app.local-dev")
-    boolean useExampleData;
+    boolean localDev;
 
     @ConfigProperty(name = "app.posts.starting-life")
     int postsStartingLife;
 
     public void onStartup(@Observes final StartupEvent event) {
-        if (useExampleData) {
+        if (localDev) {
             insertData();
         }
     }
 
     public void onShutdown(@Observes final ShutdownEvent event) {
-        if (useExampleData) {
+        if (localDev) {
             deleteData();
         }
     }

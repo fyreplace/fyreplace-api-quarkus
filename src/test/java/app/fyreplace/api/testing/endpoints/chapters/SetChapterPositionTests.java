@@ -169,7 +169,7 @@ public final class SetChapterPositionTests extends PostTestsBase {
         final var oldPosition = chapter.position;
         given().contentType(ContentType.JSON)
                 .body(new ChapterPositionUpdate(to))
-                .pathParam("id", fakeId)
+                .pathParam("id", FAKE_ID)
                 .put(from + "/position")
                 .then()
                 .statusCode(404);

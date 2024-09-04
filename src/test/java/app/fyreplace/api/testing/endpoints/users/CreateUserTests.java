@@ -4,7 +4,6 @@ import static app.fyreplace.api.testing.Assertions.assertSingleEmail;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -37,7 +36,7 @@ public final class CreateUserTests extends UserTestsBase {
                 .body("username", equalTo("new_user"))
                 .body("rank", equalTo(User.Rank.CITIZEN.name()))
                 .body("banned", equalTo(false))
-                .body("avatar", nullValue())
+                .body("avatar", equalTo(""))
                 .body("bio", equalTo(""))
                 .body("banned", equalTo(false));
         assertEquals(userCount + 1, User.count());

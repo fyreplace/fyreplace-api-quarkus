@@ -156,7 +156,7 @@ public final class CreateCommentTests extends CommentTestsBase {
         final var input = new CommentCreation("Text", false);
         given().contentType(ContentType.JSON)
                 .body(input)
-                .pathParam("id", fakeId)
+                .pathParam("id", FAKE_ID)
                 .post()
                 .then()
                 .statusCode(404);

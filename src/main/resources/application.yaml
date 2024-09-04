@@ -40,9 +40,9 @@ mp:
       smallrye:
         operationIdStrategy: "method"
 app:
-  url: ""
   name: "Fyreplace"
   local-dev: false
+  url: ""
   front:
     url: ""
   website:

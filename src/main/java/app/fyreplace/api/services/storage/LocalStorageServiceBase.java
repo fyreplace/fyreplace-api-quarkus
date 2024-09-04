@@ -9,7 +9,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 public abstract class LocalStorageServiceBase implements StorageService {
     @ConfigProperty(name = "app.url")
-    String appUrl;
+    URI appUrl;
 
     @Override
     public URI getUri(final String path) {

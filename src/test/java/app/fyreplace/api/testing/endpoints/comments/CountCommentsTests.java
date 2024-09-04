@@ -27,9 +27,9 @@ public final class CountCommentsTests extends CommentTestsBase {
     @Inject
     DataSeeder dataSeeder;
 
-    private static final int readCommentCount = 10;
+    private static final int READ_COMMENT_COUNT = 10;
 
-    private static final int notReadCommentCount = 6;
+    private static final int NOT_READ_COMMENT_COUNT = 6;
 
     @Test
     @TestSecurity(user = "user_1")
@@ -38,7 +38,7 @@ public final class CountCommentsTests extends CommentTestsBase {
                 .get("count")
                 .then()
                 .statusCode(200)
-                .body(equalTo(String.valueOf(readCommentCount + notReadCommentCount)));
+                .body(equalTo(String.valueOf(READ_COMMENT_COUNT + NOT_READ_COMMENT_COUNT)));
     }
 
     @Test
@@ -49,7 +49,7 @@ public final class CountCommentsTests extends CommentTestsBase {
                 .get("count")
                 .then()
                 .statusCode(200)
-                .body(equalTo(String.valueOf(readCommentCount)));
+                .body(equalTo(String.valueOf(READ_COMMENT_COUNT)));
     }
 
     @Test
@@ -60,7 +60,7 @@ public final class CountCommentsTests extends CommentTestsBase {
                 .get("count")
                 .then()
                 .statusCode(200)
-                .body(equalTo(String.valueOf(notReadCommentCount)));
+                .body(equalTo(String.valueOf(NOT_READ_COMMENT_COUNT)));
     }
 
     @Test
@@ -83,7 +83,7 @@ public final class CountCommentsTests extends CommentTestsBase {
         Comment.deleteAll();
         final var user1 = User.findByUsername("user_1");
         final var user2 = User.findByUsername("user_2");
-        range(0, readCommentCount).forEach(i -> dataSeeder.createComment(user2, post, "Comment " + i, false));
+        range(0, READ_COMMENT_COUNT).forEach(i -> dataSeeder.createComment(user2, post, "Comment " + i, false));
         requireNonNull(user1).subscribeTo(post);
         final var subscription = Subscription.<Subscription>find("user = ?1 and post = ?2", user1, post)
                 .firstResult();
@@ -91,7 +91,7 @@ public final class CountCommentsTests extends CommentTestsBase {
                         "post", Comment.sorting().descending(), post)
                 .firstResult();
         subscription.persist();
-        range(0, notReadCommentCount).forEach(i -> dataSeeder.createComment(user2, post, "Comment " + i, false));
+        range(0, NOT_READ_COMMENT_COUNT).forEach(i -> dataSeeder.createComment(user2, post, "Comment " + i, false));
         range(0, 10)
                 .forEach(i -> dataSeeder.createComment(
                         user2, Post.find("id != ?1", post.id).firstResult(), "Comment " + i, false));

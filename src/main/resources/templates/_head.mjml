@@ -5,29 +5,23 @@
     </mj-attributes>
     <mj-raw>
         <script type="application/ld+json">
-            [
-                {
+            {
+                "@context": "http://schema.org",
+                "@type": "EmailMessage",
+                "expires": "{d.expiration}",
+                "publisher": {
                     "@context": "https://schema.org",
                     "@type": "Organization",
                     "url": "{d.websiteUrl}",
                     "logo": "{d.appUrl}/images/logo-maskable.png",
                     "name": "{d.appName}"
                 },
-                {
-                    "@context": "http://schema.org",
-                    "@type": "EmailMessage",
-                    "expires": "{d.expiration}",
-                    "potentialAction": {
-                        "@type": "ConfirmAction",
-                        "name": "{d.res.getString('button')}",
-                        "target": "{d.link}",
-                        "handler": {
-                            "@type": "HttpActionHandler",
-                            "url": "{d.link}"
-                        }
-                    }
+                "potentialAction": {
+                    "@type": "ViewAction",
+                    "name": "{d.res.getString('button')}",
+                    "url": "{d.link}"
                 }
-            ]
+            }
         </script>
     </mj-raw>
 </mj-head>

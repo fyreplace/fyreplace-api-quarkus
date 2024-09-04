@@ -59,7 +59,7 @@ public final class DeleteSubscriptionTests extends SubscriptionTestsBase {
     @TestSecurity(user = "user_0")
     public void deleteNonExistentSubscription() {
         final var subscriptionCount = Subscription.count("user.username = 'user_0' and unreadCommentCount > 0");
-        given().delete(fakeId).then().statusCode(404);
+        given().delete(FAKE_ID).then().statusCode(404);
         assertEquals(subscriptionCount, Subscription.count("user.username = 'user_0' and unreadCommentCount > 0"));
     }
 }

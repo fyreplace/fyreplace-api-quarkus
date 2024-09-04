@@ -146,7 +146,7 @@ public final class SetChapterTextTests extends PostTestsBase {
         final var chapter = draft.getChapters().getFirst();
         final var oldText = chapter.text;
         given().body("Hello")
-                .pathParam("id", fakeId)
+                .pathParam("id", FAKE_ID)
                 .put(position + "/text")
                 .then()
                 .statusCode(404);

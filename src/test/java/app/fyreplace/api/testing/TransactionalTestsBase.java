@@ -37,7 +37,7 @@ public abstract class TransactionalTestsBase {
     @TestHTTPResource("image.txt")
     URL text;
 
-    protected static final String fakeId = "00000000-0000-0000-0000-000000000000";
+    protected static final String FAKE_ID = "00000000-0000-0000-0000-000000000000";
 
     @BeforeEach
     public void beforeEach() {}

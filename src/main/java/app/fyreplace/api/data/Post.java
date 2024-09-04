@@ -36,7 +36,7 @@ public class Post extends AuthoredEntityBase implements Reportable {
     @Schema(required = true, minimum = "0")
     public long voteCount;
 
-    public static final Duration shelfLife = Duration.ofDays(7);
+    public static final Duration SHELF_LIFE = Duration.ofDays(7);
 
     @Override
     public void softDelete() {
@@ -56,7 +56,7 @@ public class Post extends AuthoredEntityBase implements Reportable {
 
     @JsonIgnore
     public boolean isOld() {
-        return published && Instant.now().isAfter(dateCreated.plus(shelfLife));
+        return published && Instant.now().isAfter(dateCreated.plus(SHELF_LIFE));
     }
 
     public void publish(final int life, final boolean anonymous) {

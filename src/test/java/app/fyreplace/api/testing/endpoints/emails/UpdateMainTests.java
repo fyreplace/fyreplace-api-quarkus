@@ -62,7 +62,7 @@ public final class UpdateMainTests extends UserTestsBase {
     @Test
     @TestSecurity(user = "user_0")
     public void setMainWithNonExistentEmail() {
-        given().put(fakeId + "/main").then().statusCode(404);
+        given().put(FAKE_ID + "/main").then().statusCode(404);
         secondaryEmail = Email.findById(secondaryEmail.id);
         assertFalse(secondaryEmail.isMain());
     }

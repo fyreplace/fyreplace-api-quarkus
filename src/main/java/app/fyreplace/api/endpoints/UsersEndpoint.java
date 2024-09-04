@@ -74,7 +74,7 @@ public final class UsersEndpoint {
     @APIResponse(responseCode = "409", description = "Conflict")
     @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
     public Response createUser(@NotNull @Valid final UserCreation input) {
-        if (User.forbiddenUsernames.contains(input.username())) {
+        if (User.FORBIDDEN_USERNAMES.contains(input.username())) {
             throw new ForbiddenException("username_forbidden");
         } else if (User.count("username", input.username()) > 0) {
             throw new ConflictException("username_taken");

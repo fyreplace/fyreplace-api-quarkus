@@ -11,7 +11,8 @@ import org.hibernate.annotations.OnDeleteAction;
 @Entity
 @Table(name = "random_codes")
 public class RandomCode extends TimestampedEntityBase {
-    public static Duration lifetime = Duration.ofDays(1);
+    public static final int LENGTH = 8;
+    public static final Duration LIFETIME = Duration.ofHours(1);
 
     @ManyToOne(optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)

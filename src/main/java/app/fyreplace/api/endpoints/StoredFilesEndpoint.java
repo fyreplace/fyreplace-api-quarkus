@@ -19,7 +19,7 @@ import org.eclipse.microprofile.openapi.annotations.Operation;
 @Path("stored-files")
 public final class StoredFilesEndpoint {
     @ConfigProperty(name = "app.url")
-    String appUrl;
+    URI appUrl;
 
     @Inject
     StorageService storageService;
@@ -31,10 +31,9 @@ public final class StoredFilesEndpoint {
     @Path("{path:.*}")
     @Operation(hidden = true)
     public Response getStoredFile(@PathParam("path") final String path) throws URISyntaxException {
-        final var appUri = new URI(appUrl);
         final var requestUri = storageService.getUri(path);
 
-        if (!appUri.getHost().equals(requestUri.getHost())) {
+        if (!appUrl.getHost().equals(requestUri.getHost())) {
             throw new RedirectionException(Status.SEE_OTHER, requestUri);
         }
 

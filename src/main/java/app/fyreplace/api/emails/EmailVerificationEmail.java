@@ -23,8 +23,8 @@ public final class EmailVerificationEmail extends EmailBase {
 
     @CheckedTemplate
     public static class Templates {
-        public static native TemplateInstance text(TemplateCommonData d);
+        public static native TemplateInstance text(final TemplateCommonData d);
 
-        public static native TemplateInstance html(TemplateCommonData d);
+        public static native TemplateInstance html(final TemplateCommonData d);
     }
 }

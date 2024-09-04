@@ -35,7 +35,7 @@ public class Chapter extends EntityBase implements Comparable<Chapter> {
 
     @OneToOne(cascade = CascadeType.PERSIST)
     @OnDelete(action = OnDeleteAction.SET_NULL)
-    @JsonSerialize(using = StoredFile.Serializer.class)
+    @JsonSerialize(using = StoredFile.Serializer.class, nullsUsing = StoredFile.Serializer.class)
     @Schema(implementation = String.class)
     public StoredFile image;
 
