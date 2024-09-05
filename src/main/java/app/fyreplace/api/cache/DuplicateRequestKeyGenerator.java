@@ -4,7 +4,6 @@ import static java.util.Objects.requireNonNullElse;
 
 import io.quarkus.cache.CacheKeyGenerator;
 import io.quarkus.cache.CompositeCacheKey;
-import jakarta.annotation.Nullable;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.HttpHeaders;
@@ -17,8 +16,9 @@ public class DuplicateRequestKeyGenerator implements CacheKeyGenerator {
     HttpHeaders headers;
 
     @Override
-    public @Nullable Object generate(final Method method, final Object... methodParams) {
+    public Object generate(final Method method, final Object... methodParams) {
+        final var authorization = requireNonNullElse(headers.getHeaderString("Authorization"), UUID.randomUUID());
         final var requestId = requireNonNullElse(headers.getHeaderString("X-Request-Id"), UUID.randomUUID());
-        return new CompositeCacheKey(headers.getHeaderString("Authorization"), requestId);
+        return new CompositeCacheKey(method, authorization, requestId);
     }
 }
