@@ -85,7 +85,6 @@ public final class PostsEndpoint {
             responseCode = "201",
             description = "Created",
             content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = Post.class)))
-    @APIResponse(responseCode = "400", description = "Bad Request")
     @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
     public Response createPost() {
         final var user = User.getFromSecurityContext(context);

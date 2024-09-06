@@ -16,7 +16,6 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
-import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.POST;
@@ -65,7 +64,7 @@ public final class ChaptersEndpoint {
                     @Content(
                             mediaType = MediaType.APPLICATION_JSON,
                             schema = @Schema(implementation = ExplainedFailure.class)))
-    @APIResponse(responseCode = "404", description = "Not found")
+    @APIResponse(responseCode = "404", description = "Not Found")
     @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
     public Response createChapter(@PathParam("id") final UUID id) {
         final var user = User.getFromSecurityContext(context);
@@ -89,8 +88,9 @@ public final class ChaptersEndpoint {
     @Path("{position}")
     @Authenticated
     @Transactional
-    @APIResponse(responseCode = "204", description = "No content")
-    @APIResponse(responseCode = "404", description = "Not found")
+    @APIResponse(responseCode = "204", description = "No Content")
+    @APIResponse(responseCode = "400", description = "Bad Request")
+    @APIResponse(responseCode = "404", description = "Not Found")
     @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
     public Response deleteChapter(
             @PathParam("id") final UUID id, @PathParam("position") @PositiveOrZero final int position) {
@@ -107,8 +107,8 @@ public final class ChaptersEndpoint {
     @Transactional
     @RequestBody(required = true)
     @APIResponse(responseCode = "200", description = "OK")
-    @APIResponse(responseCode = "400", description = "Bad request")
-    @APIResponse(responseCode = "404", description = "Not found")
+    @APIResponse(responseCode = "400", description = "Bad Request")
+    @APIResponse(responseCode = "404", description = "Not Found")
     public Response setChapterPosition(
             @PathParam("id") final UUID id,
             @PathParam("position") @PositiveOrZero final int position,
@@ -141,8 +141,8 @@ public final class ChaptersEndpoint {
     @Authenticated
     @Transactional
     @APIResponse(responseCode = "200", description = "OK")
-    @APIResponse(responseCode = "400", description = "Bad request")
-    @APIResponse(responseCode = "404", description = "Not found")
+    @APIResponse(responseCode = "400", description = "Bad Request")
+    @APIResponse(responseCode = "404", description = "Not Found")
     public String setChapterText(
             @PathParam("id") final UUID id,
             @PathParam("position") @PositiveOrZero final int position,
@@ -167,12 +167,14 @@ public final class ChaptersEndpoint {
     @Transactional
     @RequestBody(required = true, content = @Content(mediaType = MediaType.APPLICATION_OCTET_STREAM))
     @APIResponse(responseCode = "200", description = "OK")
-    @APIResponse(responseCode = "400", description = "Bad request")
-    @APIResponse(responseCode = "404", description = "Not found")
+    @APIResponse(responseCode = "404", description = "Not Found")
+    @APIResponse(responseCode = "413", description = "Payload Too Large")
+    @APIResponse(responseCode = "415", description = "Unsupported Media Type")
     public String setChapterImage(
             @PathParam("id") final UUID id,
             @PathParam("position") @PositiveOrZero final int position,
-            final byte[] input) {
+            final byte[] input)
+            throws IOException {
         mimeTypeService.validate(input);
         final var user = User.getFromSecurityContext(context);
         final var post = Post.<Post>findById(id);
@@ -194,8 +196,6 @@ public final class ChaptersEndpoint {
             return chapter.image.toString();
         } catch (final IndexOutOfBoundsException e) {
             throw new NotFoundException();
-        } catch (final IOException e) {
-            throw new BadRequestException(e);
         }
     }
 
