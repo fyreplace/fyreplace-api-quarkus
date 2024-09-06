@@ -8,6 +8,7 @@ import app.fyreplace.api.data.RandomCode;
 import app.fyreplace.api.data.User;
 import app.fyreplace.api.emails.EmailVerificationEmail;
 import app.fyreplace.api.exceptions.ConflictException;
+import app.fyreplace.api.exceptions.ExplainedFailure;
 import app.fyreplace.api.exceptions.ForbiddenException;
 import io.quarkus.cache.CacheResult;
 import io.quarkus.elytron.security.common.BcryptUtil;
@@ -65,7 +66,13 @@ public final class EmailsEndpoint {
             responseCode = "201",
             description = "Created",
             content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = Email.class)))
-    @APIResponse(responseCode = "409", description = "Conflict")
+    @APIResponse(
+            responseCode = "409",
+            description = "Conflict",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON,
+                            schema = @Schema(implementation = ExplainedFailure.class)))
     @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
     public Response createEmail(@NotNull @Valid final EmailCreation input) {
         if (Email.count("email", input.email()) > 0) {
@@ -85,6 +92,13 @@ public final class EmailsEndpoint {
     @Authenticated
     @Transactional
     @APIResponse(responseCode = "204", description = "No Content")
+    @APIResponse(
+            responseCode = "403",
+            description = "Not Allowed",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON,
+                            schema = @Schema(implementation = ExplainedFailure.class)))
     @APIResponse(responseCode = "404", description = "Not Found")
     @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
     public Response deleteEmail(@PathParam("id") final UUID id) {
@@ -106,6 +120,13 @@ public final class EmailsEndpoint {
     @Authenticated
     @Transactional
     @APIResponse(responseCode = "200", description = "OK")
+    @APIResponse(
+            responseCode = "403",
+            description = "Not Allowed",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON,
+                            schema = @Schema(implementation = ExplainedFailure.class)))
     @APIResponse(responseCode = "404", description = "Not Found")
     public Response setMainEmail(@PathParam("id") final UUID id) {
         final var user = User.getFromSecurityContext(context);

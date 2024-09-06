@@ -31,6 +31,10 @@ quarkus:
   smallrye-openapi:
     path: "/openapi"
     info-title: "${app.name} API"
+  cache:
+    caffeine:
+      requests:
+        expire-after-write: "60S"
 mp:
   jwt:
     verify:

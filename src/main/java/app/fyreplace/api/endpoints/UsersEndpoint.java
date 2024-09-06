@@ -10,10 +10,12 @@ import app.fyreplace.api.data.User;
 import app.fyreplace.api.data.UserCreation;
 import app.fyreplace.api.emails.UserActivationEmail;
 import app.fyreplace.api.exceptions.ConflictException;
+import app.fyreplace.api.exceptions.ExplainedFailure;
 import app.fyreplace.api.exceptions.ForbiddenException;
 import app.fyreplace.api.exceptions.GoneException;
 import app.fyreplace.api.services.MimeTypeService;
 import io.quarkus.cache.CacheResult;
+import io.quarkus.hibernate.validator.runtime.jaxrs.ViolationReport;
 import io.quarkus.panache.common.Sort;
 import io.quarkus.security.Authenticated;
 import jakarta.annotation.Nullable;
@@ -69,9 +71,27 @@ public final class UsersEndpoint {
             responseCode = "201",
             description = "Created",
             content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = User.class)))
-    @APIResponse(responseCode = "400", description = "Bad Request")
-    @APIResponse(responseCode = "403", description = "Not Allowed")
-    @APIResponse(responseCode = "409", description = "Conflict")
+    @APIResponse(
+            responseCode = "400",
+            description = "Bad Request",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON,
+                            schema = @Schema(implementation = ViolationReport.class)))
+    @APIResponse(
+            responseCode = "403",
+            description = "Not Allowed",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON,
+                            schema = @Schema(implementation = ExplainedFailure.class)))
+    @APIResponse(
+            responseCode = "409",
+            description = "Conflict",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON,
+                            schema = @Schema(implementation = ExplainedFailure.class)))
     @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
     public Response createUser(@NotNull @Valid final UserCreation input) {
         if (User.FORBIDDEN_USERNAMES.contains(input.username())) {
@@ -114,6 +134,13 @@ public final class UsersEndpoint {
     @RequestBody(required = true)
     @APIResponse(responseCode = "200", description = "OK")
     @APIResponse(responseCode = "400", description = "Bad Request")
+    @APIResponse(
+            responseCode = "403",
+            description = "Not Allowed",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON,
+                            schema = @Schema(implementation = ExplainedFailure.class)))
     @APIResponse(responseCode = "404", description = "Not Found")
     public Response setUserBlocked(@PathParam("id") final UUID id, @NotNull @Valid final BlockUpdate input) {
         final var source = User.getFromSecurityContext(context);
@@ -162,6 +189,13 @@ public final class UsersEndpoint {
     @Transactional
     @RequestBody(required = true)
     @APIResponse(responseCode = "200", description = "OK")
+    @APIResponse(
+            responseCode = "403",
+            description = "Not Allowed",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON,
+                            schema = @Schema(implementation = ExplainedFailure.class)))
     @APIResponse(responseCode = "404", description = "Not Found")
     public Response setUserReported(@PathParam("id") final UUID id, @NotNull @Valid final ReportUpdate input) {
         final var source = User.getFromSecurityContext(context);

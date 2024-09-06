@@ -9,11 +9,12 @@ import jakarta.validation.Payload;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+@SuppressWarnings("unused")
 @Retention(RUNTIME)
 @Target({FIELD, PARAMETER})
 @Constraint(validatedBy = RegexValidator.class)
 public @interface Regex {
-    String message() default "Pattern not matched";
+    String message() default "does not match pattern";
 
     Class<?>[] groups() default {};
 
