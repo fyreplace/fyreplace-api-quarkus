@@ -1,6 +1,7 @@
 <mjml>
     <mj-include path="../_head.mjml"/>
     <mj-body>
+        <mj-include path="../_schema.mjml"/>
         <mj-section padding="0">
             <mj-column padding="0">
                 <mj-include path="../_logo.mjml"/>
