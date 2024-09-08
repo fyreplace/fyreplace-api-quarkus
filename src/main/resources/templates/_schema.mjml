@@ -3,6 +3,7 @@
         {
             "@context": "http://schema.org",
             "@type": "EmailMessage",
+            "expires": "{d.expiration}",
             "publisher": {
                 "@context": "https://schema.org",
                 "@type": "Organization",
