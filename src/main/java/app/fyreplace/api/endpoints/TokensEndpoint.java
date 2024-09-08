@@ -23,6 +23,7 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -104,7 +105,9 @@ public final class TokensEndpoint {
                             schema = @Schema(implementation = ExplainedFailure.class)))
     @APIResponse(responseCode = "404", description = "Not Found")
     @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
-    public Response createNewToken(@NotNull @Valid final NewTokenCreation input) {
+    public Response createNewToken(
+            @NotNull @Valid final NewTokenCreation input,
+            @QueryParam("customDeepLinks") final boolean customDeepLinks) {
         final var email = getEmail(input.identifier());
         final var hasPassword = Password.count("user", email.user) > 0;
 
@@ -112,7 +115,7 @@ public final class TokensEndpoint {
             throw new ForbiddenException("user_has_password");
         }
 
-        userConnectionEmail.sendTo(email);
+        userConnectionEmail.sendTo(email, customDeepLinks);
         return Response.ok().build();
     }
 

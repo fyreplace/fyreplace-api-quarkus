@@ -30,6 +30,9 @@ public abstract class EmailBase extends Mail {
     @ConfigProperty(name = "app.front.url")
     URI appFrontUrl;
 
+    @ConfigProperty(name = "app.front.custom-scheme")
+    String appFrontCustomScheme;
+
     @ConfigProperty(name = "app.website.url")
     URI appWebsiteUrl;
 
@@ -42,6 +45,8 @@ public abstract class EmailBase extends Mail {
     @Inject
     LocaleService localeService;
 
+    private boolean customDeepLinks;
+
     private String randomCodeClearText;
 
     private Email email;
@@ -52,8 +57,9 @@ public abstract class EmailBase extends Mail {
 
     protected abstract TemplateInstance htmlTemplate();
 
-    public void sendTo(final Email email) {
+    public void sendTo(final Email email, final boolean customDeepLinks) {
         this.email = email;
+        this.customDeepLinks = customDeepLinks;
         var formatter = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss Z");
         var date = getTemplateCommonData().expiration.atZone(ZoneId.systemDefault());
         mailer.send(this.setSubject(getResourceBundle().getString("subject"))
@@ -78,6 +84,7 @@ public abstract class EmailBase extends Mail {
 
     protected String getLink() {
         return UriBuilder.fromUri(appFrontUrl.toString())
+                .scheme(customDeepLinks ? appFrontCustomScheme : appFrontUrl.getScheme())
                 .queryParam("action", action())
                 .fragment(email.email + ':' + getRandomCode())
                 .build()

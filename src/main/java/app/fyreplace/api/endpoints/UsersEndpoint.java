@@ -93,7 +93,8 @@ public final class UsersEndpoint {
                             mediaType = MediaType.APPLICATION_JSON,
                             schema = @Schema(implementation = ExplainedFailure.class)))
     @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
-    public Response createUser(@NotNull @Valid final UserCreation input) {
+    public Response createUser(
+            @NotNull @Valid final UserCreation input, @QueryParam("customDeepLinks") final boolean customDeepLinks) {
         if (User.FORBIDDEN_USERNAMES.contains(input.username())) {
             throw new ForbiddenException("username_forbidden");
         } else if (User.count("username", input.username()) > 0) {
@@ -113,7 +114,7 @@ public final class UsersEndpoint {
         user.mainEmail = email;
         user.persist();
 
-        userActivationEmail.sendTo(email);
+        userActivationEmail.sendTo(email, customDeepLinks);
         return Response.status(Status.CREATED).entity(user).build();
     }
 
