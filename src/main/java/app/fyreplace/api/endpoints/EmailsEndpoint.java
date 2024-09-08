@@ -74,7 +74,8 @@ public final class EmailsEndpoint {
                             mediaType = MediaType.APPLICATION_JSON,
                             schema = @Schema(implementation = ExplainedFailure.class)))
     @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
-    public Response createEmail(@NotNull @Valid final EmailCreation input) {
+    public Response createEmail(
+            @NotNull @Valid final EmailCreation input, @QueryParam("customDeepLinks") final boolean customDeepLinks) {
         if (Email.count("email", input.email()) > 0) {
             throw new ConflictException("email_taken");
         }
@@ -83,7 +84,7 @@ public final class EmailsEndpoint {
         email.user = User.getFromSecurityContext(context);
         email.email = input.email();
         email.persist();
-        emailVerificationEmail.sendTo(email);
+        emailVerificationEmail.sendTo(email, customDeepLinks);
         return Response.status(Status.CREATED).entity(email).build();
     }
 

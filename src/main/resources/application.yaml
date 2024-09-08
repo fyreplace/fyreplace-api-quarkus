@@ -49,6 +49,7 @@ app:
   url: ""
   front:
     url: ""
+    custom-scheme: "fyreplace"
   website:
     url: ""
   paging:
