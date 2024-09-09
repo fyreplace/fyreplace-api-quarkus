@@ -86,7 +86,7 @@ public abstract class EmailBase extends Mail {
         return UriBuilder.fromUri(appFrontUrl.toString())
                 .scheme(customDeepLinks ? appFrontCustomScheme : appFrontUrl.getScheme())
                 .queryParam("action", action())
-                .fragment(email.email + ':' + getRandomCode())
+                .fragment(getRandomCode())
                 .build()
                 .toString();
     }
