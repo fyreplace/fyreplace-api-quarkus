@@ -17,11 +17,11 @@ public final class MimeTypeService {
 
         while (readers.hasNext()) {
             final var reader = readers.next();
-            final var format = reader.getFormatName().toLowerCase();
+            final var format = reader.getFormatName().toUpperCase();
 
             try {
                 return Arrays.stream(KnownFileType.values())
-                        .filter(m -> m.name.equals(format))
+                        .filter(m -> m.name().equals(format))
                         .findFirst()
                         .orElseThrow()
                         .mime;
@@ -39,7 +39,8 @@ public final class MimeTypeService {
                     .filter(m -> m.mime.equals(mime))
                     .findFirst()
                     .orElseThrow()
-                    .name();
+                    .name()
+                    .toLowerCase();
         } catch (final IOException | NoSuchElementException e) {
             return "unknown";
         }
