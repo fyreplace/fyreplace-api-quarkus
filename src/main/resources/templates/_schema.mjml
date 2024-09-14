@@ -8,7 +8,7 @@
                 "@context": "https://schema.org",
                 "@type": "Organization",
                 "url": "{d.websiteUrl}",
-                "logo": "{d.appUrl}/images/logo-maskable.png",
+                "logo": "{d.makeAppUrl('/images/logo-maskable.png')}",
                 "name": "{d.appName}"
             },
             "potentialAction": {

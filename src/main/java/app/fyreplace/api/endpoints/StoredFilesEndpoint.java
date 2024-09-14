@@ -8,33 +8,33 @@ import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.RedirectionException;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
+import jakarta.ws.rs.core.UriInfo;
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 
 @Path("stored-files")
 public final class StoredFilesEndpoint {
-    @ConfigProperty(name = "app.url")
-    URI appUrl;
-
     @Inject
     StorageService storageService;
 
     @Inject
     MimeTypeService mimeTypeService;
 
+    @Context
+    UriInfo uriInfo;
+
     @GET
     @Path("{path:.*}")
     @Operation(hidden = true)
     public Response getStoredFile(@PathParam("path") final String path) throws URISyntaxException {
-        final var requestUri = storageService.getUri(path);
+        final var pathUri = storageService.getUri(path);
 
-        if (!appUrl.getHost().equals(requestUri.getHost())) {
-            throw new RedirectionException(Status.SEE_OTHER, requestUri);
+        if (!uriInfo.getBaseUri().getHost().equals(pathUri.getHost())) {
+            throw new RedirectionException(Status.SEE_OTHER, pathUri);
         }
 
         try {
