@@ -271,7 +271,7 @@ public class User extends UserDependentEntityBase implements Reportable {
             result = (result << Byte.SIZE) | (bytes[i] & 0xFF);
         }
 
-        return (float)Math.abs((double)result / Long.MAX_VALUE);
+        return (float) Math.abs((double) result / Long.MAX_VALUE);
     }
 
     public enum Rank {
