@@ -162,8 +162,8 @@ public class User extends UserDependentEntityBase implements Reportable {
         final var digest = md5.digest(username.getBytes());
         final var hue = bytesToFloat(digest);
         final var h = hue * 6;
-        final var variance = (h - (float) Math.floor(h)) * 0.25f;
-        final var brightness = (int) h % 2 == 0 ? 1f - variance : 0.75f + variance;
+        final var variance = Math.abs(h - (float) Math.round(h)) * 0.15f;
+        final var brightness = Math.round(h) % 2 == 0 ? 0.75f - variance : 0.6f + variance;
         final var color = Color.HSBtoRGB(hue, 0.5f, brightness);
         return "#%02X%02X%02X".formatted((color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF);
     }
