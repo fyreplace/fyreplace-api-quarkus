@@ -14,7 +14,6 @@ import jakarta.persistence.PostRemove;
 import jakarta.persistence.Table;
 import jakarta.ws.rs.NotAuthorizedException;
 import jakarta.ws.rs.core.SecurityContext;
-import java.awt.Color;
 import java.security.MessageDigest;
 import java.time.Duration;
 import java.time.Instant;
@@ -156,16 +155,16 @@ public class User extends UserDependentEntityBase implements Reportable {
     }
 
     @SneakyThrows
-    @Schema(required = true, pattern = "^#[A-F0-9]{6}$")
-    public String getTint() {
+    @Schema(required = true)
+    public Color getTint() {
         final var md5 = MessageDigest.getInstance("MD5");
         final var digest = md5.digest(username.getBytes());
         final var hue = bytesToFloat(digest);
         final var h = hue * 6;
         final var variance = Math.abs(h - (float) Math.round(h)) * 0.15f;
         final var brightness = Math.round(h) % 2 == 0 ? 0.75f - variance : 0.6f + variance;
-        final var color = Color.HSBtoRGB(hue, 0.5f, brightness);
-        return "#%02X%02X%02X".formatted((color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF);
+        final var color = java.awt.Color.HSBtoRGB(hue, 0.5f, brightness);
+        return new Color((color >> 2 * Byte.SIZE) & 0xFF, (color >> Byte.SIZE) & 0xFF, color & 0xFF);
     }
 
     @Override
@@ -290,5 +289,5 @@ public class User extends UserDependentEntityBase implements Reportable {
             @Schema(required = true) UUID id,
             @Schema(required = true) String username,
             @Schema(required = true) String avatar,
-            @Schema(required = true) String tint) {}
+            @Schema(required = true) Color tint) {}
 }
