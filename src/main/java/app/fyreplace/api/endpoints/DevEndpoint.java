@@ -1,10 +1,8 @@
 package app.fyreplace.api.endpoints;
 
-import app.fyreplace.api.cache.DuplicateRequestKeyGenerator;
 import app.fyreplace.api.data.User;
 import app.fyreplace.api.services.JwtService;
 import io.quarkus.arc.properties.IfBuildProperty;
-import io.quarkus.cache.CacheResult;
 import io.quarkus.elytron.security.common.BcryptUtil;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
@@ -20,7 +18,6 @@ public final class DevEndpoint {
 
     @GET
     @Path("users/{username}/token")
-    @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
     public String getUserToken(@PathParam("username") final String username) {
         final var user = User.findByUsername(username);
 

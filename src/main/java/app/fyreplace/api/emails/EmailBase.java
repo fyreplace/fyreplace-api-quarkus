@@ -9,7 +9,9 @@ import io.quarkus.mailer.Mail;
 import io.quarkus.mailer.Mailer;
 import io.quarkus.qute.TemplateInstance;
 import jakarta.inject.Inject;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.UriBuilder;
+import jakarta.ws.rs.core.UriInfo;
 import java.net.URI;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -23,9 +25,6 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 public abstract class EmailBase extends Mail {
     @ConfigProperty(name = "app.name")
     String appName;
-
-    @ConfigProperty(name = "app.url")
-    URI appUrl;
 
     @ConfigProperty(name = "app.front.url")
     URI appFrontUrl;
@@ -44,6 +43,9 @@ public abstract class EmailBase extends Mail {
 
     @Inject
     LocaleService localeService;
+
+    @Context
+    UriInfo uriInfo;
 
     private boolean customDeepLinks;
 
@@ -85,8 +87,9 @@ public abstract class EmailBase extends Mail {
     protected String getLink() {
         return UriBuilder.fromUri(appFrontUrl.toString())
                 .scheme(customDeepLinks ? appFrontCustomScheme : appFrontUrl.getScheme())
+                .path(email.user.active ? "/login" : "/register")
                 .queryParam("action", action())
-                .fragment(email.email + ':' + getRandomCode())
+                .fragment(getRandomCode())
                 .build()
                 .toString();
     }
@@ -96,9 +99,11 @@ public abstract class EmailBase extends Mail {
     }
 
     protected TemplateCommonData getTemplateCommonData() {
-        return new TemplateCommonData(getResourceBundle(), appName, appUrl, appWebsiteUrl, getRandomCode(), getLink());
+        return new TemplateCommonData(
+                getResourceBundle(), appName, uriInfo.getBaseUri(), appWebsiteUrl, getRandomCode(), getLink());
     }
 
+    @SuppressWarnings("unused")
     public static final class TemplateCommonData {
         public final ResourceBundle res;
         public final String appName;
@@ -116,6 +121,10 @@ public abstract class EmailBase extends Mail {
             this.websiteUrl = websiteUrl;
             this.code = code;
             this.link = link;
+        }
+
+        public URI makeAppUrl(String path) {
+            return UriBuilder.fromUri(appUrl).path(path).build();
         }
     }
 }

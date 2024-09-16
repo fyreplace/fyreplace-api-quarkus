@@ -3,17 +3,17 @@ package app.fyreplace.api.services.storage;
 import app.fyreplace.api.endpoints.StoredFilesEndpoint;
 import app.fyreplace.api.services.StorageService;
 import jakarta.ws.rs.Path;
-import jakarta.ws.rs.core.UriBuilder;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.UriInfo;
 import java.net.URI;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 public abstract class LocalStorageServiceBase implements StorageService {
-    @ConfigProperty(name = "app.url")
-    URI appUrl;
+    @Context
+    UriInfo uriInfo;
 
     @Override
     public URI getUri(final String path) {
         final var pathBase = StoredFilesEndpoint.class.getAnnotation(Path.class).value();
-        return UriBuilder.fromUri(appUrl).path(pathBase).path(path).build();
+        return uriInfo.getBaseUriBuilder().path(pathBase).path(path).build();
     }
 }

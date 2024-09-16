@@ -14,7 +14,7 @@ import jakarta.persistence.PostRemove;
 import jakarta.persistence.Table;
 import jakarta.ws.rs.NotAuthorizedException;
 import jakarta.ws.rs.core.SecurityContext;
-import java.awt.Color;
+import java.security.MessageDigest;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Arrays;
@@ -22,7 +22,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import java.util.zip.CRC32;
+import lombok.SneakyThrows;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -154,16 +154,17 @@ public class User extends UserDependentEntityBase implements Reportable {
         return Block.count("source = ?1 and target = ?2", currentUser, this) > 0;
     }
 
-    @Schema(required = true, pattern = "^#[A-F0-9]{6}$")
-    public String getTint() {
-        final var crc = new CRC32();
-        crc.update(username.getBytes());
-        final var hue = (float) (crc.getValue() / Math.pow(2, 32));
+    @SneakyThrows
+    @Schema(required = true)
+    public Color getTint() {
+        final var md5 = MessageDigest.getInstance("MD5");
+        final var digest = md5.digest(username.getBytes());
+        final var hue = bytesToFloat(digest);
         final var h = hue * 6;
-        final var variance = (h - (float) Math.floor(h)) * 0.25f;
-        final var brightness = (int) h % 2 == 0 ? 1f - variance : 0.75f + variance;
-        final var color = Color.HSBtoRGB(hue, 0.5f, brightness);
-        return "#%02X%02X%02X".formatted((color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF);
+        final var variance = Math.abs(h - (float) Math.round(h)) * 0.15f;
+        final var brightness = Math.round(h) % 2 == 0 ? 0.75f - variance : 0.6f + variance;
+        final var color = java.awt.Color.HSBtoRGB(hue, 0.5f, brightness);
+        return new Color((color >> 2 * Byte.SIZE) & 0xFF, (color >> Byte.SIZE) & 0xFF, color & 0xFF);
     }
 
     @Override
@@ -261,6 +262,17 @@ public class User extends UserDependentEntityBase implements Reportable {
         return user;
     }
 
+    private static float bytesToFloat(byte[] bytes) {
+        final var bytesToUse = Math.min(bytes.length, Long.BYTES);
+        var result = 0L;
+
+        for (var i = 0; i < bytesToUse; i++) {
+            result = (result << Byte.SIZE) | (bytes[i] & 0xFF);
+        }
+
+        return (float) Math.abs((double) result / Long.MAX_VALUE);
+    }
+
     public enum Rank {
         CITIZEN,
         MODERATOR,
@@ -277,5 +289,5 @@ public class User extends UserDependentEntityBase implements Reportable {
             @Schema(required = true) UUID id,
             @Schema(required = true) String username,
             @Schema(required = true) String avatar,
-            @Schema(required = true) String tint) {}
+            @Schema(required = true) Color tint) {}
 }

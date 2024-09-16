@@ -1,5 +1,6 @@
 package app.fyreplace.api.data.dev;
 
+import static java.util.Objects.requireNonNull;
 import static java.util.stream.IntStream.range;
 
 import app.fyreplace.api.data.Block;
@@ -19,6 +20,7 @@ import io.quarkus.runtime.StartupEvent;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
 import jakarta.transaction.Transactional;
+import java.io.IOException;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 @SuppressWarnings({"UnusedReturnValue", "unused"})
@@ -44,8 +46,8 @@ public final class DataSeeder {
 
     @Transactional
     public void insertData() {
-        range(0, 20).forEach(i -> createUser("user_" + i, true));
-        range(0, 10).forEach(i -> createUser("user_inactive_" + i, false));
+        range(0, 20).forEach(i -> createUser("user_" + i, true, i % 2 == 0));
+        range(0, 10).forEach(i -> createUser("user_inactive_" + i, false, false));
         final var user = User.findByUsername("user_0");
         range(0, 20).forEach(i -> createPost(user, "Post " + i, true, false));
         range(0, 20).forEach(i -> createPost(user, "Draft " + i, false, false));
@@ -74,11 +76,23 @@ public final class DataSeeder {
     }
 
     @Transactional(Transactional.TxType.REQUIRES_NEW)
-    public User createUser(final String username, final boolean active) {
+    public User createUser(final String username, final boolean active, final boolean hasAvatar) {
         final var user = new User();
         user.username = username;
         user.active = active;
         user.persist();
+
+        if (hasAvatar) {
+            try (final var stream = getClass().getResourceAsStream("/META-INF/resources/images/logo-maskable.png")) {
+                final var storedFile = new StoredFile(
+                        "avatars", user.username, requireNonNull(stream).readAllBytes());
+                storedFile.persist();
+                user.avatar = storedFile;
+                user.persist();
+            } catch (final IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
 
         final var email = new Email();
         email.user = user;

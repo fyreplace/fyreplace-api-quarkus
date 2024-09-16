@@ -1,15 +1,13 @@
 package app.fyreplace.api.services.mimetype;
 
 public enum KnownFileType {
-    JPEG("jpeg", "image/jpeg"),
-    PNG("png", "image/png"),
-    WEBP("webp", "image/webp");
+    JPEG("image/jpeg"),
+    PNG("image/png"),
+    WEBP("image/webp");
 
-    public final String name;
     public final String mime;
 
-    KnownFileType(String name, String mime) {
-        this.name = name;
+    KnownFileType(String mime) {
         this.mime = mime;
     }
 }
