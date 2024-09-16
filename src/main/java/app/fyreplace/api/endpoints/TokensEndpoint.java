@@ -51,7 +51,10 @@ public final class TokensEndpoint {
     @APIResponse(
             responseCode = "201",
             description = "Created",
-            content = @Content(mediaType = MediaType.TEXT_PLAIN, schema = @Schema(implementation = String.class)))
+            content =
+                    @Content(
+                            mediaType = MediaType.TEXT_PLAIN,
+                            schema = @Schema(implementation = String.class, format = "password")))
     @APIResponse(responseCode = "400", description = "Bad Request")
     @APIResponse(responseCode = "404", description = "Not Found")
     @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
@@ -85,7 +88,13 @@ public final class TokensEndpoint {
     @GET
     @Path("new")
     @Authenticated
-    @APIResponse(responseCode = "200", description = "OK")
+    @APIResponse(
+            responseCode = "200",
+            description = "OK",
+            content =
+                    @Content(
+                            mediaType = MediaType.TEXT_PLAIN,
+                            schema = @Schema(implementation = String.class, format = "password")))
     public String getNewToken() {
         return jwtService.makeJwt(User.getFromSecurityContext(context));
     }

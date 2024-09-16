@@ -6,4 +6,4 @@ import org.hibernate.validator.constraints.Length;
 
 public record TokenCreation(
         @NotBlank @Length(max = Email.EMAIL_MAX_LENGTH) @Schema(maxLength = Email.EMAIL_MAX_LENGTH) String identifier,
-        @NotBlank String secret) {}
+        @NotBlank @Schema(format = "password") String secret) {}
