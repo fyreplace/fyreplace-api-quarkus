@@ -11,8 +11,8 @@ public class UserTestsBase extends TransactionalTestsBase {
     @Override
     public void beforeEach() {
         super.beforeEach();
-        range(0, getActiveUserCount()).forEach(i -> dataSeeder.createUser("user_" + i, true));
-        range(0, getInactiveUserCount()).forEach(i -> dataSeeder.createUser("user_inactive_" + i, false));
+        range(0, getActiveUserCount()).forEach(i -> dataSeeder.createUser("user_" + i, true, false));
+        range(0, getInactiveUserCount()).forEach(i -> dataSeeder.createUser("user_inactive_" + i, false, false));
     }
 
     public int getActiveUserCount() {
