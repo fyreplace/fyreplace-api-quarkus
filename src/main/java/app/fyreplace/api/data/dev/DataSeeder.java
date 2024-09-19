@@ -15,6 +15,7 @@ import app.fyreplace.api.data.StoredFile;
 import app.fyreplace.api.data.Subscription;
 import app.fyreplace.api.data.User;
 import app.fyreplace.api.data.Vote;
+import io.quarkus.elytron.security.common.BcryptUtil;
 import io.quarkus.runtime.ShutdownEvent;
 import io.quarkus.runtime.StartupEvent;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -46,8 +47,9 @@ public final class DataSeeder {
 
     @Transactional
     public void insertData() {
-        range(0, 20).forEach(i -> createUser("user_" + i, true, i % 2 == 0));
-        range(0, 10).forEach(i -> createUser("user_inactive_" + i, false, false));
+        createUser("demo", true, false, true);
+        range(0, 20).forEach(i -> createUser("user_" + i, true, i % 2 == 0, false));
+        range(0, 10).forEach(i -> createUser("user_inactive_" + i, false, false, false));
         final var user = User.findByUsername("user_0");
         range(0, 20).forEach(i -> createPost(user, "Post " + i, true, false));
         range(0, 20).forEach(i -> createPost(user, "Draft " + i, false, false));
@@ -76,7 +78,8 @@ public final class DataSeeder {
     }
 
     @Transactional(Transactional.TxType.REQUIRES_NEW)
-    public User createUser(final String username, final boolean active, final boolean hasAvatar) {
+    public User createUser(
+            final String username, final boolean active, final boolean hasAvatar, final boolean usesPassword) {
         final var user = new User();
         user.username = username;
         user.active = active;
@@ -94,14 +97,21 @@ public final class DataSeeder {
             }
         }
 
-        final var email = new Email();
-        email.user = user;
-        email.email = username + "@example.org";
-        email.verified = active;
-        email.persist();
+        if (usesPassword) {
+            final var password = new Password();
+            password.user = user;
+            password.password = BcryptUtil.bcryptHash(username + "_password");
+            password.persist();
+        } else {
+            final var email = new Email();
+            email.user = user;
+            email.email = username + "@example.org";
+            email.verified = active;
+            email.persist();
+            user.mainEmail = email;
+            user.persist();
+        }
 
-        user.mainEmail = email;
-        user.persist();
         return user;
     }
 
