@@ -183,16 +183,17 @@ public final class ChaptersEndpoint {
         try {
             final var chapter = getChapter(post, position);
             final var image = ImageIO.read(new ByteArrayInputStream(input));
+            final var oldImage = chapter.image;
             chapter.width = image.getWidth();
             chapter.height = image.getHeight();
+            chapter.image = new StoredFile("chapters", input);
+            chapter.image.persist();
+            chapter.persist();
 
-            if (chapter.image == null) {
-                chapter.image = new StoredFile("chapters", chapter.id.toString(), input);
-            } else {
-                chapter.image.store(input);
+            if (oldImage != null) {
+                oldImage.delete();
             }
 
-            chapter.persist();
             return chapter.image.toString();
         } catch (final IndexOutOfBoundsException e) {
             throw new NotFoundException();

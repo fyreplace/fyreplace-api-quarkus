@@ -87,8 +87,8 @@ public final class DataSeeder {
 
         if (hasAvatar) {
             try (final var stream = getClass().getResourceAsStream("/META-INF/resources/images/logo-maskable.png")) {
-                final var storedFile = new StoredFile(
-                        "avatars", user.username, requireNonNull(stream).readAllBytes());
+                final var storedFile =
+                        new StoredFile("avatars", requireNonNull(stream).readAllBytes());
                 storedFile.persist();
                 user.avatar = storedFile;
                 user.persist();

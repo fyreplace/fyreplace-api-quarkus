@@ -39,7 +39,6 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 import jakarta.ws.rs.core.SecurityContext;
-import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.UUID;
@@ -244,17 +243,18 @@ public final class UsersEndpoint {
     @APIResponse(responseCode = "200", description = "OK")
     @APIResponse(responseCode = "413", description = "Payload Too Large")
     @APIResponse(responseCode = "415", description = "Unsupported Media Type")
-    public String setCurrentUserAvatar(final byte[] input) throws IOException {
+    public String setCurrentUserAvatar(final byte[] input) {
         mimeTypeService.validate(input);
         final var user = User.getFromSecurityContext(context, LockModeType.PESSIMISTIC_WRITE);
+        final var oldAvatar = user.avatar;
+        user.avatar = new StoredFile("avatars", input);
+        user.avatar.persist();
+        user.persist();
 
-        if (user.avatar == null) {
-            user.avatar = new StoredFile("avatars", user.username, input);
-        } else {
-            user.avatar.store(input);
+        if (oldAvatar != null) {
+            oldAvatar.delete();
         }
 
-        user.persist();
         return user.avatar.toString();
     }
 

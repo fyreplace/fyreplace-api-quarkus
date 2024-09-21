@@ -10,13 +10,14 @@ import io.sentry.Sentry;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.PostPersist;
-import jakarta.persistence.PreRemove;
+import jakarta.persistence.PostRemove;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
+import jakarta.ws.rs.core.UriBuilder;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.nio.file.Paths;
+import java.util.UUID;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 @Entity
@@ -42,9 +43,12 @@ public class StoredFile extends EntityBase {
         initServices();
     }
 
-    public StoredFile(final String directory, final String name, @Nullable final byte[] data) {
+    public StoredFile(final String directory, @Nullable final byte[] data) {
         initServices();
-        this.path = Paths.get(directory, name) + "." + mimeTypeService.getExtension(data);
+        this.path = UriBuilder.fromPath(directory)
+                .path(UUID.randomUUID() + "." + mimeTypeService.getExtension(data))
+                .build()
+                .getPath();
         this.data = data;
     }
 
@@ -58,24 +62,18 @@ public class StoredFile extends EntityBase {
         }
     }
 
-    public void store(final byte[] data) throws IOException {
+    @SuppressWarnings("unused")
+    @PrePersist
+    final void prePersist() throws IOException {
         if (data != null) {
             storageService.store(path, data);
-        }
-    }
-
-    @SuppressWarnings("unused")
-    @PostPersist
-    final void postPersist() throws IOException {
-        if (data != null) {
-            store(data);
             data = null;
         }
     }
 
     @SuppressWarnings("unused")
-    @PreRemove
-    final void preDestroy() throws IOException {
+    @PostRemove
+    final void postRemove() throws IOException {
         storageService.remove(path);
     }
 
