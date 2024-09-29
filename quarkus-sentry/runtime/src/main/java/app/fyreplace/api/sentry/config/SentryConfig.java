@@ -1,28 +1,27 @@
 package app.fyreplace.api.sentry.config;
 
-import io.quarkus.runtime.annotations.ConfigItem;
 import io.quarkus.runtime.annotations.ConfigPhase;
 import io.quarkus.runtime.annotations.ConfigRoot;
+import io.smallrye.config.ConfigMapping;
+import io.smallrye.config.WithDefault;
 import java.util.Optional;
 
-@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-@ConfigRoot(phase = ConfigPhase.RUN_TIME, name = "sentry")
-public final class SentryConfig {
+@ConfigMapping(prefix = "quarkus.sentry")
+@ConfigRoot(phase = ConfigPhase.RUN_TIME)
+public interface SentryConfig {
     /**
      * Sentry Data Source Name.
      */
-    @ConfigItem
-    public Optional<String> dsn = Optional.empty();
+    Optional<String> dsn();
 
     /**
      * Environment the events are tagged with.
      */
-    @ConfigItem
-    public Optional<String> environment = Optional.empty();
+    Optional<String> environment();
 
     /**
      * Percentage of performance events sent to Sentry.
      */
-    @ConfigItem(defaultValue = "0.0")
-    public Optional<Double> tracesSampleRate = Optional.empty();
+    @WithDefault("0.0")
+    Optional<Double> tracesSampleRate();
 }

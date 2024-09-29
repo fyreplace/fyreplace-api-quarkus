@@ -17,7 +17,7 @@ import org.eclipse.microprofile.config.ConfigProvider;
 @Recorder
 public class SentryRecorder {
     public RuntimeValue<Optional<Handler>> create(final SentryConfig sentryConfig) {
-        if (sentryConfig.dsn.isEmpty()) {
+        if (sentryConfig.dsn().isEmpty()) {
             return new RuntimeValue<>(Optional.empty());
         }
 
@@ -27,9 +27,9 @@ public class SentryRecorder {
         final var options = new AtomicReference<SentryOptions>();
 
         Sentry.init(it -> {
-            sentryConfig.dsn.ifPresent(it::setDsn);
-            sentryConfig.environment.ifPresent(it::setEnvironment);
-            sentryConfig.tracesSampleRate.ifPresent(it::setTracesSampleRate);
+            sentryConfig.dsn().ifPresent(it::setDsn);
+            sentryConfig.environment().ifPresent(it::setEnvironment);
+            sentryConfig.tracesSampleRate().ifPresent(it::setTracesSampleRate);
             it.setRelease(appName + '@' + appVersion);
             it.addInAppInclude("app.fyreplace.api");
             it.setInstrumenter(Instrumenter.OTEL);

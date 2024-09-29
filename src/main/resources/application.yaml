@@ -19,6 +19,10 @@ quarkus:
     cors: true
     limits:
       max-body-size: "1M"
+  rest:
+    jackson:
+      optimization:
+        enable-reflection-free-serializers: true
   otel:
     security-events:
       enabled: true
