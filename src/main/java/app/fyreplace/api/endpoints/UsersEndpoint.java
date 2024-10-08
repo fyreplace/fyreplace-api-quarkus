@@ -13,7 +13,7 @@ import app.fyreplace.api.exceptions.ConflictException;
 import app.fyreplace.api.exceptions.ExplainedFailure;
 import app.fyreplace.api.exceptions.ForbiddenException;
 import app.fyreplace.api.exceptions.GoneException;
-import app.fyreplace.api.services.MimeTypeService;
+import app.fyreplace.api.services.ImageService;
 import io.quarkus.cache.CacheResult;
 import io.quarkus.hibernate.validator.runtime.jaxrs.ViolationReport;
 import io.quarkus.panache.common.Sort;
@@ -39,6 +39,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 import jakarta.ws.rs.core.SecurityContext;
+import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.UUID;
@@ -55,7 +56,7 @@ public final class UsersEndpoint {
     int pagingSize;
 
     @Inject
-    MimeTypeService mimeTypeService;
+    ImageService imageService;
 
     @Inject
     UserActivationEmail userActivationEmail;
@@ -243,11 +244,11 @@ public final class UsersEndpoint {
     @APIResponse(responseCode = "200", description = "OK")
     @APIResponse(responseCode = "413", description = "Payload Too Large")
     @APIResponse(responseCode = "415", description = "Unsupported Media Type")
-    public String setCurrentUserAvatar(final byte[] input) {
-        mimeTypeService.validate(input);
+    public String setCurrentUserAvatar(final byte[] input) throws IOException {
+        imageService.validate(input);
         final var user = User.getFromSecurityContext(context, LockModeType.PESSIMISTIC_WRITE);
         final var oldAvatar = user.avatar;
-        user.avatar = new StoredFile("avatars", input);
+        user.avatar = new StoredFile("avatars", imageService.shrink(input));
         user.avatar.persist();
         user.persist();
 

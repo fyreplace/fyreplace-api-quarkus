@@ -1,6 +1,6 @@
 package app.fyreplace.api.data;
 
-import app.fyreplace.api.services.MimeTypeService;
+import app.fyreplace.api.services.ImageService;
 import app.fyreplace.api.services.StorageService;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
@@ -27,7 +27,7 @@ public class StoredFile extends EntityBase {
     private StorageService storageService;
 
     @Transient
-    private MimeTypeService mimeTypeService;
+    private ImageService imageService;
 
     @Column(unique = true, nullable = false)
     @Schema(required = true)
@@ -46,7 +46,7 @@ public class StoredFile extends EntityBase {
     public StoredFile(final String directory, @Nullable final byte[] data) {
         initServices();
         this.path = UriBuilder.fromPath(directory)
-                .path(UUID.randomUUID() + "." + mimeTypeService.getExtension(data))
+                .path(UUID.randomUUID() + "." + imageService.getExtension(data))
                 .build()
                 .getPath();
         this.data = data;
@@ -79,9 +79,9 @@ public class StoredFile extends EntityBase {
 
     private void initServices() {
         try (final var storage = Arc.container().instance(StorageService.class);
-                final var mimeType = Arc.container().instance(MimeTypeService.class)) {
+                final var mimeType = Arc.container().instance(ImageService.class)) {
             storageService = storage.get();
-            mimeTypeService = mimeType.get();
+            imageService = mimeType.get();
         }
     }
 

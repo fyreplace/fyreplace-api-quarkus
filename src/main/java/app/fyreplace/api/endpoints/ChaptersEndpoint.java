@@ -8,7 +8,7 @@ import app.fyreplace.api.data.StoredFile;
 import app.fyreplace.api.data.User;
 import app.fyreplace.api.exceptions.ExplainedFailure;
 import app.fyreplace.api.exceptions.ForbiddenException;
-import app.fyreplace.api.services.MimeTypeService;
+import app.fyreplace.api.services.ImageService;
 import io.quarkus.cache.CacheResult;
 import io.quarkus.panache.common.Sort;
 import io.quarkus.security.Authenticated;
@@ -44,7 +44,7 @@ public final class ChaptersEndpoint {
     int postsMaxChapterCount;
 
     @Inject
-    MimeTypeService mimeTypeService;
+    ImageService imageService;
 
     @Context
     SecurityContext context;
@@ -175,7 +175,7 @@ public final class ChaptersEndpoint {
             @PathParam("position") @PositiveOrZero final int position,
             final byte[] input)
             throws IOException {
-        mimeTypeService.validate(input);
+        imageService.validate(input);
         final var user = User.getFromSecurityContext(context);
         final var post = Post.<Post>findById(id);
         Post.validateAccess(post, user, false, true);
@@ -186,7 +186,7 @@ public final class ChaptersEndpoint {
             final var oldImage = chapter.image;
             chapter.width = image.getWidth();
             chapter.height = image.getHeight();
-            chapter.image = new StoredFile("chapters", input);
+            chapter.image = new StoredFile("chapters", imageService.shrink(input));
             chapter.image.persist();
             chapter.persist();
 
