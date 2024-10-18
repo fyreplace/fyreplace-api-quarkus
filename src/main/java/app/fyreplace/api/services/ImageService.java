@@ -73,11 +73,11 @@ public final class ImageService {
         inputImage.rotate();
         final var output = inputImage.getByteArray();
 
-        if (output.length > softMaxSize * 1.5) {
+        if (output.length > softMaxSize * 3) {
             throw new RequestEntityTooLargeException();
         }
 
-        return inputImage.getByteArray();
+        return output;
     }
 
     private ImageReader getFirstValidReader(final byte[] data) throws IOException {
