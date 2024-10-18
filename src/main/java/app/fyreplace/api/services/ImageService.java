@@ -88,18 +88,19 @@ public final class ImageService {
     }
 
     private ImageReader getFirstValidReader(final byte[] data) throws IOException {
-        final var input = ImageIO.createImageInputStream(new ByteArrayInputStream(data));
-        final var readers = ImageIO.getImageReaders(input);
+        try (final var input = ImageIO.createImageInputStream(new ByteArrayInputStream(data))) {
+            final var readers = ImageIO.getImageReaders(input);
 
-        while (readers.hasNext()) {
-            final var reader = readers.next();
-            final var format = reader.getFormatName().toUpperCase();
+            while (readers.hasNext()) {
+                final var reader = readers.next();
+                final var format = reader.getFormatName().toUpperCase();
 
-            if (Arrays.stream(KnownFileType.values()).anyMatch(m -> m.name().equals(format))) {
-                return reader;
+                if (Arrays.stream(KnownFileType.values()).anyMatch(m -> m.name().equals(format))) {
+                    return reader;
+                }
             }
-        }
 
-        throw new IOException();
+            throw new IOException();
+        }
     }
 }
