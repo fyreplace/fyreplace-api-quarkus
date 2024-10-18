@@ -5,14 +5,13 @@ import app.fyreplace.api.exceptions.UnsupportedMediaTypeException;
 import app.fyreplace.api.services.mimetype.KnownFileType;
 import io.quarkus.runtime.configuration.MemorySize;
 import jakarta.enterprise.context.ApplicationScoped;
-import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
+import javaxt.io.Image;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 @ApplicationScoped
@@ -30,7 +29,7 @@ public final class ImageService {
                     .findFirst()
                     .orElseThrow()
                     .mime;
-        } catch (final NoSuchElementException ignored) {
+        } catch (final NoSuchElementException e) {
             throw new IOException();
         }
     }
@@ -61,30 +60,24 @@ public final class ImageService {
         }
     }
 
-    public byte[] shrink(final byte[] data) throws IOException {
+    public byte[] shrink(final byte[] data) {
         final var softMaxSize = fileMaxSize.asLongValue();
 
         if (data.length <= softMaxSize) {
             return data;
         }
 
+        final var inputImage = new Image(data);
         final var scaleFactor = Math.sqrt((double) softMaxSize / data.length);
-        final var reader = getFirstValidReader(data);
-        final var inputImage = ImageIO.read(new ByteArrayInputStream(data));
-        final var width = inputImage.getWidth() * scaleFactor;
-        final var height = inputImage.getHeight() * scaleFactor;
-        final var scaledImage = inputImage.getScaledInstance((int) width, (int) height, BufferedImage.SCALE_SMOOTH);
-        final var outputImage = new BufferedImage((int) width, (int) height, inputImage.getType());
-        outputImage.getGraphics().drawImage(scaledImage, 0, 0, null);
-        final var outputStream = new ByteArrayOutputStream();
-        ImageIO.write(outputImage, reader.getFormatName(), outputStream);
-        final var outputData = outputStream.toByteArray();
+        inputImage.resize((int) (inputImage.getWidth() * scaleFactor), (int) (inputImage.getHeight() * scaleFactor));
+        inputImage.rotate();
+        final var output = inputImage.getByteArray();
 
-        if (outputData.length > softMaxSize * 1.5) {
+        if (output.length > softMaxSize * 1.5) {
             throw new RequestEntityTooLargeException();
         }
 
-        return outputData;
+        return inputImage.getByteArray();
     }
 
     private ImageReader getFirstValidReader(final byte[] data) throws IOException {
