@@ -9,6 +9,7 @@ import app.fyreplace.api.data.User;
 import app.fyreplace.api.exceptions.ExplainedFailure;
 import app.fyreplace.api.exceptions.ForbiddenException;
 import app.fyreplace.api.services.ImageService;
+import app.fyreplace.api.services.SanitizationService;
 import io.quarkus.cache.CacheResult;
 import io.quarkus.panache.common.Sort;
 import io.quarkus.security.Authenticated;
@@ -45,6 +46,9 @@ public final class ChaptersEndpoint {
 
     @Inject
     ImageService imageService;
+
+    @Inject
+    SanitizationService sanitizationService;
 
     @Context
     SecurityContext context;
@@ -153,9 +157,9 @@ public final class ChaptersEndpoint {
 
         try {
             final var chapter = getChapter(post, position);
-            chapter.text = input;
+            chapter.text = sanitizationService.sanitize(input);
             chapter.persist();
-            return input;
+            return chapter.text;
         } catch (final IndexOutOfBoundsException e) {
             throw new NotFoundException();
         }

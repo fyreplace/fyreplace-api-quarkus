@@ -14,6 +14,7 @@ import app.fyreplace.api.exceptions.ExplainedFailure;
 import app.fyreplace.api.exceptions.ForbiddenException;
 import app.fyreplace.api.exceptions.GoneException;
 import app.fyreplace.api.services.ImageService;
+import app.fyreplace.api.services.SanitizationService;
 import io.quarkus.cache.CacheResult;
 import io.quarkus.hibernate.validator.runtime.jaxrs.ViolationReport;
 import io.quarkus.panache.common.Sort;
@@ -57,6 +58,9 @@ public final class UsersEndpoint {
 
     @Inject
     ImageService imageService;
+
+    @Inject
+    SanitizationService sanitizationService;
 
     @Inject
     UserActivationEmail userActivationEmail;
@@ -231,9 +235,9 @@ public final class UsersEndpoint {
     @APIResponse(responseCode = "400", description = "Bad Request")
     public String setCurrentUserBio(@NotNull @Length(max = User.BIO_MAX_LENGTH) final String input) {
         final var user = User.getFromSecurityContext(context, LockModeType.PESSIMISTIC_READ);
-        user.bio = input;
+        user.bio = sanitizationService.sanitize(input);
         user.persist();
-        return input;
+        return user.bio;
     }
 
     @PUT
