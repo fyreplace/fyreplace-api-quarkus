@@ -61,23 +61,29 @@ public final class ImageService {
     }
 
     public byte[] shrink(final byte[] data) {
-        final var softMaxSize = fileMaxSize.asLongValue();
+        return shrink(data, 1.5);
+    }
 
-        if (data.length <= softMaxSize) {
+    private byte[] shrink(final byte[] data, final double scaleFactorIncrease) {
+        final var maxSize = fileMaxSize.asLongValue();
+
+        if (data.length <= maxSize) {
             return data;
         }
 
         final var inputImage = new Image(data);
-        final var scaleFactor = Math.sqrt((double) softMaxSize / data.length);
-        inputImage.resize((int) (inputImage.getWidth() * scaleFactor), (int) (inputImage.getHeight() * scaleFactor));
+        final var scaleFactor = Math.sqrt((double) data.length / maxSize) * scaleFactorIncrease;
+        inputImage.resize((int) (inputImage.getWidth() / scaleFactor), (int) (inputImage.getHeight() / scaleFactor));
         inputImage.rotate();
         final var output = inputImage.getByteArray();
 
-        if (output.length > softMaxSize * 3) {
+        if (output.length <= maxSize) {
+            return output;
+        } else if (scaleFactorIncrease >= 3) {
             throw new RequestEntityTooLargeException();
+        } else {
+            return shrink(data, scaleFactorIncrease + 0.5);
         }
-
-        return output;
     }
 
     private ImageReader getFirstValidReader(final byte[] data) throws IOException {
