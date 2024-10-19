@@ -1,9 +1,9 @@
 package app.fyreplace.api.data;
 
+import app.fyreplace.api.data.validators.Length;
 import app.fyreplace.api.data.validators.Regex;
 import jakarta.validation.constraints.NotBlank;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
-import org.hibernate.validator.constraints.Length;
 
 public record UserCreation(
         @NotBlank

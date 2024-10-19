@@ -6,6 +6,7 @@ import app.fyreplace.api.data.ChapterPositionUpdate;
 import app.fyreplace.api.data.Post;
 import app.fyreplace.api.data.StoredFile;
 import app.fyreplace.api.data.User;
+import app.fyreplace.api.data.validators.Length;
 import app.fyreplace.api.exceptions.ExplainedFailure;
 import app.fyreplace.api.exceptions.ForbiddenException;
 import app.fyreplace.api.services.ImageService;
@@ -37,7 +38,6 @@ import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
-import org.hibernate.validator.constraints.Length;
 
 @Path("posts/{id}/chapters")
 public final class ChaptersEndpoint {

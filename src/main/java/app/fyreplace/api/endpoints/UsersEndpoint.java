@@ -8,6 +8,7 @@ import app.fyreplace.api.data.ReportUpdate;
 import app.fyreplace.api.data.StoredFile;
 import app.fyreplace.api.data.User;
 import app.fyreplace.api.data.UserCreation;
+import app.fyreplace.api.data.validators.Length;
 import app.fyreplace.api.emails.UserActivationEmail;
 import app.fyreplace.api.exceptions.ConflictException;
 import app.fyreplace.api.exceptions.ExplainedFailure;
@@ -49,7 +50,6 @@ import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
-import org.hibernate.validator.constraints.Length;
 
 @Path("users")
 public final class UsersEndpoint {
