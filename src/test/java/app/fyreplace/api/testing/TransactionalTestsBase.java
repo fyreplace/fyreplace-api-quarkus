@@ -14,7 +14,7 @@ import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
-@WithTestResource(value = DatabaseTestResource.class, restrictToAnnotatedClass = false)
+@WithTestResource(value = DatabaseTestResource.class)
 public abstract class TransactionalTestsBase {
     @Inject
     public DataSeeder dataSeeder;
