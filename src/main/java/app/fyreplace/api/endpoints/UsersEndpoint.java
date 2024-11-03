@@ -8,12 +8,14 @@ import app.fyreplace.api.data.ReportUpdate;
 import app.fyreplace.api.data.StoredFile;
 import app.fyreplace.api.data.User;
 import app.fyreplace.api.data.UserCreation;
+import app.fyreplace.api.data.validators.Length;
 import app.fyreplace.api.emails.UserActivationEmail;
 import app.fyreplace.api.exceptions.ConflictException;
 import app.fyreplace.api.exceptions.ExplainedFailure;
 import app.fyreplace.api.exceptions.ForbiddenException;
 import app.fyreplace.api.exceptions.GoneException;
-import app.fyreplace.api.services.MimeTypeService;
+import app.fyreplace.api.services.ImageService;
+import app.fyreplace.api.services.SanitizationService;
 import io.quarkus.cache.CacheResult;
 import io.quarkus.hibernate.validator.runtime.jaxrs.ViolationReport;
 import io.quarkus.panache.common.Sort;
@@ -33,13 +35,13 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 import jakarta.ws.rs.core.SecurityContext;
-import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.UUID;
@@ -48,7 +50,6 @@ import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
-import org.hibernate.validator.constraints.Length;
 
 @Path("users")
 public final class UsersEndpoint {
@@ -56,7 +57,10 @@ public final class UsersEndpoint {
     int pagingSize;
 
     @Inject
-    MimeTypeService mimeTypeService;
+    ImageService imageService;
+
+    @Inject
+    SanitizationService sanitizationService;
 
     @Inject
     UserActivationEmail userActivationEmail;
@@ -231,9 +235,9 @@ public final class UsersEndpoint {
     @APIResponse(responseCode = "400", description = "Bad Request")
     public String setCurrentUserBio(@NotNull @Length(max = User.BIO_MAX_LENGTH) final String input) {
         final var user = User.getFromSecurityContext(context, LockModeType.PESSIMISTIC_READ);
-        user.bio = input;
+        user.bio = sanitizationService.sanitize(input);
         user.persist();
-        return input;
+        return user.bio;
     }
 
     @PUT
@@ -244,17 +248,18 @@ public final class UsersEndpoint {
     @APIResponse(responseCode = "200", description = "OK")
     @APIResponse(responseCode = "413", description = "Payload Too Large")
     @APIResponse(responseCode = "415", description = "Unsupported Media Type")
-    public String setCurrentUserAvatar(final byte[] input) throws IOException {
-        mimeTypeService.validate(input);
+    public String setCurrentUserAvatar(final byte[] input) {
+        imageService.validate(input);
         final var user = User.getFromSecurityContext(context, LockModeType.PESSIMISTIC_WRITE);
+        final var oldAvatar = user.avatar;
+        user.avatar = new StoredFile("avatars", imageService.shrink(input));
+        user.avatar.persist();
+        user.persist();
 
-        if (user.avatar == null) {
-            user.avatar = new StoredFile("avatars", user.username, input);
-        } else {
-            user.avatar.store(input);
+        if (oldAvatar != null) {
+            oldAvatar.delete();
         }
 
-        user.persist();
         return user.avatar.toString();
     }
 
@@ -300,6 +305,7 @@ public final class UsersEndpoint {
     @GET
     @Path("blocked/count")
     @Authenticated
+    @Produces(MediaType.APPLICATION_JSON)
     @APIResponse(responseCode = "200", description = "OK")
     public long countBlockedUsers() {
         return Block.count("source", User.getFromSecurityContext(context));

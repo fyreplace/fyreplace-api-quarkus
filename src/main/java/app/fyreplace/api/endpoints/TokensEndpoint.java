@@ -60,8 +60,10 @@ public final class TokensEndpoint {
     @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
     public Response createToken(@NotNull @Valid final TokenCreation input) {
         final var email = getEmail(input.identifier());
-        final var password = Password.<Password>find("user", email.user).firstResult();
+        final var password =
+                Password.<Password>find("user.username", input.identifier()).firstResult();
         final RandomCode randomCode;
+        final User user;
 
         try (final var stream = RandomCode.<RandomCode>stream("email", email)) {
             randomCode = stream.filter(rc -> BcryptUtil.matches(input.secret(), rc.code))
@@ -71,18 +73,16 @@ public final class TokensEndpoint {
 
         if (randomCode != null) {
             randomCode.validateEmail();
+            user = email.user;
         } else if (password != null && BcryptUtil.matches(input.secret(), password.password)) {
-            email.verified = true;
-            email.persist();
+            user = password.user;
         } else {
             throw new BadRequestException();
         }
 
-        email.user.active = true;
-        email.user.persist();
-        return Response.status(Status.CREATED)
-                .entity(jwtService.makeJwt(email.user))
-                .build();
+        user.active = true;
+        user.persist();
+        return Response.status(Status.CREATED).entity(jwtService.makeJwt(user)).build();
     }
 
     @GET
@@ -118,7 +118,7 @@ public final class TokensEndpoint {
             @NotNull @Valid final NewTokenCreation input,
             @QueryParam("customDeepLinks") final boolean customDeepLinks) {
         final var email = getEmail(input.identifier());
-        final var hasPassword = Password.count("user", email.user) > 0;
+        final var hasPassword = Password.count("user.username", input.identifier()) > 0;
 
         if (hasPassword) {
             throw new ForbiddenException("user_has_password");

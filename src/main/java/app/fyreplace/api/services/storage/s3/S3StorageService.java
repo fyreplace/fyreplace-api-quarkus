@@ -1,6 +1,6 @@
 package app.fyreplace.api.services.storage.s3;
 
-import app.fyreplace.api.services.MimeTypeService;
+import app.fyreplace.api.services.ImageService;
 import app.fyreplace.api.services.StorageService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,7 +33,7 @@ public final class S3StorageService implements StorageService {
     ObjectMapper objectMapper;
 
     @Inject
-    MimeTypeService mimeTypeService;
+    ImageService imageService;
 
     public void onStartup(@Observes final StartupEvent event) {
         client.putBucketPolicy(b -> {
@@ -61,7 +61,7 @@ public final class S3StorageService implements StorageService {
 
     @Override
     public void store(final String path, final byte[] data) throws IOException {
-        final var mime = mimeTypeService.getMimeType(data);
+        final var mime = imageService.getMimeType(data);
         client.putObject(b -> b.bucket(config.bucket()).key(path).contentType(mime), RequestBody.fromBytes(data));
     }
 

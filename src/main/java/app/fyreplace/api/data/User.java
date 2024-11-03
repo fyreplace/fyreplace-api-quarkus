@@ -40,6 +40,8 @@ public class User extends UserDependentEntityBase implements Reportable {
             "authors",
             "fyreplace",
             "fyreplaces",
+            "guest",
+            "guests",
             "management",
             "managements",
             "manager",

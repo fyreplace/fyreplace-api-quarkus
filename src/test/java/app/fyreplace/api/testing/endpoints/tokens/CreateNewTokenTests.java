@@ -5,6 +5,7 @@ import static io.restassured.RestAssured.given;
 import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import app.fyreplace.api.data.Email;
 import app.fyreplace.api.data.NewTokenCreation;
 import app.fyreplace.api.data.Password;
 import app.fyreplace.api.data.User;
@@ -51,9 +52,10 @@ public final class CreateNewTokenTests extends UserTestsBase {
             password.user = user;
             password.password = BcryptUtil.bcryptHash("password");
             password.persist();
+            Email.delete("user", user);
         });
         given().contentType(ContentType.JSON)
-                .body(new NewTokenCreation(user.mainEmail.email))
+                .body(new NewTokenCreation(user.username))
                 .post("new")
                 .then()
                 .statusCode(403);

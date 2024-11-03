@@ -18,7 +18,11 @@ quarkus:
           policy: "deny"
     cors: true
     limits:
-      max-body-size: "1M"
+      max-body-size: "10M"
+  rest:
+    jackson:
+      optimization:
+        enable-reflection-free-serializers: true
   otel:
     security-events:
       enabled: true
@@ -61,6 +65,8 @@ app:
     s3:
       bucket: ""
       custom-endpoint: ""
+    limits:
+      max-size: "1M"
   posts:
     max-chapter-count: 10
     starting-life: 4

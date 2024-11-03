@@ -6,9 +6,11 @@ import app.fyreplace.api.data.ChapterPositionUpdate;
 import app.fyreplace.api.data.Post;
 import app.fyreplace.api.data.StoredFile;
 import app.fyreplace.api.data.User;
+import app.fyreplace.api.data.validators.Length;
 import app.fyreplace.api.exceptions.ExplainedFailure;
 import app.fyreplace.api.exceptions.ForbiddenException;
-import app.fyreplace.api.services.MimeTypeService;
+import app.fyreplace.api.services.ImageService;
+import app.fyreplace.api.services.SanitizationService;
 import io.quarkus.cache.CacheResult;
 import io.quarkus.panache.common.Sort;
 import io.quarkus.security.Authenticated;
@@ -36,7 +38,6 @@ import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
-import org.hibernate.validator.constraints.Length;
 
 @Path("posts/{id}/chapters")
 public final class ChaptersEndpoint {
@@ -44,7 +45,10 @@ public final class ChaptersEndpoint {
     int postsMaxChapterCount;
 
     @Inject
-    MimeTypeService mimeTypeService;
+    ImageService imageService;
+
+    @Inject
+    SanitizationService sanitizationService;
 
     @Context
     SecurityContext context;
@@ -153,9 +157,9 @@ public final class ChaptersEndpoint {
 
         try {
             final var chapter = getChapter(post, position);
-            chapter.text = input;
+            chapter.text = sanitizationService.sanitize(input);
             chapter.persist();
-            return input;
+            return chapter.text;
         } catch (final IndexOutOfBoundsException e) {
             throw new NotFoundException();
         }
@@ -175,7 +179,7 @@ public final class ChaptersEndpoint {
             @PathParam("position") @PositiveOrZero final int position,
             final byte[] input)
             throws IOException {
-        mimeTypeService.validate(input);
+        imageService.validate(input);
         final var user = User.getFromSecurityContext(context);
         final var post = Post.<Post>findById(id);
         Post.validateAccess(post, user, false, true);
@@ -183,16 +187,17 @@ public final class ChaptersEndpoint {
         try {
             final var chapter = getChapter(post, position);
             final var image = ImageIO.read(new ByteArrayInputStream(input));
+            final var oldImage = chapter.image;
             chapter.width = image.getWidth();
             chapter.height = image.getHeight();
+            chapter.image = new StoredFile("chapters", imageService.shrink(input));
+            chapter.image.persist();
+            chapter.persist();
 
-            if (chapter.image == null) {
-                chapter.image = new StoredFile("chapters", chapter.id.toString(), input);
-            } else {
-                chapter.image.store(input);
+            if (oldImage != null) {
+                oldImage.delete();
             }
 
-            chapter.persist();
             return chapter.image.toString();
         } catch (final IndexOutOfBoundsException e) {
             throw new NotFoundException();

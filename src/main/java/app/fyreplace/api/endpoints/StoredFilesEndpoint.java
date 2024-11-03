@@ -1,6 +1,6 @@
 package app.fyreplace.api.endpoints;
 
-import app.fyreplace.api.services.MimeTypeService;
+import app.fyreplace.api.services.ImageService;
 import app.fyreplace.api.services.StorageService;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
@@ -22,7 +22,7 @@ public final class StoredFilesEndpoint {
     StorageService storageService;
 
     @Inject
-    MimeTypeService mimeTypeService;
+    ImageService imageService;
 
     @Context
     UriInfo uriInfo;
@@ -40,7 +40,7 @@ public final class StoredFilesEndpoint {
         try {
             final byte[] data;
             data = storageService.fetch(path);
-            return Response.ok(data).type(mimeTypeService.getMimeType(data)).build();
+            return Response.ok(data).type(imageService.getMimeType(data)).build();
         } catch (final IOException e) {
             throw new NotFoundException();
         }

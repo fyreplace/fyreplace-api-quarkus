@@ -18,6 +18,7 @@ group = "app.fyreplace"
 version = gitVersion()
 
 repositories {
+    maven { url "https://www.javaxt.com/maven/" }
     mavenCentral()
     mavenLocal()
 }
@@ -47,6 +48,7 @@ dependencies {
     implementation("io.quarkus:quarkus-smallrye-openapi")
     implementation("io.quarkiverse.amazonservices:quarkus-amazon-s3")
     implementation("io.sentry:sentry-jul")
+    implementation("javaxt:javaxt-core:${javaXtVersion}")
     implementation("software.amazon.awssdk:url-connection-client")
     implementation("software.amazon.awssdk.crt:aws-crt")
     implementation("com.twelvemonkeys.imageio:imageio-webp:${twelveMonkeysVersion}")

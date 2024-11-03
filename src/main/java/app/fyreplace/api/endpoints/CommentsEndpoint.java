@@ -23,6 +23,7 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
@@ -197,6 +198,7 @@ public final class CommentsEndpoint {
     @GET
     @Path("count")
     @Authenticated
+    @Produces(MediaType.APPLICATION_JSON)
     @APIResponse(responseCode = "200", description = "OK")
     @APIResponse(responseCode = "400", description = "Bad Request")
     @APIResponse(responseCode = "404", description = "Not Found")

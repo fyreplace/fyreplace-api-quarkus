@@ -100,15 +100,13 @@ public final class CreateTokenTests extends UserTestsBase {
         final var randomCodeCount = RandomCode.count();
         assertFalse(password.user.mainEmail.verified);
         given().contentType(ContentType.JSON)
-                .body(new TokenCreation(password.user.mainEmail.email, "password"))
+                .body(new TokenCreation(password.user.username, "password"))
                 .post()
                 .then()
                 .statusCode(201)
                 .contentType(ContentType.TEXT)
                 .body(isA(String.class));
         assertEquals(randomCodeCount, RandomCode.count());
-        final var email = Email.<Email>find("id", password.user.mainEmail.id).firstResult();
-        assertTrue(email.verified);
     }
 
     @Test
@@ -165,6 +163,7 @@ public final class CreateTokenTests extends UserTestsBase {
         password.user = User.findByUsername("user_inactive_1");
         password.password = BcryptUtil.bcryptHash("password");
         password.persist();
+        Email.delete("user", password.user);
     }
 
     private RandomCode makeRandomCode(final String username, final String code) {
