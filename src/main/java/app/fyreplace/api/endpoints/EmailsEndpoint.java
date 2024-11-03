@@ -26,6 +26,7 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
@@ -147,6 +148,7 @@ public final class EmailsEndpoint {
     @GET
     @Path("count")
     @Authenticated
+    @Produces(MediaType.APPLICATION_JSON)
     @APIResponse(responseCode = "200", description = "OK")
     public long countEmails() {
         return Email.count("user", User.getFromSecurityContext(context));

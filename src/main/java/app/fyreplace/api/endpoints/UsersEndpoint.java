@@ -35,6 +35,7 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
@@ -304,6 +305,7 @@ public final class UsersEndpoint {
     @GET
     @Path("blocked/count")
     @Authenticated
+    @Produces(MediaType.APPLICATION_JSON)
     @APIResponse(responseCode = "200", description = "OK")
     public long countBlockedUsers() {
         return Block.count("source", User.getFromSecurityContext(context));
