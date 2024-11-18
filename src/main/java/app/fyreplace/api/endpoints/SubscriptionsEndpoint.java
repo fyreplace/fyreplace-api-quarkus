@@ -2,6 +2,7 @@ package app.fyreplace.api.endpoints;
 
 import app.fyreplace.api.data.Subscription;
 import app.fyreplace.api.data.User;
+import io.quarkus.hibernate.validator.runtime.jaxrs.ViolationReport;
 import io.quarkus.security.Authenticated;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -12,9 +13,12 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.SecurityContext;
 import java.util.UUID;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.eclipse.microprofile.openapi.annotations.media.Content;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 
 @Path("subscriptions")
@@ -46,7 +50,13 @@ public final class SubscriptionsEndpoint {
     @Path("unread")
     @Authenticated
     @APIResponse(responseCode = "200", description = "OK")
-    @APIResponse(responseCode = "400", description = "Bad Request")
+    @APIResponse(
+            responseCode = "400",
+            description = "Bad Request",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON,
+                            schema = @Schema(implementation = ViolationReport.class)))
     public Iterable<Subscription> listUnreadSubscriptions(@QueryParam("page") @PositiveOrZero final int page) {
         final var user = User.getFromSecurityContext(context);
 

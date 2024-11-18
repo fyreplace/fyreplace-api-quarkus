@@ -15,7 +15,6 @@ import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
 import io.restassured.http.ContentType;
 import java.io.IOException;
-import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -70,7 +69,7 @@ public final class SetChapterImageTests extends PostTestsBase {
                     .pathParam("id", draft.id)
                     .put(position + "/image")
                     .then()
-                    .statusCode(anyOf(List.of(equalTo(400), equalTo(404))));
+                    .statusCode(anyOf(equalTo(400), equalTo(404)));
         }
     }
 

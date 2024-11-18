@@ -12,6 +12,7 @@ import app.fyreplace.api.exceptions.ExplainedFailure;
 import app.fyreplace.api.exceptions.ForbiddenException;
 import io.quarkus.cache.CacheResult;
 import io.quarkus.elytron.security.common.BcryptUtil;
+import io.quarkus.hibernate.validator.runtime.jaxrs.ViolationReport;
 import io.quarkus.panache.common.Sort;
 import io.quarkus.security.Authenticated;
 import jakarta.inject.Inject;
@@ -54,6 +55,13 @@ public final class EmailsEndpoint {
     @GET
     @Authenticated
     @APIResponse(responseCode = "200", description = "OK")
+    @APIResponse(
+            responseCode = "400",
+            description = "Bad Request",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON,
+                            schema = @Schema(implementation = ViolationReport.class)))
     public Iterable<Email> listEmails(@QueryParam("page") @PositiveOrZero final int page) {
         final var user = User.getFromSecurityContext(context);
         return Email.find("user", Sort.by("email"), user).page(page, pagingSize).list();
@@ -67,6 +75,13 @@ public final class EmailsEndpoint {
             responseCode = "201",
             description = "Created",
             content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = Email.class)))
+    @APIResponse(
+            responseCode = "400",
+            description = "Bad Request",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON,
+                            schema = @Schema(implementation = ViolationReport.class)))
     @APIResponse(
             responseCode = "409",
             description = "Conflict",
@@ -160,7 +175,13 @@ public final class EmailsEndpoint {
     @Transactional
     @RequestBody(required = true)
     @APIResponse(responseCode = "200", description = "OK")
-    @APIResponse(responseCode = "400", description = "Bad Request")
+    @APIResponse(
+            responseCode = "400",
+            description = "Bad Request",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON,
+                            schema = @Schema(implementation = ViolationReport.class)))
     @APIResponse(responseCode = "404", description = "Not Found")
     @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
     public Response activateEmail(@NotNull @Valid final EmailActivation input) {

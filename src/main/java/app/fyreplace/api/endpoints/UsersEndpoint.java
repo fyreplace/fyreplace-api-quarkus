@@ -138,7 +138,13 @@ public final class UsersEndpoint {
     @Transactional
     @RequestBody(required = true)
     @APIResponse(responseCode = "200", description = "OK")
-    @APIResponse(responseCode = "400", description = "Bad Request")
+    @APIResponse(
+            responseCode = "400",
+            description = "Bad Request",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON,
+                            schema = @Schema(implementation = ViolationReport.class)))
     @APIResponse(
             responseCode = "403",
             description = "Not Allowed",
@@ -195,6 +201,13 @@ public final class UsersEndpoint {
     @RequestBody(required = true)
     @APIResponse(responseCode = "200", description = "OK")
     @APIResponse(
+            responseCode = "400",
+            description = "Bad Request",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON,
+                            schema = @Schema(implementation = ViolationReport.class)))
+    @APIResponse(
             responseCode = "403",
             description = "Not Allowed",
             content =
@@ -226,14 +239,33 @@ public final class UsersEndpoint {
         return User.getFromSecurityContext(context);
     }
 
+    @DELETE
+    @Path("current")
+    @Authenticated
+    @Transactional
+    @APIResponse(responseCode = "204", description = "No Content")
+    @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
+    public Response deleteCurrentUser() {
+        User.getFromSecurityContext(context).softDelete();
+        return Response.noContent().build();
+    }
+
     @PUT
     @Path("current/bio")
     @Authenticated
     @Transactional
     @RequestBody(required = true, content = @Content(mediaType = MediaType.TEXT_PLAIN))
     @APIResponse(responseCode = "200", description = "OK")
-    @APIResponse(responseCode = "400", description = "Bad Request")
-    public String setCurrentUserBio(@NotNull @Length(max = User.BIO_MAX_LENGTH) final String input) {
+    @APIResponse(
+            responseCode = "400",
+            description = "Bad Request",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON,
+                            schema = @Schema(implementation = ViolationReport.class)))
+    public String setCurrentUserBio(
+            @NotNull @Length(max = User.BIO_MAX_LENGTH) @Schema(maxLength = User.BIO_MAX_LENGTH) @Valid
+                    final String input) {
         final var user = User.getFromSecurityContext(context, LockModeType.PESSIMISTIC_READ);
         user.bio = sanitizationService.sanitize(input);
         user.persist();
@@ -278,21 +310,17 @@ public final class UsersEndpoint {
         }
     }
 
-    @DELETE
-    @Path("current")
-    @Authenticated
-    @Transactional
-    @APIResponse(responseCode = "204", description = "No Content")
-    @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
-    public Response deleteCurrentUser() {
-        User.getFromSecurityContext(context).softDelete();
-        return Response.noContent().build();
-    }
-
     @GET
     @Path("blocked")
     @Authenticated
     @APIResponse(responseCode = "200", description = "OK")
+    @APIResponse(
+            responseCode = "400",
+            description = "Bad Request",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON,
+                            schema = @Schema(implementation = ViolationReport.class)))
     public Iterable<User.Profile> listBlockedUsers(@QueryParam("page") @PositiveOrZero final int page) {
         final var user = User.getFromSecurityContext(context);
         final var blocks = Block.<Block>find("source", Sort.by("id"), user);

@@ -13,6 +13,7 @@ import app.fyreplace.api.data.VoteCreation;
 import app.fyreplace.api.exceptions.ExplainedFailure;
 import app.fyreplace.api.exceptions.ForbiddenException;
 import io.quarkus.cache.CacheResult;
+import io.quarkus.hibernate.validator.runtime.jaxrs.ViolationReport;
 import io.quarkus.panache.common.Sort;
 import io.quarkus.panache.common.Sort.Direction;
 import io.quarkus.security.Authenticated;
@@ -58,7 +59,13 @@ public final class PostsEndpoint {
     @GET
     @Authenticated
     @APIResponse(responseCode = "200", description = "OK")
-    @APIResponse(responseCode = "400", description = "Bad Request")
+    @APIResponse(
+            responseCode = "400",
+            description = "Bad Request",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON,
+                            schema = @Schema(implementation = ViolationReport.class)))
     public Iterable<Post> listPosts(
             @QueryParam("page") @PositiveOrZero final int page,
             @QueryParam("ascending") final boolean ascending,
@@ -134,7 +141,13 @@ public final class PostsEndpoint {
     @Transactional
     @RequestBody(required = true)
     @APIResponse(responseCode = "200", description = "OK")
-    @APIResponse(responseCode = "400", description = "Bad Request")
+    @APIResponse(
+            responseCode = "400",
+            description = "Bad Request",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON,
+                            schema = @Schema(implementation = ViolationReport.class)))
     @APIResponse(responseCode = "404", description = "Not Found")
     public Response setPostSubscribed(@PathParam("id") final UUID id, @NotNull @Valid final SubscriptionUpdate input) {
         final var user = User.getFromSecurityContext(context);
@@ -156,6 +169,13 @@ public final class PostsEndpoint {
     @Transactional
     @RequestBody(required = true)
     @APIResponse(responseCode = "200", description = "OK")
+    @APIResponse(
+            responseCode = "400",
+            description = "Bad Request",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON,
+                            schema = @Schema(implementation = ViolationReport.class)))
     @APIResponse(responseCode = "404", description = "Not Found")
     public Response setPostReported(@PathParam("id") final UUID id, @NotNull @Valid final ReportUpdate input) {
         final var user = User.getFromSecurityContext(context);
@@ -177,7 +197,13 @@ public final class PostsEndpoint {
     @Transactional
     @RequestBody(required = true)
     @APIResponse(responseCode = "200", description = "OK")
-    @APIResponse(responseCode = "400", description = "Bad Request")
+    @APIResponse(
+            responseCode = "400",
+            description = "Bad Request",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON,
+                            schema = @Schema(implementation = ViolationReport.class)))
     @APIResponse(
             responseCode = "403",
             description = "Not Allowed",
@@ -206,7 +232,13 @@ public final class PostsEndpoint {
     @Transactional
     @RequestBody(required = true)
     @APIResponse(responseCode = "200", description = "OK")
-    @APIResponse(responseCode = "400", description = "Bad Request")
+    @APIResponse(
+            responseCode = "400",
+            description = "Bad Request",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON,
+                            schema = @Schema(implementation = ViolationReport.class)))
     @APIResponse(
             responseCode = "403",
             description = "Not Allowed",
@@ -242,7 +274,13 @@ public final class PostsEndpoint {
     @Authenticated
     @Produces(MediaType.APPLICATION_JSON)
     @APIResponse(responseCode = "200", description = "OK")
-    @APIResponse(responseCode = "400", description = "Bad Request")
+    @APIResponse(
+            responseCode = "400",
+            description = "Bad Request",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON,
+                            schema = @Schema(implementation = ViolationReport.class)))
     public long countPosts(@QueryParam("type") @NotNull final PostListingType type) {
         final var user = User.getFromSecurityContext(context);
         return switch (type) {

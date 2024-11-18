@@ -10,6 +10,7 @@ import app.fyreplace.api.data.User;
 import app.fyreplace.api.exceptions.ExplainedFailure;
 import app.fyreplace.api.exceptions.ForbiddenException;
 import io.quarkus.cache.CacheResult;
+import io.quarkus.hibernate.validator.runtime.jaxrs.ViolationReport;
 import io.quarkus.security.Authenticated;
 import jakarta.annotation.Nullable;
 import jakarta.transaction.Transactional;
@@ -48,7 +49,13 @@ public final class CommentsEndpoint {
     @GET
     @Authenticated
     @APIResponse(responseCode = "200", description = "OK")
-    @APIResponse(responseCode = "400", description = "Bad Request")
+    @APIResponse(
+            responseCode = "400",
+            description = "Bad Request",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON,
+                            schema = @Schema(implementation = ViolationReport.class)))
     @APIResponse(responseCode = "404", description = "Not Found")
     public Iterable<Comment> listComments(
             @PathParam("id") final UUID id, @QueryParam("page") @PositiveOrZero final int page) {
@@ -71,7 +78,13 @@ public final class CommentsEndpoint {
             description = "Created",
             content =
                     @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = Comment.class)))
-    @APIResponse(responseCode = "400", description = "Bad Request")
+    @APIResponse(
+            responseCode = "400",
+            description = "Bad Request",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON,
+                            schema = @Schema(implementation = ViolationReport.class)))
     @APIResponse(
             responseCode = "403",
             description = "Not Allowed",
@@ -105,7 +118,13 @@ public final class CommentsEndpoint {
     @Authenticated
     @Transactional
     @APIResponse(responseCode = "204", description = "No Content")
-    @APIResponse(responseCode = "400", description = "Bad Request")
+    @APIResponse(
+            responseCode = "400",
+            description = "Bad Request",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON,
+                            schema = @Schema(implementation = ViolationReport.class)))
     @APIResponse(
             responseCode = "403",
             description = "Not Allowed",
@@ -136,7 +155,13 @@ public final class CommentsEndpoint {
     @Transactional
     @RequestBody(required = true)
     @APIResponse(responseCode = "200", description = "OK")
-    @APIResponse(responseCode = "400", description = "Bad Request")
+    @APIResponse(
+            responseCode = "400",
+            description = "Bad Request",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON,
+                            schema = @Schema(implementation = ViolationReport.class)))
     @APIResponse(
             responseCode = "403",
             description = "Not Allowed",
@@ -172,7 +197,13 @@ public final class CommentsEndpoint {
     @Authenticated
     @Transactional
     @APIResponse(responseCode = "200", description = "OK")
-    @APIResponse(responseCode = "400", description = "Bad Request")
+    @APIResponse(
+            responseCode = "400",
+            description = "Bad Request",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON,
+                            schema = @Schema(implementation = ViolationReport.class)))
     @APIResponse(responseCode = "404", description = "Not Found")
     public Response acknowledgeComment(
             @PathParam("id") final UUID id, @PathParam("position") @PositiveOrZero final int position) {
@@ -200,7 +231,6 @@ public final class CommentsEndpoint {
     @Authenticated
     @Produces(MediaType.APPLICATION_JSON)
     @APIResponse(responseCode = "200", description = "OK")
-    @APIResponse(responseCode = "400", description = "Bad Request")
     @APIResponse(responseCode = "404", description = "Not Found")
     public long countComments(@PathParam("id") final UUID id, @QueryParam("read") @Nullable final Boolean read) {
         final var user = User.getFromSecurityContext(context);
