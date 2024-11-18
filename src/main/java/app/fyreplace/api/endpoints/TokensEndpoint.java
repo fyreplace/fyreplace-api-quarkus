@@ -13,6 +13,7 @@ import app.fyreplace.api.exceptions.ForbiddenException;
 import app.fyreplace.api.services.JwtService;
 import io.quarkus.cache.CacheResult;
 import io.quarkus.elytron.security.common.BcryptUtil;
+import io.quarkus.hibernate.validator.runtime.jaxrs.ViolationReport;
 import io.quarkus.security.Authenticated;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -55,7 +56,13 @@ public final class TokensEndpoint {
                     @Content(
                             mediaType = MediaType.TEXT_PLAIN,
                             schema = @Schema(implementation = String.class, format = "password")))
-    @APIResponse(responseCode = "400", description = "Bad Request")
+    @APIResponse(
+            responseCode = "400",
+            description = "Bad Request",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON,
+                            schema = @Schema(implementation = ViolationReport.class)))
     @APIResponse(responseCode = "404", description = "Not Found")
     @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
     public Response createToken(@NotNull @Valid final TokenCreation input) {
@@ -104,7 +111,13 @@ public final class TokensEndpoint {
     @Transactional
     @RequestBody(required = true)
     @APIResponse(responseCode = "200", description = "OK")
-    @APIResponse(responseCode = "400", description = "Bad Request")
+    @APIResponse(
+            responseCode = "400",
+            description = "Bad Request",
+            content =
+                    @Content(
+                            mediaType = MediaType.APPLICATION_JSON,
+                            schema = @Schema(implementation = ViolationReport.class)))
     @APIResponse(
             responseCode = "403",
             description = "Not Allowed",
