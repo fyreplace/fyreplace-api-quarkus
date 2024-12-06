@@ -1,3 +1,5 @@
+import javax.inject.Inject
+
 plugins {
     id "java"
     id "io.quarkus"
@@ -5,9 +7,14 @@ plugins {
     id "io.freefair.lombok" version "${lombokPluginVersion}"
 }
 
+interface ExecOperationsProvider {
+    @Inject
+    ExecOperations getExecOperations()
+}
+
 def gitVersion() {
     def stdout = new ByteArrayOutputStream()
-    exec {
+    project.objects.newInstance(ExecOperationsProvider).execOperations.exec {
         commandLine "git", "describe", "--tags", "--always", "--dirty"
         standardOutput = stdout
     }
