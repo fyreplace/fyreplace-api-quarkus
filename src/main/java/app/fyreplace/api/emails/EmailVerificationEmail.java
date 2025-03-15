@@ -17,6 +17,11 @@ public final class EmailVerificationEmail extends EmailBase {
     }
 
     @Override
+    protected String fragment() {
+        return email.email + ':' + getRandomCode();
+    }
+
+    @Override
     protected TemplateInstance textTemplate() {
         return Templates.text(getTemplateCommonData());
     }

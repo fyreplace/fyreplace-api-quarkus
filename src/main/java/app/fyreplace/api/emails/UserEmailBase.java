@@ -5,4 +5,9 @@ public abstract class UserEmailBase extends EmailBase {
     protected String path() {
         return email.user.active ? "/login" : "/register";
     }
+
+    @Override
+    protected String fragment() {
+        return getRandomCode();
+    }
 }

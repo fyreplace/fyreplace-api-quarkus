@@ -57,6 +57,8 @@ public abstract class EmailBase extends Mail {
 
     protected abstract String action();
 
+    protected abstract String fragment();
+
     protected abstract TemplateInstance textTemplate();
 
     protected abstract TemplateInstance htmlTemplate();
@@ -91,7 +93,7 @@ public abstract class EmailBase extends Mail {
                 .scheme(customDeepLinks ? appFrontCustomScheme : appFrontUrl.getScheme())
                 .path(path())
                 .queryParam("action", action())
-                .fragment(getRandomCode())
+                .fragment(fragment())
                 .build()
                 .toString();
     }
