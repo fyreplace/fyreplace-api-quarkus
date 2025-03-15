@@ -72,7 +72,7 @@ public final class CommentsEndpoint {
     @POST
     @Authenticated
     @Transactional
-    @RequestBody(required = true)
+    @RequestBody
     @APIResponse(
             responseCode = "201",
             description = "Created",
@@ -153,7 +153,7 @@ public final class CommentsEndpoint {
     @Path("{position}/reported")
     @Authenticated
     @Transactional
-    @RequestBody(required = true)
+    @RequestBody
     @APIResponse(responseCode = "200", description = "OK")
     @APIResponse(
             responseCode = "400",

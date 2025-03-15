@@ -70,7 +70,7 @@ public final class EmailsEndpoint {
     @POST
     @Authenticated
     @Transactional
-    @RequestBody(required = true)
+    @RequestBody
     @APIResponse(
             responseCode = "201",
             description = "Created",
@@ -173,7 +173,7 @@ public final class EmailsEndpoint {
     @Path("activate")
     @Authenticated
     @Transactional
-    @RequestBody(required = true)
+    @RequestBody
     @APIResponse(responseCode = "200", description = "OK")
     @APIResponse(
             responseCode = "400",

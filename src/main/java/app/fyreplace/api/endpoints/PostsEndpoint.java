@@ -139,7 +139,7 @@ public final class PostsEndpoint {
     @Path("{id}/subscribed")
     @Authenticated
     @Transactional
-    @RequestBody(required = true)
+    @RequestBody
     @APIResponse(responseCode = "200", description = "OK")
     @APIResponse(
             responseCode = "400",
@@ -167,7 +167,7 @@ public final class PostsEndpoint {
     @Path("{id}/reported")
     @Authenticated
     @Transactional
-    @RequestBody(required = true)
+    @RequestBody
     @APIResponse(responseCode = "200", description = "OK")
     @APIResponse(
             responseCode = "400",
@@ -195,7 +195,7 @@ public final class PostsEndpoint {
     @Path("{id}/publish")
     @Authenticated
     @Transactional
-    @RequestBody(required = true)
+    @RequestBody
     @APIResponse(responseCode = "200", description = "OK")
     @APIResponse(
             responseCode = "400",
@@ -230,7 +230,7 @@ public final class PostsEndpoint {
     @Path("{id}/vote")
     @Authenticated
     @Transactional
-    @RequestBody(required = true)
+    @RequestBody
     @APIResponse(responseCode = "200", description = "OK")
     @APIResponse(
             responseCode = "400",

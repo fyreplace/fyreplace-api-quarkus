@@ -117,7 +117,7 @@ public final class ChaptersEndpoint {
     @Path("{position}/position")
     @Authenticated
     @Transactional
-    @RequestBody(required = true)
+    @RequestBody
     @APIResponse(responseCode = "200", description = "OK")
     @APIResponse(
             responseCode = "400",
@@ -190,7 +190,7 @@ public final class ChaptersEndpoint {
     @Path("{position}/image")
     @Authenticated
     @Transactional
-    @RequestBody(required = true, content = @Content(mediaType = MediaType.APPLICATION_OCTET_STREAM))
+    @RequestBody(content = @Content(mediaType = MediaType.APPLICATION_OCTET_STREAM))
     @APIResponse(responseCode = "200", description = "OK")
     @APIResponse(
             responseCode = "400",
