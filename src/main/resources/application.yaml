@@ -43,6 +43,7 @@ quarkus:
         expire-after-write: "60S"
   log:
     sentry:
+      dsn: ""
       in-app-packages: "app.fyreplace.api"
       release: "${quarkus.application.name}@${quarkus.application.version}"
 mp:
