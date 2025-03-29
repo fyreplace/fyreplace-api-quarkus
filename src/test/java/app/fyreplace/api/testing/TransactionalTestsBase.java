@@ -20,22 +20,22 @@ public abstract class TransactionalTestsBase {
     public DataSeeder dataSeeder;
 
     @Inject
-    MockMailbox mailbox;
+    public MockMailbox mailbox;
 
     @TestHTTPResource("image.jpeg")
-    URL jpeg;
+    public URL jpegResource;
 
     @TestHTTPResource("image.png")
-    URL png;
+    public URL pngResource;
 
     @TestHTTPResource("image.webp")
-    URL webp;
+    public URL webpResource;
 
     @TestHTTPResource("image.gif")
-    URL gif;
+    public URL gifResource;
 
     @TestHTTPResource("image.txt")
-    URL text;
+    public URL testResource;
 
     protected static final String FAKE_ID = "00000000-0000-0000-0000-000000000000";
 
@@ -54,11 +54,11 @@ public abstract class TransactionalTestsBase {
 
     protected InputStream openStream(final String fileType) throws IOException {
         return (switch (fileType) {
-                    case "jpeg" -> jpeg;
-                    case "png" -> png;
-                    case "webp" -> webp;
-                    case "gif" -> gif;
-                    case "text" -> text;
+                    case "jpeg" -> jpegResource;
+                    case "png" -> pngResource;
+                    case "webp" -> webpResource;
+                    case "gif" -> gifResource;
+                    case "text" -> testResource;
                     default -> throw new IllegalArgumentException("Unknown file type: " + fileType);
                 })
                 .openStream();
