@@ -2,8 +2,8 @@ package app.fyreplace.api.endpoints;
 
 import app.fyreplace.api.cache.DuplicateRequestKeyGenerator;
 import app.fyreplace.api.data.Email;
-import app.fyreplace.api.data.EmailActivation;
 import app.fyreplace.api.data.EmailCreation;
+import app.fyreplace.api.data.EmailVerification;
 import app.fyreplace.api.data.RandomCode;
 import app.fyreplace.api.data.User;
 import app.fyreplace.api.emails.EmailVerificationEmail;
@@ -170,7 +170,7 @@ public final class EmailsEndpoint {
     }
 
     @POST
-    @Path("activate")
+    @Path("verify")
     @Authenticated
     @Transactional
     @RequestBody
@@ -184,7 +184,7 @@ public final class EmailsEndpoint {
                             schema = @Schema(implementation = ViolationReport.class)))
     @APIResponse(responseCode = "404", description = "Not Found")
     @CacheResult(cacheName = "requests", keyGenerator = DuplicateRequestKeyGenerator.class)
-    public Response activateEmail(@NotNull @Valid final EmailActivation input) {
+    public Response verifyEmail(@NotNull @Valid final EmailVerification input) {
         final var email = Email.<Email>find("email", input.email()).firstResult();
 
         try (final var stream = RandomCode.<RandomCode>stream("email", email)) {
