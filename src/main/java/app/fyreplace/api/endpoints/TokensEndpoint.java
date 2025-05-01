@@ -48,7 +48,7 @@ public final class TokensEndpoint {
 
     @POST
     @Transactional
-    @RequestBody(required = true)
+    @RequestBody
     @APIResponse(
             responseCode = "201",
             description = "Created",
@@ -109,7 +109,7 @@ public final class TokensEndpoint {
     @POST
     @Path("new")
     @Transactional
-    @RequestBody(required = true)
+    @RequestBody
     @APIResponse(responseCode = "200", description = "OK")
     @APIResponse(
             responseCode = "400",

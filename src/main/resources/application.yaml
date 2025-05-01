@@ -26,6 +26,8 @@ quarkus:
   otel:
     security-events:
       enabled: true
+    sentry:
+      dsn: "${quarkus.log.sentry.dsn}"
   mailer:
     port: 587
     start-tls: "required"
@@ -39,6 +41,11 @@ quarkus:
     caffeine:
       requests:
         expire-after-write: "60S"
+  log:
+    sentry:
+      dsn: ""
+      in-app-packages: "app.fyreplace.api"
+      release: "${quarkus.application.name}@${quarkus.application.version}"
 mp:
   jwt:
     verify:

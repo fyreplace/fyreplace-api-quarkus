@@ -1,3 +1,5 @@
+import javax.inject.Inject
+
 plugins {
     id "java"
     id "io.quarkus"
@@ -5,9 +7,14 @@ plugins {
     id "io.freefair.lombok" version "${lombokPluginVersion}"
 }
 
+interface ExecOperationsProvider {
+    @Inject
+    ExecOperations getExecOperations()
+}
+
 def gitVersion() {
     def stdout = new ByteArrayOutputStream()
-    exec {
+    project.objects.newInstance(ExecOperationsProvider).execOperations.exec {
         commandLine "git", "describe", "--tags", "--always", "--dirty"
         standardOutput = stdout
     }
@@ -47,13 +54,13 @@ dependencies {
     implementation("io.quarkus:quarkus-smallrye-jwt-build")
     implementation("io.quarkus:quarkus-smallrye-openapi")
     implementation("io.quarkiverse.amazonservices:quarkus-amazon-s3")
+    implementation("io.quarkiverse.loggingsentry:quarkus-logging-sentry:${quarkusLoggingSentry}")
+    implementation("io.quarkiverse.opentelemetry.exporter:quarkus-opentelemetry-exporter-sentry:${quarkusOtelExporter}")
     implementation("io.sentry:sentry-jul")
     implementation("javaxt:javaxt-core:${javaXtVersion}")
     implementation("software.amazon.awssdk:url-connection-client")
     implementation("software.amazon.awssdk.crt:aws-crt")
     implementation("com.twelvemonkeys.imageio:imageio-webp:${twelveMonkeysVersion}")
-    implementation(project(":quarkus-sentry:deployment"))
-    implementation(project(":quarkus-sentry:runtime"))
     testImplementation("io.quarkus:quarkus-junit5")
     testImplementation("io.quarkus:quarkus-test-h2")
     testImplementation("io.quarkus:quarkus-test-security")

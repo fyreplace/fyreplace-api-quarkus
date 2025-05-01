@@ -112,6 +112,7 @@ public final class DataSeeder {
             user.persist();
         }
 
+        sleep();
         return user;
     }
 
@@ -135,6 +136,7 @@ public final class DataSeeder {
             post.publish(postsStartingLife, anonymous);
         }
 
+        sleep();
         return post;
     }
 
@@ -146,6 +148,15 @@ public final class DataSeeder {
         comment.post = post;
         comment.text = text;
         comment.persist();
+        sleep();
         return comment;
+    }
+
+    private void sleep() {
+        try {
+            Thread.sleep(1L);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

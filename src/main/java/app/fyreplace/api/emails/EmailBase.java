@@ -47,13 +47,17 @@ public abstract class EmailBase extends Mail {
     @Context
     UriInfo uriInfo;
 
+    protected Email email;
+
     private boolean customDeepLinks;
 
     private String randomCodeClearText;
 
-    private Email email;
+    protected abstract String path();
 
     protected abstract String action();
+
+    protected abstract String fragment();
 
     protected abstract TemplateInstance textTemplate();
 
@@ -87,9 +91,9 @@ public abstract class EmailBase extends Mail {
     protected String getLink() {
         return UriBuilder.fromUri(appFrontUrl.toString())
                 .scheme(customDeepLinks ? appFrontCustomScheme : appFrontUrl.getScheme())
-                .path(email.user.active ? "/login" : "/register")
+                .path(path())
                 .queryParam("action", action())
-                .fragment(getRandomCode())
+                .fragment(fragment())
                 .build()
                 .toString();
     }

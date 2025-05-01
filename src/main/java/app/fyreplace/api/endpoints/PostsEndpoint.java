@@ -75,7 +75,8 @@ public final class PostsEndpoint {
         final var sorting = Post.sorting().direction(direction);
         final var query =
                 switch (type) {
-                    case SUBSCRIBED_TO -> "from Post p where (select count(*) from Subscription where user = ?1 and post.id = p.id) > 0";
+                    case SUBSCRIBED_TO ->
+                        "from Post p where (select count(*) from Subscription where user = ?1 and post.id = p.id) > 0";
                     case PUBLISHED -> "author = ?1 and published = true";
                     case DRAFTS -> "author = ?1 and published = false";
                 };
@@ -139,7 +140,7 @@ public final class PostsEndpoint {
     @Path("{id}/subscribed")
     @Authenticated
     @Transactional
-    @RequestBody(required = true)
+    @RequestBody
     @APIResponse(responseCode = "200", description = "OK")
     @APIResponse(
             responseCode = "400",
@@ -167,7 +168,7 @@ public final class PostsEndpoint {
     @Path("{id}/reported")
     @Authenticated
     @Transactional
-    @RequestBody(required = true)
+    @RequestBody
     @APIResponse(responseCode = "200", description = "OK")
     @APIResponse(
             responseCode = "400",
@@ -195,7 +196,7 @@ public final class PostsEndpoint {
     @Path("{id}/publish")
     @Authenticated
     @Transactional
-    @RequestBody(required = true)
+    @RequestBody
     @APIResponse(responseCode = "200", description = "OK")
     @APIResponse(
             responseCode = "400",
@@ -230,7 +231,7 @@ public final class PostsEndpoint {
     @Path("{id}/vote")
     @Authenticated
     @Transactional
-    @RequestBody(required = true)
+    @RequestBody
     @APIResponse(responseCode = "200", description = "OK")
     @APIResponse(
             responseCode = "400",

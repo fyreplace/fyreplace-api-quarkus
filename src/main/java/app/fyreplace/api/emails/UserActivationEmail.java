@@ -5,7 +5,7 @@ import io.quarkus.qute.TemplateInstance;
 import jakarta.enterprise.context.RequestScoped;
 
 @RequestScoped
-public final class UserActivationEmail extends EmailBase {
+public final class UserActivationEmail extends UserEmailBase {
     @Override
     protected String action() {
         return "connect";

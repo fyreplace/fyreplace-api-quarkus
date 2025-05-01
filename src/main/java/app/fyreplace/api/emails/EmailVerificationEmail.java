@@ -7,8 +7,18 @@ import jakarta.enterprise.context.RequestScoped;
 @RequestScoped
 public final class EmailVerificationEmail extends EmailBase {
     @Override
+    protected String path() {
+        return "/settings/emails";
+    }
+
+    @Override
     protected String action() {
         return "email";
+    }
+
+    @Override
+    protected String fragment() {
+        return email.email + ':' + getRandomCode();
     }
 
     @Override

@@ -70,7 +70,7 @@ public final class UsersEndpoint {
 
     @POST
     @Transactional
-    @RequestBody(required = true)
+    @RequestBody
     @APIResponse(
             responseCode = "201",
             description = "Created",
@@ -136,7 +136,7 @@ public final class UsersEndpoint {
     @Path("{id}/blocked")
     @Authenticated
     @Transactional
-    @RequestBody(required = true)
+    @RequestBody
     @APIResponse(responseCode = "200", description = "OK")
     @APIResponse(
             responseCode = "400",
@@ -198,7 +198,7 @@ public final class UsersEndpoint {
     @Path("{id}/reported")
     @Authenticated
     @Transactional
-    @RequestBody(required = true)
+    @RequestBody
     @APIResponse(responseCode = "200", description = "OK")
     @APIResponse(
             responseCode = "400",
@@ -254,7 +254,7 @@ public final class UsersEndpoint {
     @Path("current/bio")
     @Authenticated
     @Transactional
-    @RequestBody(required = true, content = @Content(mediaType = MediaType.TEXT_PLAIN))
+    @RequestBody(content = @Content(mediaType = MediaType.TEXT_PLAIN))
     @APIResponse(responseCode = "200", description = "OK")
     @APIResponse(
             responseCode = "400",
@@ -276,7 +276,7 @@ public final class UsersEndpoint {
     @Path("current/avatar")
     @Authenticated
     @Transactional
-    @RequestBody(required = true, content = @Content(mediaType = MediaType.APPLICATION_OCTET_STREAM))
+    @RequestBody(content = @Content(mediaType = MediaType.APPLICATION_OCTET_STREAM))
     @APIResponse(responseCode = "200", description = "OK")
     @APIResponse(responseCode = "413", description = "Payload Too Large")
     @APIResponse(responseCode = "415", description = "Unsupported Media Type")
