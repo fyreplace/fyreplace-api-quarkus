@@ -1,0 +1,15 @@
+subprojects {
+    apply plugin: "java-library"
+    group = "app.fyreplace"
+    dependencies {
+        implementation(enforcedPlatform("io.quarkus.platform:quarkus-bom:${quarkusPlatformVersion}"))
+        implementation(enforcedPlatform("io.sentry:sentry-bom:${sentryVersion}"))
+        implementation("io.quarkus:quarkus-opentelemetry")
+        implementation("io.sentry:sentry-opentelemetry-core")
+        annotationProcessor("io.quarkus:quarkus-extension-processor")
+    }
+}
+
+repositories {
+    mavenCentral()
+}
