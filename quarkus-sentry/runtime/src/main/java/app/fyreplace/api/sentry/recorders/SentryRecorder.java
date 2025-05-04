@@ -3,11 +3,9 @@ package app.fyreplace.api.sentry.recorders;
 import app.fyreplace.api.sentry.config.SentryConfig;
 import io.quarkus.runtime.RuntimeValue;
 import io.quarkus.runtime.annotations.Recorder;
-import io.sentry.Instrumenter;
 import io.sentry.Sentry;
 import io.sentry.SentryOptions;
 import io.sentry.jul.SentryHandler;
-import io.sentry.opentelemetry.OpenTelemetryLinkErrorEventProcessor;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Handler;
@@ -32,8 +30,6 @@ public class SentryRecorder {
             sentryConfig.tracesSampleRate().ifPresent(it::setTracesSampleRate);
             it.setRelease(appName + '@' + appVersion);
             it.addInAppInclude("app.fyreplace.api");
-            it.setInstrumenter(Instrumenter.OTEL);
-            it.addEventProcessor(new OpenTelemetryLinkErrorEventProcessor());
             options.set(it);
         });
 

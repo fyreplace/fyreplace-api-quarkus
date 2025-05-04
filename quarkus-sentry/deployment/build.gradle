@@ -10,5 +10,6 @@ dependencies {
     implementation("io.quarkus:quarkus-core-deployment")
     implementation("io.quarkus:quarkus-opentelemetry-deployment")
     implementation("io.quarkus:quarkus-rest-deployment")
+    implementation("io.sentry:sentry-opentelemetry-bootstrap")
     implementation(project(":quarkus-sentry:runtime"))
 }
