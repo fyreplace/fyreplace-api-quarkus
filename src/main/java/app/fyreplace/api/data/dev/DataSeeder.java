@@ -15,11 +15,13 @@ import app.fyreplace.api.data.StoredFile;
 import app.fyreplace.api.data.Subscription;
 import app.fyreplace.api.data.User;
 import app.fyreplace.api.data.Vote;
+import app.fyreplace.api.services.RandomService;
 import io.quarkus.elytron.security.common.BcryptUtil;
 import io.quarkus.runtime.ShutdownEvent;
 import io.quarkus.runtime.StartupEvent;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
+import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import java.io.IOException;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
@@ -32,6 +34,9 @@ public final class DataSeeder {
 
     @ConfigProperty(name = "app.posts.starting-life")
     int postsStartingLife;
+
+    @Inject
+    RandomService randomService;
 
     public void onStartup(@Observes final StartupEvent event) {
         if (localDev) {
@@ -110,6 +115,13 @@ public final class DataSeeder {
             email.persist();
             user.mainEmail = email;
             user.persist();
+
+            if (!active) {
+                final var randomCode = new RandomCode();
+                randomCode.email = email;
+                randomCode.code = BcryptUtil.bcryptHash(randomService.generateCode(RandomCode.LENGTH));
+                randomCode.persist();
+            }
         }
 
         sleep();
