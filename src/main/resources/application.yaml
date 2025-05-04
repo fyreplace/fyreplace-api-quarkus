@@ -82,6 +82,8 @@ app:
     hibernate-orm:
       database:
         generation: "drop-and-create"
+      dev-ui:
+        allow-hql: true
     liquibase:
       enabled: false
     http:
