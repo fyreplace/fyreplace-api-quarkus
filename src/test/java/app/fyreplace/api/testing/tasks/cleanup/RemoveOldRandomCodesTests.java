@@ -8,6 +8,7 @@ import app.fyreplace.api.data.User;
 import app.fyreplace.api.services.RandomService;
 import app.fyreplace.api.tasks.CleanupTasks;
 import app.fyreplace.api.testing.UserTestsBase;
+import io.quarkus.elytron.security.common.BcryptUtil;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -28,10 +29,10 @@ public final class RemoveOldRandomCodesTests extends UserTestsBase {
     public void removeOldRandomCodes() {
         final var randomCode = new RandomCode();
         randomCode.email = requireNonNull(User.findByUsername("user_0")).mainEmail;
-        randomCode.code = randomService.generateCode(RandomCode.LENGTH);
+        randomCode.code = BcryptUtil.bcryptHash(randomService.generateCode(RandomCode.LENGTH));
         randomCode.persist();
         final var randomCodeCount = RandomCode.count();
-        RandomCode.update("dateCreated", Instant.now().minus(Duration.ofDays(2)));
+        RandomCode.update("dateCreated = ?1 where id = ?2", Instant.now().minus(Duration.ofDays(2)), randomCode.id);
         cleanupTasks.removeOldRandomCodes();
         assertEquals(randomCodeCount - 1, RandomCode.count());
     }
