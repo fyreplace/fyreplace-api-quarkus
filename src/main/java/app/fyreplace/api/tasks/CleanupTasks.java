@@ -1,6 +1,7 @@
 package app.fyreplace.api.tasks;
 
 import app.fyreplace.api.data.Comment;
+import app.fyreplace.api.data.Email;
 import app.fyreplace.api.data.Post;
 import app.fyreplace.api.data.RandomCode;
 import app.fyreplace.api.data.User;
@@ -14,7 +15,6 @@ import java.util.stream.Stream;
 
 @ApplicationScoped
 public final class CleanupTasks {
-
     @Scheduled(cron = "0 0 0 * * ?")
     @Transactional
     public void scrubSoftDeletedEntities() {
@@ -41,6 +41,13 @@ public final class CleanupTasks {
     @Transactional
     public void removeOldRandomCodes() {
         RandomCode.delete("dateCreated < ?1", Instant.now().minus(RandomCode.LIFETIME));
+    }
+
+    @Scheduled(cron = "0 15 * * * ?")
+    @Transactional
+    public void removeOldUnverifiedEmails() {
+        Email.delete(
+                "from Email e where verified = false and (select count(*) from RandomCode where email.id = e.id) = 0");
     }
 
     private String scrubConditions(final String... fields) {
