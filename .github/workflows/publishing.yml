@@ -58,7 +58,7 @@ jobs:
           APP_WEBSITE_URL: https://www.fyreplace.example.org
 
       - name: Store report
-        if: ${{ always() }}
+        if: ${{ failure() }}
         uses: actions/upload-artifact@v4
         with:
           name: Report
