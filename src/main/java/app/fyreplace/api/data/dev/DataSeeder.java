@@ -166,7 +166,7 @@ public final class DataSeeder {
 
     private void sleep() {
         try {
-            Thread.sleep(1L);
+            Thread.sleep(10L);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
