@@ -12,5 +12,4 @@ pluginManagement {
 }
 
 rootProject.name = "fyreplace-api"
-
-include(":quarkus-sentry:runtime", ":quarkus-sentry:deployment")
+include ":quarkus-sentry:runtime", ":quarkus-sentry:deployment"

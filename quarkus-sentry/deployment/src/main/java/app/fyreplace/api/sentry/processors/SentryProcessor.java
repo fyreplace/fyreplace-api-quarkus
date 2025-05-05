@@ -27,7 +27,8 @@ public final class SentryProcessor {
     @BuildStep
     SystemPropertyBuildItem setContextStorageProvider() {
         return new SystemPropertyBuildItem(
-                "io.opentelemetry.context.contextStorageProvider", SentryContextStorageProvider.class.getCanonicalName());
+                "io.opentelemetry.context.contextStorageProvider",
+                SentryContextStorageProvider.class.getCanonicalName());
     }
 
     @BuildStep
