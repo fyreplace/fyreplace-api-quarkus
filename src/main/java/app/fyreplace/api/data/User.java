@@ -1,6 +1,9 @@
 package app.fyreplace.api.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.sentry.Sentry;
 import jakarta.annotation.Nullable;
@@ -14,6 +17,7 @@ import jakarta.persistence.PostRemove;
 import jakarta.persistence.Table;
 import jakarta.ws.rs.NotAuthorizedException;
 import jakarta.ws.rs.core.SecurityContext;
+import java.io.IOException;
 import java.security.MessageDigest;
 import java.time.Duration;
 import java.time.Instant;
@@ -292,4 +296,12 @@ public class User extends UserDependentEntityBase implements Reportable {
             @Schema(required = true) String username,
             @Schema(required = true) String avatar,
             @Schema(required = true) Color tint) {}
+
+    public static final class ProfileSerializer extends JsonSerializer<User> {
+        @Override
+        public void serialize(final User user, final JsonGenerator generator, final SerializerProvider serializers)
+                throws IOException {
+            generator.writeObject(user.getProfile());
+        }
+    }
 }

@@ -1,7 +1,6 @@
 package app.fyreplace.api.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -40,8 +39,6 @@ public class Comment extends AuthoredEntityBase implements Comparable<Comment>, 
         text = "";
     }
 
-    @SuppressWarnings("unused")
-    @JsonProperty("deleted")
     public boolean isDeleted() {
         return deleted;
     }

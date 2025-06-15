@@ -1,7 +1,6 @@
 package app.fyreplace.api.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
@@ -29,7 +28,6 @@ public class Email extends EntityBase {
     @Schema(required = true)
     public boolean verified = false;
 
-    @JsonProperty("main")
     @Schema(required = true)
     public boolean isMain() {
         return id.equals(user.mainEmail.id);

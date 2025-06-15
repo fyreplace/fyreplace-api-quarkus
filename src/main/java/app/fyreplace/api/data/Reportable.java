@@ -1,5 +1,9 @@
 package app.fyreplace.api.data;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import java.io.IOException;
 import java.util.UUID;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
@@ -25,5 +29,16 @@ public interface Reportable {
 
     default boolean isReportedBy(final User user) {
         return Report.count("source = ?1 and targetModel = ?2 and targetId = ?3", user, getClass(), getId()) > 0;
+    }
+
+    final class Serializer extends JsonSerializer<Class<? extends Reportable>> {
+        @Override
+        public void serialize(
+                final Class<? extends Reportable> reportable,
+                final JsonGenerator generator,
+                final SerializerProvider serializers)
+                throws IOException {
+            generator.writeString(reportable.getSimpleName());
+        }
     }
 }

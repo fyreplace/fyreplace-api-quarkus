@@ -16,7 +16,8 @@ quarkus:
         dev:
           paths: "/dev/*"
           policy: "deny"
-    cors: true
+    cors:
+      enabled: true
     limits:
       max-body-size: "10M"
   rest:
@@ -73,8 +74,8 @@ app:
 '%dev':
   quarkus:
     hibernate-orm:
-      database:
-        generation: "drop-and-create"
+      schema-management:
+        strategy: "drop-and-create"
       dev-ui:
         allow-hql: true
     liquibase:

@@ -14,7 +14,15 @@ import org.eclipse.microprofile.config.ConfigProvider;
 
 @Recorder
 public class SentryRecorder {
-    public RuntimeValue<Optional<Handler>> create(final SentryConfig sentryConfig) {
+    private final RuntimeValue<SentryConfig> pendingSentryConfig;
+
+    public SentryRecorder(RuntimeValue<SentryConfig> sentryConfig) {
+        pendingSentryConfig = sentryConfig;
+    }
+
+    public RuntimeValue<Optional<Handler>> create() {
+        final var sentryConfig = pendingSentryConfig.getValue();
+
         if (sentryConfig.dsn().isEmpty()) {
             return new RuntimeValue<>(Optional.empty());
         }

@@ -1,6 +1,5 @@
 package app.fyreplace.api.sentry.processors;
 
-import app.fyreplace.api.sentry.config.SentryConfig;
 import app.fyreplace.api.sentry.recorders.SentryRecorder;
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.annotations.ExecutionTime;
@@ -33,7 +32,7 @@ public final class SentryProcessor {
 
     @BuildStep
     @Record(ExecutionTime.RUNTIME_INIT)
-    LogHandlerBuildItem addSentryHandler(final SentryConfig config, final SentryRecorder recorder) {
-        return new LogHandlerBuildItem(recorder.create(config));
+    LogHandlerBuildItem addSentryHandler(final SentryRecorder recorder) {
+        return new LogHandlerBuildItem(recorder.create());
     }
 }

@@ -1,7 +1,7 @@
 package app.fyreplace.api.data;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ManyToOne;
@@ -22,7 +22,7 @@ public abstract class AuthoredEntityBase extends UserDependentEntityBase {
     public boolean anonymous = false;
 
     @SuppressWarnings("unused")
-    @JsonProperty("author")
+    @JsonGetter("author")
     @Nullable
     public User.Profile getAuthorProfile() {
         if (anonymous && (currentUser == null || !currentUser.id.equals(author.id))) {
