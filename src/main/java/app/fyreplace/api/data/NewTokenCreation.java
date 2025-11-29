@@ -6,4 +6,4 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 public record NewTokenCreation(
         @NotBlank @Length(max = Email.EMAIL_MAX_LENGTH) @Schema(maxLength = Email.EMAIL_MAX_LENGTH)
-                String identifier) {}
+        String identifier) {}

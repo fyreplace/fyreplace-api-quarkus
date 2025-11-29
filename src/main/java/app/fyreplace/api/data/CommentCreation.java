@@ -6,7 +6,8 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 public record CommentCreation(
         @Length(min = 1, max = Comment.TEXT_MAX_LENGTH)
-                @NotBlank
-                @Schema(minLength = 1, maxLength = Comment.TEXT_MAX_LENGTH)
-                String text,
+        @NotBlank
+        @Schema(minLength = 1, maxLength = Comment.TEXT_MAX_LENGTH)
+        String text,
+
         boolean anonymous) {}

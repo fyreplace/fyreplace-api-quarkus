@@ -41,8 +41,7 @@ public class Subscription extends EntityBase {
     public Comment lastCommentSeen;
 
     @SuppressWarnings("unused")
-    @Formula(
-            """
+    @Formula("""
             (
                 select count(*) from comments
                 where comments.post_id = post_id
@@ -73,8 +72,7 @@ public class Subscription extends EntityBase {
     }
 
     public static void markAsRead(final User user) {
-        update(
-                """
+        update("""
                 update Subscription as s set
                 lastCommentSeen = (
                     select id from Comment as c
@@ -83,7 +81,6 @@ public class Subscription extends EntityBase {
                     limit 1
                 )
                 where user = ?1
-                """,
-                user);
+                """, user);
     }
 }

@@ -10,8 +10,7 @@ public final class ModerationTasks {
     @Scheduled(cron = "0 15 * * * ?")
     @Transactional
     public void welcomeBackBannedUsers() {
-        User.update(
-                """
+        User.update("""
                 banned = false, dateBanEnd = null
                 where banned and dateBanEnd < current_timestamp
                 """);

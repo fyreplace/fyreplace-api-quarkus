@@ -6,7 +6,7 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 public record EmailCreation(
         @NotBlank
-                @Length(min = Email.EMAIL_MIN_LENGTH, max = Email.EMAIL_MAX_LENGTH)
-                @jakarta.validation.constraints.Email
-                @Schema(minLength = Email.EMAIL_MIN_LENGTH, maxLength = Email.EMAIL_MAX_LENGTH)
-                String email) {}
+        @Length(min = Email.EMAIL_MIN_LENGTH, max = Email.EMAIL_MAX_LENGTH)
+        @jakarta.validation.constraints.Email
+        @Schema(minLength = Email.EMAIL_MIN_LENGTH, maxLength = Email.EMAIL_MAX_LENGTH)
+        String email) {}
