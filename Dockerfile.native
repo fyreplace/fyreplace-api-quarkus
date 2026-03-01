@@ -7,7 +7,7 @@ COPY . ./
 RUN make emails
 
 
-FROM ghcr.io/graalvm/native-image-community:21-muslib AS build-code
+FROM ghcr.io/graalvm/native-image-community:25-muslib AS build-code
 
 ARG APP_STORAGE_TYPE
 ENV APP_STORAGE_TYPE=$APP_STORAGE_TYPE

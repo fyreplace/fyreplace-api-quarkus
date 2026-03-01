@@ -14,3 +14,8 @@ dependencies {
     implementation("io.sentry:sentry-jul")
     implementation("io.sentry:sentry-opentelemetry-agentless")
 }
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}

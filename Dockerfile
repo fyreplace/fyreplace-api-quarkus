@@ -7,7 +7,7 @@ COPY . ./
 RUN make emails
 
 
-FROM eclipse-temurin:21-jdk AS build-code
+FROM eclipse-temurin:25-jdk AS build-code
 
 ARG APP_STORAGE_TYPE
 ENV APP_STORAGE_TYPE=$APP_STORAGE_TYPE
@@ -20,7 +20,7 @@ RUN git fetch --unshallow || echo "Nothing to do"
 RUN ./gradlew --no-daemon --exclude-task test build
 
 
-FROM eclipse-temurin:21-jre AS run
+FROM eclipse-temurin:25-jre AS run
 
 ENV LANGUAGE="en_US:en"
 ENV JAVA_OPTS="$JAVA_OPTS -Dquarkus.http.host=0.0.0.0"
